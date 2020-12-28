@@ -1,0 +1,80 @@
+input.ng-invalid.ng-touched{
+    border: solid 1px red;
+    }
+    
+.input-lg {
+    font-size: 15px;
+  }
+
+
+  .table-lg {
+    font-size: 14px;
+  }
+
+.mat-paginator{
+  font-size: 14px;
+}
+
+.wrfont{
+  color: #FFF;
+
+}
+table {
+  width: 100%;
+
+}
+th.mat-header-cell{
+  color: rgb(10, 6, 223);
+  font-weight: bold
+}
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+.ppadd{
+    padding-left: 50px;
+}
+
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}

@@ -1,0 +1,466 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>รายงานแผนการปรับปรุงและติดตั้งหม้อแปลงไฟฟ้าเพื่อเพิ่มประสิทธิภาพการจ่ายไฟในระบบแรงต่ำ สถานะวันที่
+      {{roicdate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="row">
+
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>กฟฟ. </mat-label>
+          <mat-select (selectionChange)="selectPea($event)">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+              {{pea.peaCode +" "+pea.peaName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>งบ</mat-label>
+          <mat-select (selectionChange)="selectBudget($event)">
+            <mat-option *ngFor="let budjet of budjets" [value]="budjet.value">
+              {{budjet.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    
+      <mat-button-toggle-group style="border-radius: 20px;height: 80%;" value="kva">
+        <mat-button-toggle (change)="onValChange($event.value)" value="kva">kVA</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="nJob">จำนวนงาน</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="workCost">คชจ.หน้างาน</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="matCost">ค่าพัสดุ</mat-button-toggle>
+      </mat-button-toggle-group>
+
+    </div>
+
+    <div class="row">
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <apx-chart
+        [series]="chartOptions1.series" 
+        [chart]="chartOptions1.chart"
+        [plotOptions]="chartOptions1.plotOptions"
+        [labels]="chartOptions1.labels"
+        [stroke]="chartOptions1.stroke"
+        [fill]="chartOptions1.fill"></apx-chart>
+
+        <div class="card card-statistics mt-5">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi  mdi-chart-line text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">แผนงาน {{kvaPlnTotal | number}}{{unit}}</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">ดำเนินการ {{kvaTotal | number}}{{unit}}</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12"> 
+        <div>
+          <apx-chart
+          [series]="chartOptions2.series"
+          [chart]="chartOptions2.chart"
+          [dataLabels]="chartOptions2.dataLabels"
+          [plotOptions]="chartOptions2.plotOptions"
+          [tooltip]="chartOptions2.tooltip"
+          [xaxis]="chartOptions2.xaxis"
+          [yaxis]="chartOptions2.yaxis"
+          [stroke]="chartOptions2.stroke"
+        ></apx-chart>
+      </div>
+    </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<!-----------------------------------Table------------------------------------------------->
+<!--
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>รายงานแผนการปรับปรุงและติดตั้งหม้อแปลงไฟฟ้าเพื่อเพิ่มประสิทธิภาพการจ่ายไฟในระบบแรงต่ำ สถานะวันที่
+      {{roicdate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    
+    <div class="row">
+      
+      <div class="col-md-6">       
+        <mat-form-field>
+          <mat-label>กฟฟ. </mat-label>
+          <mat-select (selectionChange)="selectPea($event)">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+              {{pea.peaCode +" "+pea.peaName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>       
+      </div>     
+    </div>
+    
+    <div class="row">
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 grid-margin stretch-card">
+        <canvas style="height: 100%;" id='progressBarN2'></canvas>
+      </div>
+      <div>
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">แผนงาน</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">48,850 kVA</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="card card-statistics">
+          <div class="card-body" style="background-color: forestgreen;">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ผลการดำเนินการ D1-F4</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{kvaTotal|number}} kVA</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น {{kvaTotal/48850*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="card card-statistics">
+          <div class="card-body  bg-primary">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-3-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ผลการดำเนินการ D2-F4</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{kvaTotal-kvaD1Total |number}} kVA</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{(kvaTotal-kvaD1Total)/48850*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 grid-margin stretch-card">
+        <canvas id='progressBar'></canvas>
+      </div>
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 grid-margin stretch-card">
+        <canvas id='progressWorkCostBar'></canvas>
+      </div>
+
+      <div>
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ค่าใช้จ่ายหน้างานอนุมัติ</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{workCostPlnTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="card card-statistics">
+          <div class="card-body" style="background-color: forestgreen;">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ผลการเบิกจ่าย</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{workCostActTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{workCostActTotal/workCostPlnTotal*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 grid-margin stretch-card">
+        <canvas id='progressMatCostBar'></canvas>
+      </div>
+      <div>
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ค่าพัสดุอนุมัติ</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{matCostPlnTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="card card-statistics">
+          <div class="card-body" style="background-color: forestgreen;">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ผลการเบิกจ่าย</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{matCostActTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{matCostActTotal/matCostPlnTotal*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card style="margin-top: 20px;">
+  <mat-card-header>
+    <mat-card-title>รายงานการเบิกจ่ายค่าใช้จ่ายหน้างาน .TR สถานะวันที่ {{roicdate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+    <div class="row">
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 grid-margin stretch-card">
+        <canvas style="height: 100%;" id='trBarN2'></canvas>
+      </div>
+
+      <div>
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">เป้าการเบิกจ่าย</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">30 ล้านบาท</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="card card-statistics">
+          <div class="card-body" style="background-color: forestgreen;">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">ผลการเบิกงบ TR</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{workCostActTRTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{workCostActTRTotal/30e6*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="card card-statistics">
+          <div class="card-body bg-primary">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-3-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">รอโอนงบจากงาน BY</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{workCostActBYTotal/1e6|number}} ล้านบาท</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{workCostActBYTotal/30e6*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>กฟฟ. </mat-label>
+          <mat-select (selectionChange)="selectPea2($event)">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+              {{pea.peaCode +" "+pea.peaName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 grid-margin stretch-card">
+        <canvas id='trBar'></canvas>
+      </div>
+      <div class="col-md-3 ml-3">
+        <mat-form-field appearance="legacy">
+          <mat-label>ค้นหา</mat-label>
+          <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput (keyup)="applyFilter2($event.target.value)">
+        </mat-form-field>
+      </div>
+      <div class="table-responsive">
+        <table class="mat-elevation-z8 table" mat-table matSort #sort2="matSort" [dataSource]="dataSource2">
+
+          <ng-container matColumnDef="wbs">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>WBS</th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.wbs}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="jobName">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ชื่องาน </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.jobName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="jobStatus">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะระบบ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.jobStatus}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="userStatus">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะผู้ใช้ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.userStatus}}</td>
+          </ng-container>
+          <ng-container matColumnDef="workCostPln">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ค่าใช้จ่ายหน้างานอนุมัติ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.workCostPln*0.8|number:'1.0-2'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="workCostAct">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ค่าใช้จ่ายหน้างานเบิกจ่าย </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">{{jobRemain2.workCostAct|number:'1.0-2'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="percent">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % เบิกจ่ายค่าใช้จ่ายหน้างาน </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain2">
+              {{jobRemain2.workCostAct/(jobRemain2.workCostPln*0.8)*100|number:'1.0-2'}}</td>
+          </ng-container>
+
+          <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+          <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+
+        </table>
+        <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+-->
+<mat-card style="margin-top: 20px;">
+  <mat-card-header>
+    <mat-card-title>ข้อมูลรายละเอียดงานปรับปรุง สถานะวันที่ {{roicdate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3 ml-3">
+          <!---
+                    <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                      -->
+          <mat-form-field appearance="legacy">
+            <mat-label>ค้นหา</mat-label>
+            <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput (keyup)="applyFilter($event.target.value)">
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o" style="font-size:20px;color:blue"></i></button>
+        </div>
+
+      </div>
+      <div class="table-responsive">
+        <table class="mat-elevation-z8 table" mat-table matSort #sort="matSort" [dataSource]="dataSource">
+
+          <ng-container matColumnDef="wbs">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>WBS</th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.wbs}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="jobName">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ชื่องาน </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.jobName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="jobStatus">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะระบบ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.jobStatus}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="userStatus">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะผู้ใช้ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.userStatus}}</td>
+          </ng-container>
+          <ng-container matColumnDef="workCostPln">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ค่าใช้จ่ายหน้างานอนุมัติ </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.workCostPln|number:'1.0-2'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="workCostAct">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ค่าใช้จ่ายหน้างานเบิกจ่าย </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">{{jobRemain.workCostAct|number:'1.0-2'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="percent">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % เบิกจ่ายค่าใช้จ่ายหน้างาน </th>
+            <td class="table-lg" mat-cell *matCellDef="let jobRemain">
+              {{jobRemain.workCostAct/(jobRemain.workCostPln)*100|number:'1.0-2'}}</td>
+          </ng-container>
+
+          <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

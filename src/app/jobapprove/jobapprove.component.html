@@ -1,0 +1,378 @@
+<div class="row" *ngIf="peaCode != 'B00000'">
+  <h1 class="card-title">ไม่มีสิทธิ์ใช้งาน</h1>
+
+</div>
+
+<div *ngIf="peaCode == 'B00000'">
+  <div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+
+          <div class="col-md-12">
+
+            <mat-form-field>
+              <mat-label>งบ</mat-label>
+              <mat-select (selectionChange)="selectBudget($event)">
+                <mat-option *ngFor="let budjet of budjets" [value]="budjet.value">
+                  {{budjet.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-12">
+            <mat-form-field>
+              <mat-label>กฟฟ. </mat-label>
+              <mat-select (selectionChange)="selectPea($event)">
+                <mat-option *ngFor="let pea of peaname" [value]="[pea.peaEng,pea.peaCode]">
+                  {{pea.peaCode +" "+pea.peaName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="card card-statistics">
+            <div class="card-body bg-info">
+              <div class="clearfix">
+                <div class="float-left">
+                  <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+                </div>
+                <div class="float-right">
+                  <p class="mb-0 text-right wrfont">คชจ. หน้างาน คงเหลือ</p>
+                  <div class="fluid-container">
+                    <h3 class="font-weight-medium text-right mb-0 wrfont">
+                      {{(this.projectBudget-this.WorkCostApp)/1000000 | number}} ล้านบาท</h3>
+                  </div>
+                </div>
+              </div>
+              <p class="text-white mt-3 mb-0" style="font-size:120%;">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> อนุมัติแล้ว
+                {{this.WorkCostApp/1000000 | number}} ล้านบาท
+              </p>
+            </div>
+          </div>
+
+
+          <div class="card card-statistics">
+            <div class="card-body bg-success">
+              <div class="clearfix">
+                <div class="float-left">
+                  <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+                </div>
+                <div class="float-right">
+                  <p class="mb-0 text-right wrfont">คชจ. หน้างานอนุมัติครั้งนี้</p>
+                  <div class="fluid-container">
+                    <h3 class="font-weight-medium text-right mb-0 wrfont">{{this.WorkCost | number}} บาท</h3>
+                  </div>
+                </div>
+              </div>
+              <p class="text-white mt-3 mb-0" style="font-size:120%;">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> อนุมัติครั้งนี้
+                {{this.nWbs}}/{{this.totalWbs}} งาน
+              </p>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+
+
+
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 grid-margin stretch-card">
+      <div class="card card-statistics">
+        <div class="card-body">
+
+          <mat-form-field>
+            <mat-label>ชนิดข้อมูล</mat-label>
+            <mat-select (selectionChange)="selectDataType($event)">
+              <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.value">
+                {{dataType.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <canvas id='myPieChart'></canvas>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+  <!-----------------------------------Show job------------------------------------------------->
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4>งานที่ขออนุมัติ</h4>
+          <div class="form-group">
+
+            <div class="row">
+              <div class="col-md-9">
+                <!---
+                  <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    -->
+                <div class="col-md-4">
+                  <mat-form-field appearance="legacy">
+                    <mat-label>ค้นหาข้อมูล</mat-label>
+                    <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput
+                      (keyup)="applyFilter($event.target.value)">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field>
+                    <mat-label>ผลการอนุมัติ</mat-label>
+                    <mat-select (selectionChange)="selectApprove($event)">
+                      <mat-option *ngFor="let status of appStatus" [value]="status.value">
+                        {{status.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field>
+                  <input [(ngModel)]="projectName" matInput placeholder="ชื่องาน">
+                </mat-form-field>
+                <a target="_blank"
+                  href="http://172.30.212.148/psisservice/wpdf/wpdf.php?filter1={{selBudjet[0]}}&filter2={{selBudjet[1]}}&projectName={{projectName}}"><button
+                    class="btn btn-success mr-2">พิมพ์ใบสรุปงบ</button></a>
+                <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
+                    style="font-size:20px;color:blue"></i></button>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <!---->
+          <div class="table-responsive">
+            <table class="mat-elevation-z8" mat-table matSort #sort="matSort" [dataSource]="dataSource"
+              multiTemplateDataRows>
+
+              <ng-container matColumnDef="wbs">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> wbs </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq"> <a target="_blank" rel="noopener noreferrer"
+                    href={{URL+jobreq.filename}}>{{jobreq.wbs}}</a> </td>
+              </ng-container>
+
+              <ng-container matColumnDef="jobName">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่องาน </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq"><a target="_blank" rel="noopener noreferrer"
+                    href={{URL+jobreq.fileDocname}}> {{jobreq.jobName}}</a> </td>
+              </ng-container>
+              <ng-container matColumnDef="mv">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> MV </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq">{{jobreq.mv | number:'1.0-2' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="lv">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> LV </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq">{{jobreq.lv | number:'1.0-2'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="tr">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> TR </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq">{{jobreq.tr}}</td>
+              </ng-container>
+              <ng-container matColumnDef="causeName">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สาเหตุการดำเนินการ </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq">{{jobreq.causeName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="solveMet">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วิธีการแก้ไข </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq"> {{jobreq.solveMet}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="note">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq"> {{jobreq.note}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="workCostPln">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> คชจ.หน้างาน </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq"> {{jobreq.workCostPln | number}} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="del">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
+                <td class="table-lg" mat-cell *matCellDef="let jobreq">
+                  <div *ngIf="jobreq.status == 0"><button type="button" class="btn btn-success btn-fw btn-sm"
+                      (click)="selWbs(jobreq)"><i class="fa fa-plus-square"></i>อนุมัติ</button></div>
+                  <div *ngIf="jobreq.status == 1"><button type="button" class="btn btn-warning btn-fw btn-sm"
+                      (click)="delWbs(jobreq)"><i class="fa fa-minus-square"></i>ยกเลิก</button></div>
+                </td>
+              </ng-container>
+
+              <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+              <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let jobreq" [attr.colspan]="displayedColumns.length">
+                  <div class="example-element-detail"
+                    [@detailExpand]="jobreq == expandedElement ? 'expanded' : 'collapsed'">
+
+                    <div class="example-element-description">
+                      <div>User :{{jobreq.user}} &nbsp;&nbsp; PEA หม้อแปลง : <a target="_blank"
+                          href="http://172.30.212.148/transformer/Vmap.php?pea_no={{jobreq.peatr}}&submit=submit">{{jobreq.peatr}}</a>
+                        &nbsp;&nbsp;
+                        &nbsp;&nbsp; แรงดันต้นทาง : {{jobreq.vin}} V &nbsp;&nbsp; แรงดันปลายสาย : {{jobreq.vdrop}} V
+                        &nbsp;&nbsp; ระยะทางไกลสุดจากหม้อแปลง : {{jobreq.len}} เมตร &nbsp;&nbsp;
+                      </div>
+                      <div>
+                        โหลด : {{jobreq.loadTr}}% &nbsp;&nbsp; กระแสเฟส A : {{jobreq.ia}} A &nbsp;&nbsp; กระแสเฟส B :
+                        {{jobreq.ib}} A
+                        &nbsp;&nbsp; กระแสเฟส C : {{jobreq.ic}} A
+
+
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+
+              <tr mat-row *matRowDef="let jobreq; columns: displayedColumns;" class="example-element-row"
+                [class.example-expanded-row]="expandedElement === jobreq"
+                (click)="expandedElement = expandedElement === jobreq ? null : jobreq">
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+
+              <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+
+            </table>
+            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-----------------------------------Eng job------------------------------------------------->
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+            <h4>บันทึกการอนุมัติเปิดงาน</h4>
+
+
+
+            <mat-form-field>
+              <input name="appDoc" matInput placeholder="เลขที่บันทึก" ngModel required>
+            </mat-form-field>
+
+
+
+            <mat-form-field>
+              <input name="appNo" matInput placeholder="อนุมัติครั้งที่" ngModel required>
+            </mat-form-field>
+
+
+
+            <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2">บันทึก</button>
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">งานที่อนุมัติแล้ว</h4>
+
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field appearance="legacy">
+                <mat-label>ค้นหาข้อมูล</mat-label>
+                <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput
+                  (keyup)="applyFilter1($event.target.value)">
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              Dowload
+              <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
+                  style="font-size:20px;color:blue"></i></button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
+
+              <ng-container matColumnDef="wbs">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> wbs </th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.wbs}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="jobName">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่องาน </th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob">{{appJob.jobName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="mv">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงสูง (วงจร-กม.) </th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob">{{appJob.mv}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="lv">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงต่ำ (วงจร-กม.) </th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.lv}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="tr">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หม้อแปลง (kVA)</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.tr}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="totalcost">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>เงินลงทุนตามประมาณการ</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.totalcost | number}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="matCostInPln">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>พัสดุเข้างานอนุมัติ</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.matCostInPln | number}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="workCostPln">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>คชจ.หน้างานอนุมัติ</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.workCostPln| number}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="appNo">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>อนุมัติครั้งที่</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.appNo}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="appDoc">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>เลขที่บันทึก</th>
+                <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.appDoc}} </td>
+              </ng-container>
+              
+              <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+              <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+            </table>
+            <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- ปิด check B000-->

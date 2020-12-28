@@ -1,0 +1,357 @@
+<!-----------------------------------Table------------------------------------------------->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>งานสำรวจและนำเข้าเฟสมิเตอร์ กฟฟ. {{currentMatherPea}} สถานะวันที่
+      {{dataDate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="row">
+
+      <div class="col-md-6">
+
+        <mat-form-field>
+          <mat-label>เลือกข้อมูล</mat-label>
+          <mat-select (selectionChange)="selectData($event)">
+            <mat-option *ngFor="let budjet of DataType" [value]="budjet.value">
+              {{budjet.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>กฟฟ. </mat-label>
+          <mat-select (selectionChange)="selectPea($event)">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+              {{pea.peaCode +" "+pea.peaName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </div>
+    <div class="row">
+      <!--
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 grid-margin stretch-card">
+        <canvas id='progressLine'></canvas>
+      </div>
+      -->
+      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 grid-margin stretch-card">
+        <canvas id='progressBar'></canvas>
+      </div>
+      <div>
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">จำนวน{{dataLabel}}ทั้งหมด</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{Pln | number}} เครื่อง</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="card card-statistics">
+          <div class="card-body" style="background-color: forestgreen;">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">จำนวน{{dataLabel}}<BR>รอนำเข้าเฟสมิเตอร์ใน GIS</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{inpro | number}} เครื่อง</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น {{inpro/Pln*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="card card-statistics">
+          <div class="card-body  bg-primary">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-3-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">จำนวน{{dataLabel}}<BR>นำเข้าเฟสมิเตอร์ใน GIS</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{result |number}} เครื่อง</h3>
+                </div>
+              </div>
+              <p class="text-white mt-0 mb-0" style="font-size:120%">
+                <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น
+                {{(result)/Pln*100 | number}}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-top: 20px;">
+  <mat-card-header>
+    <mat-card-title>งานสำรวจและนำเข้าเฟสมิเตอร์ กฟฟ. {{currentPea}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!--
+    <mat-form-field>
+      <mat-label>เลือกข้อมูล</mat-label>
+      <mat-select (selectionChange)="selectData2($event)">
+        <mat-option *ngFor="let budjet of DataType2" [value]="budjet.value">
+          {{budjet.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    -->
+    <div class="row">
+      <!--
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card-body bg-info">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">หม้อแปลง 1 เฟส<BR>{{dataLabel}}รอนำเข้าเฟสมิเตอร์ใน GIS</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{PEA_TR6 | number}} เครื่อง</h3>
+                </div>
+              </div>
+            </div>
+            <p class="text-white mt-3 mb-0" style="font-size:120%">
+              <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น {{PEA_TR6/PEA_TR0*100 | number}}%
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">หม้อแปลง 3 เฟส<BR>{{dataLabel}}รอนำเข้าเฟสมิเตอร์ใน GIS</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{PEA_TR7 | number}} เครื่อง</h3>
+                </div>
+              </div>
+            </div>
+            <p class="text-white mt-3 mb-0" style="font-size:120%">
+              <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> คิดเป็น {{PEA_TR7/PEA_TR2*100 | number}}%
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card-body bg-primary">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi mdi-numeric-3-box text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="mb-0 text-right wrfont">{{dataLabel}}ทั้งหมด<BR>รอนำเข้าเฟสมิเตอร์ใน GIS </p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">{{PEA_TR6+PEA_TR7 | number}} เครื่อง</h3>
+                </div>
+              </div>
+            </div>
+            <p class="text-white mt-3 mb-0 " style="font-size:120%">
+              <i class="mdi mdi-alert-octagon  mr-1" aria-hidden="true"></i> คิดเป็น
+              {{(PEA_TR6+PEA_TR7)/PEA_TR4*100 | number}}%
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-info text-white" style="height: 100%;">
+            <p class="ml-1 mb-0 text-center ">ผลการนำเข้าเฟสมิเตอร์หม้อแปลง 1 เฟส</p>
+            <canvas id='myDonut1' style="width: 100%;"></canvas>
+            <p class="text-white mt-3 mb-0">
+              <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน{{dataLabel}} {{PEA_TR1 | number}} เครื่อง จาก
+              {{PEA_TR0 | number}} เครื่อง
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-success text-white" style="height: 100%;">
+            <p class="ml-1 mb-0 text-center ">ผลการนำเข้าเฟสมิเตอร์หม้อแปลง 3 เฟส</p>
+            <canvas id='myDonut3' style="width: 100%;"></canvas>
+            <p class="text-white mt-3 mb-0">
+              <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน{{dataLabel}} {{PEA_TR3 | number}} เครื่อง จาก
+              {{PEA_TR2 | number}} เครื่อง
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-primary text-white" style="height: 100%;">
+            <p class="ml-1 mb-0 text-center ">ผลการนำเข้าเฟสมิเตอร์หม้อแปลงทั้งหมด</p>
+            <canvas id='myDonut2' style="width: 100%;"></canvas>
+            <p class="text-white mt-3 mb-0">
+              <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน{{dataLabel}} {{PEA_TR5 | number}} เครื่อง จาก
+              {{PEA_TR4 | number}} เครื่อง
+            </p>
+          </div>
+        </div>
+      </div>
+ -->
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-3 ml-3">
+            <!---
+                    <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                      -->
+            <mat-form-field appearance="legacy">
+              <mat-label>ค้นหา</mat-label>
+              <input matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput (keyup)="applyFilter($event.target.value)">
+            </mat-form-field>
+          </div>
+
+
+          <div class="col-md-3">
+            <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
+                style="font-size:20px;color:blue"></i></button>
+          </div>
+
+        </div>
+
+        <table class="mat-elevation-z8 table" mat-table matSort [dataSource]="dataSource">
+
+          <ng-container matColumnDef="PEA_TR">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase"><a target="_blank"
+                href="http://172.30.212.148/transformer/Vmap.php?pea_no={{trphase.PEA_TR}}&submit=submit">
+                {{trphase.PEA_TR}} </a></td>
+          </ng-container>
+
+          <ng-container matColumnDef="location">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้ง</th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase">{{trphase.location}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Kva">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> kVA </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase">{{trphase.Kva}}</td>
+          </ng-container>
+          <ng-container matColumnDef="SUBTYPECOD">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> จำนวนเฟส </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase">{{trphase.SUBTYPECOD}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="Feeder">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ฟีดเดอร์ </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase"> {{trphase.Feeder}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nMeter">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> จำนวนมิเตอร์ </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase"> {{trphase.nMeter}} </td>
+          </ng-container>
+          <ng-container matColumnDef="nSMRT">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> nSMRT </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase"> {{trphase.nSMRT | number}} </td>
+          </ng-container>
+          <ng-container matColumnDef="peaName">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> กฟฟ. </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase"> {{trphase.peaName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานะงาน</th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase">
+
+              <mat-form-field>
+                <mat-label>{{trphase.status}}</mat-label>
+
+                <mat-select (selectionChange)="selectStatus($event)">
+
+                  <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trphase]">
+                    {{Status.value}}
+                  </mat-option>
+
+                </mat-select>
+
+              </mat-form-field>
+
+            </td>
+
+          </ng-container>
+
+          <ng-container matColumnDef="PEA_Meter">
+            <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
+            <td class="table-lg" mat-cell *matCellDef="let trphase">
+              <div class="text-success"><button type="button" class="btn btn-danger btn-fw btn-sm"
+                  (click)="getMtData(trphase.PEA_TR)">แสดงมิเตอร์</button></div>
+            </td>
+          </ng-container>
+
+          <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+      </div>
+
+
+    </div>
+
+    <div class="row" style="width: 100%;">
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">ข้อมูลมิเตอร์</h4>
+
+
+            <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
+                style="font-size:20px;color:blue"></i></button>
+
+            <div class="table-responsive">
+              <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
+
+                <ng-container matColumnDef="PEA_Meter">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA Meter </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata3"> {{meterdata3.PEA_Meter}}</td>
+                </ng-container>
+                <ng-container matColumnDef="PhaseMeterGis">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>เฟส มิเตอร์ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata3">{{meterdata3.PhaseMeterGis}}</td>
+                </ng-container>
+                <ng-container matColumnDef="LOCATION">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้งมิเตอร์ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata3">{{meterdata3.LOCATION}}</td>
+                </ng-container>
+                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+              </table>
+              <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>

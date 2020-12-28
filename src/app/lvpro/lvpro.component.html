@@ -1,0 +1,445 @@
+<app-loader></app-loader>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>รายงานแผนการปรับปรุงหม้อแปลงไฟฟ้าและระบบจำหน่ายแรงต่ำ จาก LDCad
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="row">
+
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>กฟฟ. </mat-label>
+          <mat-select (selectionChange)="selectPea($event)">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+              {{pea.peaCode +" "+pea.peaName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <mat-button-toggle-group style="border-radius: 20px;height: 80%;" value="1">
+        <mat-button-toggle (change)="onValChange($event.value)" value="2">แรงดันต่ำกว่า 200 V</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="1">โหลด80-100%</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="5">โหลดเกิน 100%</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="4">โหลดต่ำกว่า 30%</mat-button-toggle>
+        <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 25%</mat-button-toggle>
+      </mat-button-toggle-group>
+
+    </div>
+
+    <div class="row">
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
+        <apx-chart [series]="chartOptions1.series" [chart]="chartOptions1.chart"
+          [plotOptions]="chartOptions1.plotOptions" [labels]="chartOptions1.labels" [stroke]="chartOptions1.stroke"
+          [fill]="chartOptions1.fill"></apx-chart>
+
+        <div class="card card-statistics mt-5">
+          <div class="card-body bg-success">
+            <div class="clearfix">
+              <div class="float-left">
+                <i class="mdi  mdi-chart-line text-white icon-lg"></i>
+              </div>
+              <div class="float-right">
+                <p class="font-weight-medium text-right mb-0 wrfont" style="font-size:x-large;">หม้อแปลงทั้งหมด
+                  {{TrPlnTal | number}} เครื่อง</p>
+                <div class="fluid-container">
+                  <h3 class="font-weight-medium text-right mb-0 wrfont">มี WBS/ใบสั่ง {{TrTotal | number}} เครื่อง</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+        <div>
+          <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
+            [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
+            [tooltip]="chartOptions2.tooltip" [xaxis]="chartOptions2.xaxis" [yaxis]="chartOptions2.yaxis"
+            [stroke]="chartOptions2.stroke"></apx-chart>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<!-----------------------------------Table------------------------------------------------->
+
+
+<div class="row">
+  <!-- <div class="row">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+      <div class="card card-statistics">
+        <div class="card bg-info text-white">
+          <p class="ml-1 mb-0 text-center ">แรงดัน<200 และโหลดเกิน 80%</p>
+                <canvas id='myDonut'></canvas>
+                <p class="text-white mt-3 mb-0">
+                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR1 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
+                </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+      <div class="card card-statistics">
+        <div class="card bg-success text-white">
+            <p class="ml-1 mb-0 text-center ">แรงดัน<200 Volt</p>
+              <canvas id='myDonut200'></canvas>
+              <p class="text-white mt-3 mb-0">
+                <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR2 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
+              </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+      <div class="card card-statistics">
+        <div class="card bg-primary text-white">
+            <p class="ml-1 mb-0 text-center ">โหลดเกิน 80%</p>
+              <canvas id='myDonut80' ></canvas>
+              <p class="text-white mt-3 mb-0">
+                <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR3 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
+              </p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+
+  <!-- <div class="row">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-info text-white">
+            <p class="ml-1 mb-0 text-center ">แรงดัน<200 Volt และโหลดเกิน 80% ที่มี WBS</p>
+                  <canvas id='myDonutWBS4'></canvas>
+                  <p class="text-white mt-3 mb-0">
+                    <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS4 | number}} งาน จาก {{PEA_TR1 | number}} เครื่อง
+                  </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-success text-white">
+              <p class="ml-1 mb-0 text-center ">แรงดัน<200 ที่มี WBS</p>
+                <canvas id='myDonutWBS5'></canvas>
+                <p class="text-white mt-3 mb-0">
+                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS5 | number}} งาน จาก {{PEA_TR2 | number}} เครื่อง
+                </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
+        <div class="card card-statistics">
+          <div class="card bg-primary text-white">
+              <p class="ml-1 mb-0 text-center ">โหลดเกิน 80% ที่มี WBS</p>
+                <canvas id='myDonutWBS6'></canvas>
+                <p class="text-white mt-3 mb-0">
+                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS6 | number}} งาน จาก {{PEA_TR3 | number}} เครื่อง
+                </p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+
+          <div class="row">
+            <div class="col-md-3">
+              <!---
+                <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                  -->
+              <mat-form-field appearance="legacy">
+                <mat-label>ค้นหา</mat-label>
+                <input matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput (keyup)="applyFilter($event.target.value)">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+              <mat-form-field appearance="legacy">
+                <mat-label>ระบุเงื่อนไข</mat-label>
+                <mat-select (selectionChange)="selectCondition($event)">
+                  <mat-option *ngFor="let Condition of Conditions" [value]="[Condition.value]">
+                    {{Condition.viewvalue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!--
+              <div class="col-md-3">
+                    <a target="_blank" href="http://127.0.0.1/psisservice/wpdf/wpdf.php?filter1={{selBudjet[0]}}&filter2={{selBudjet[1]}}"><button class="btn btn-success mr-2">พิมพ์ใบสรุปงบ</button></a>  
+              </div>
+              -->
+
+            <div class="col-md-3">
+              <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
+                  style="font-size:20px;color:blue"></i></button>
+            </div>
+
+          </div>
+
+          <table class="mat-elevation-z8" mat-table matSort [dataSource]="dataSource">
+
+            <ng-container matColumnDef="PEA_TR">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PEA_TR}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Location">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้ง</th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.Location}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="PLoadTOT">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % Load </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PLoadTOT | number:'1.2-2'}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="minV">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงดันที่ปลายสาย </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.minV | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Ub">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> %UB </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="wbs">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">
+                <div *ngIf="checkAoj(trdata.aoj)">
+                  <mat-form-field>
+                    <input value={{trdata.wbs}} name="wbs" matInput placeholder="ใส่หมายเลข WBS/ใบสั่ง"
+                      (change)="applyWBS([$event.target.value,trdata])">
+                  </mat-form-field>
+                </div>
+                <div *ngIf="!checkAoj(trdata.aoj)">
+                  <mat-label>{{trdata.wbs}}</mat-label>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="jobStatus">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="RLoad">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>โหลดที่วัดได้จริง</th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">
+                <div *ngIf="checkAoj(trdata.aoj)">
+                  <mat-form-field style="width:80px !important">
+                    <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="ใส่โหลดที่วัดได้จริง"
+                      (change)="applyRLoad([$event.target.value,trdata])">
+                  </mat-form-field>
+                </div>
+                <div *ngIf="!checkAoj(trdata.aoj)">
+                  <mat-label>{{trdata.RLoad}}</mat-label>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="RVoltage">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดันที่วัดได้จริง</th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">
+                <div *ngIf="checkAoj(trdata.aoj)">
+                  <mat-form-field style="width:80px !important">
+                    <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="ใส่โหลดที่วัดได้จริง"
+                      (change)="applyRVoltage([$event.target.value,trdata])">
+                  </mat-form-field>
+                </div>
+                <div *ngIf="!checkAoj(trdata.aoj)">
+                  <mat-label>{{trdata.RVoltage}}</mat-label>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Status">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">
+                <div *ngIf="checkAoj(trdata.aoj)">
+                  <mat-form-field>
+                    <mat-label>{{trdata.Status}}</mat-label>
+                    <mat-select (selectionChange)="selectStatus($event)">
+                      <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
+                        {{Status.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div *ngIf="!checkAoj(trdata.aoj)">
+
+                  <mat-label>{{trdata.Status}}</mat-label>
+
+                </div>
+              </td>
+
+            </ng-container>
+
+            <ng-container matColumnDef="rundate">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> เดือนที่รัน LDCad </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.rundate | date: 'MM/yyyy'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="workstatus">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata">
+                <div *ngIf="checkwbs(trdata.wbs)==1"><label class="badge badge-danger"
+                    style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
+              </td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="PEA_Meter">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
+              <td class="table-lg" mat-cell *matCellDef="let trdata"> <div class="text-success"><button type="button" class="btn btn-danger btn-fw btn-sm" (click)="getMtData(trdata.PEA_TR)">แสดงมิเตอร์</button></div></td>
+              </ng-container> -->
+
+            <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- 
+<div class="row">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">ข้อมูลมิเตอร์</h4>
+               
+        <mat-form-field appearance="legacy">
+            <mat-label>ค้นหาข้อมูล</mat-label>
+            <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput (keyup)="applyFilter1($event.target.value)">
+          </mat-form-field>
+                   
+            <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o" style="font-size:20px;color:blue"></i></button> 
+           
+        <div class="table-responsive">
+            <table class="mat-elevation-z8" mat-table  matSort #sort1="matSort" [dataSource]="dataSource1">      
+              <ng-container matColumnDef="Feeder">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> Feeder </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">  {{meterdata.Feeder}}</td>
+                </ng-container>
+              <ng-container matColumnDef="PEA_Meter">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA Meter </th>
+              <td class="table-lg" mat-cell *matCellDef="let meterdata">  {{meterdata.PEA_Meter}}</td>
+              </ng-container>
+              <ng-container matColumnDef="CustName">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่อผู้ใช้ไฟฟ้า </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.CustName}}</td>
+              </ng-container>
+              <ng-container matColumnDef="rate">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ประเภทผู้ใช้ไฟฟ้า </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.rate}}</td>
+              </ng-container>
+              <ng-container matColumnDef="rateMeter">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ขนาดมิเตอร์ </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.rateMeter}}</td>
+              </ng-container>
+              <ng-container matColumnDef="kWh">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หน่วยการใช้ไฟฟ้า </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.kWh}}</td>
+              </ng-container>
+              <ng-container matColumnDef="SUBTYPECOD">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชนิดเฟสมิเตอร์ </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.SUBTYPECOD}}</td>
+              </ng-container>
+              <ng-container matColumnDef="Line_Type">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชนิดเฟสสายไฟ </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.Line_Type}}</td>
+              </ng-container>
+              <ng-container matColumnDef="Voltage">
+                <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดัน </th>
+                <td class="table-lg" mat-cell *matCellDef="let meterdata">{{meterdata.Voltage}}</td>
+              </ng-container>
+              
+
+              <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+              <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+            </table>
+          <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
+
+<!-- <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">ค้นหามิเตอร์ / ชื่อผู้ใช้ไฟฟ้า</h4>     
+          <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-3">
+                <input type="text" class="form-control" name="PEAMeter" placeholder="ระบุหมายเลขมิเตอร์หรือชื่อผู้ใช้ไฟฟ้า" ngModel> 
+              </div>
+              
+                <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2">ค้นหา</button>
+             
+            </div>
+          </form>
+        
+            
+             
+        <div class="table-responsive">
+              <table class="mat-elevation-z8" mat-table  matSort #sort2="matSort" [dataSource]="dataSource2"> 
+                <ng-container matColumnDef="PEA_TR">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> หม้อแปลง </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2"> <a target="_blank" href="http://172.30.212.148/transformer/Vmap.php?pea_no={{meterdata2.PEA_TR}}&submit=submit">{{meterdata2.PEA_TR}}</a></td>
+                </ng-container>     
+                <ng-container matColumnDef="Feeder">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> Feeder </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">  {{meterdata2.Feeder}}</td>
+                </ng-container>
+                <ng-container matColumnDef="PEA_Meter">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA Meter </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">  {{meterdata2.PEA_Meter}}</td>
+                </ng-container>
+                <ng-container matColumnDef="CustName">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่อผู้ใช้ไฟฟ้า </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.CustName}}</td>
+                </ng-container>
+                <ng-container matColumnDef="rate">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ประเภทผู้ใช้ไฟฟ้า </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.rate}}</td>
+                </ng-container>
+                <ng-container matColumnDef="rateMeter">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ขนาดมิเตอร์ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.rateMeter}}</td>
+                </ng-container>
+                <ng-container matColumnDef="kWh">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หน่วยการใช้ไฟฟ้า </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.kWh}}</td>
+                </ng-container>
+                <ng-container matColumnDef="SUBTYPECOD">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชนิดเฟสมิเตอร์ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.SUBTYPECOD}}</td>
+                </ng-container>
+                <ng-container matColumnDef="Line_Type">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชนิดเฟสสายไฟ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.Line_Type}}</td>
+                </ng-container>
+                <ng-container matColumnDef="Voltage">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดัน </th>
+                  <td class="table-lg" mat-cell *matCellDef="let meterdata2">{{meterdata2.Voltage}}</td>
+                </ng-container>
+
+  
+                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+              </table>
+            <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  
+</div> -->

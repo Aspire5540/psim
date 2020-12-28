@@ -1,0 +1,616 @@
+<!------------------------------------Project summary Start------------------------------------------------->
+<!--
+<div class="row">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+    <div class="card card-statistics">
+      <div class="card-body bg-info">
+        <div class="clearfix">
+          <div class="float-left">
+            <i class="mdi mdi-numeric-1-box text-white icon-lg"></i>
+          </div>
+          <div class="float-right">
+            <p class="mb-0 text-right wrfont">คพจ1.4 คงค้าง</p>
+            <div class="fluid-container">
+              <h3 class="font-weight-medium text-right mb-0 wrfont">{{nwbsPTDD}} งาน</h3>
+            </div>
+          </div>
+        </div>
+        <p class="text-white mt-3 mb-0">
+          <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> ใช้ คชจ. หน้างาน {{workCostPerPTDD | number}}%
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+    <div class="card card-statistics">
+      <div class="card-body bg-success">
+        <div class="clearfix">
+          <div class="float-left">
+            <i class="mdi mdi-numeric-2-box text-white icon-lg"></i>
+          </div>
+          <div class="float-right">
+            <p class="mb-0 text-right wrfont">I.BY คงค้าง</p>
+            <div class="fluid-container">
+              <h3 class="font-weight-medium text-right mb-0 wrfont">{{nwbsBY}} งาน</h3>
+            </div>
+          </div>
+        </div>
+        <p class="text-white mt-3 mb-0">
+          <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> ใช้ คชจ. หน้างาน {{workCostPerBY | number}}%
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+    <div class="card card-statistics">
+      <div class="card-body bg-primary">
+        <div class="clearfix">
+          <div class="float-left">
+            <i class="mdi mdi-numeric-3-box text-white icon-lg"></i>
+          </div>
+          <div class="float-right">
+            <p class="mb-0 text-right wrfont">I.MR,I.41 คงค้าง</p>
+            <div class="fluid-container">
+              <h3 class="font-weight-medium text-right mb-0 wrfont">{{nwbsMR}} งาน</h3>
+            </div>
+          </div>
+        </div>
+        <p class="text-white mt-3 mb-0">
+          <i class="mdi mdi-alert-octagon  mr-1" aria-hidden="true"></i> ใช้ คชจ. หน้างาน {{workCostPerMR | number}}%
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+    <div class="card card-statistics">
+      <div class="card-body bg-danger">
+        <div class="clearfix">
+          <div class="float-left">
+            <i class="mdi mdi-numeric-4-box text-white icon-lg"></i>
+          </div>
+          <div class="float-right">
+            <p class="mb-0 text-right wrfont">คงค้างรวม</p>
+            <div class="fluid-container">
+              <h3 class="font-weight-medium text-right mb-0 wrfont">200 งาน</h3>
+            </div>
+          </div>
+        </div>
+        <p class="text-white mt-3 mb-0">
+          <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> ใช้ คชจ. หน้างาน 65%
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+      <div class="card card-statistics">
+        <div class="card" style="background-color:#9e2625;">
+            <p class="mb-0 text-left text-white ">%เบิก คชจ. หน้างานรวม</p>
+              <canvas id='myDonut'></canvas>
+          </div>
+      </div>
+  </div>
+</div>
+-->
+<!------------------------------------Project summary end------------------------------------------------->
+
+
+
+<app-loader></app-loader>
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+
+        <h1 class="card-title"> ของบประมาณงานปรับปรุงระบบจำหน่ายและงานย้ายแนว</h1>
+
+        <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+          <p class="card-description">
+            รายละเอียดงาน
+          </p>
+
+          <!------------------------------------ROW------------------------------------------------->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label  input-lg">ประเภทงาน</label>
+                <div class="col-sm-4">
+                  <div class="form-radio">
+                    <label class="form-check-label  input-lg">
+                      <input type="radio" class="form-check-input" name="projectType" id="membershipRadios1"
+                        value="impPro" (change)="chgProject()" ngModel required>
+                      งานปรับปรุงระบบไฟฟ้า
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <div class="form-radio">
+                    <label class="form-check-label  input-lg">
+                      <input type="radio" class="form-check-input" name="projectType" id="membershipRadios2"
+                        value="movePole" (change)="chgProject()" ngModel required>
+                      งานย้ายแนว
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label input-lg">บันทึกเลขที่</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control input-lg" name="docName" ngModel required>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-----------------------------END------------------------------------------------>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label input-lg">WBS</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control input-lg" name="wbs" (change)="wbsChange()" ngModel required>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label input-lg">ชื่องาน</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control input-lg" name="jobName" ngModel required>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-----------------------------END------------------------------------------------>
+          <!------------------------------------ROW------------------------------------------>
+          <div class="row">
+
+
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">สาเหตุ</label>
+                <div class="col-sm-9">
+                  <select class="form-control form-control-sm  input-lg" name="causeName" ngModel>
+                    <option value="" disabled>สาเหตุการดำเนินการ</option>
+                    <option *ngFor="let causeName of causeNames" [ngValue]="causeName">
+                      {{ causeName }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3" *ngIf="show">
+
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">การแก้ไข</label>
+                <div class="col-sm-9">
+                  <select class="form-control form-control-sm  input-lg" name="solveMet" ngModel>
+                    <option value="" disabled>วิธีการแก้ไข</option>
+                    <option *ngFor="let solveMet of solveMets" [ngValue]="solveMet">
+                      {{ solveMet }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">หมายเหตุ</label>
+                <div class="col-sm-9">
+                  <select class="form-control form-control-sm  input-lg" name="note" ngModel>
+                    <option value="" disabled>หมายเหตุ</option>
+                    <option *ngFor="let note of notes" [ngValue]="note">
+                      {{ note }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-9 col-form-label  input-lg">ระยะเวลาดำเนินการ</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="nday" placeholder="จำนวนวัน" ngModel>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-----------------------------END------------------------------------------------>
+
+          <div class="row">
+
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">แรงสูง</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control form-control-warning input-lg" name="mv" placeholder="วงจร-กม"
+                    ngModel>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">หม้อแปลง</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="tr" placeholder="kVA" ngModel>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group row">
+                <label class="col-sm-6 col-form-label  input-lg">แรงต่ำ</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control  input-lg" name="lv" placeholder="วงจร-กม" ngModel>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-----------------------------END------------------------------------------------>
+          <div *ngIf="show" class="mb-3">
+            <p>ระบุข้อมูลหม้อแปลงที่ดำเนินการแก้ไข</p>
+          </div>
+          <div *ngIf="show" class="row">
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="peatr">PEA หม้อแปลง</label>
+                <input type="text" class="form-control  input-lg" name="peatr" id="peatr"
+                  (change)="trChange($event.target.value)" placeholder="00-000000" ngModel>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="kva">ขนาดหม้อแปลง</label>
+                <input type="text" class="form-control  input-lg" name="kva" (change)="trChange($event.target.value)"
+                  id="kva" placeholder="kVA" ngModel>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="vin">แรงดันต้นทาง</label>
+                <input type="text" class="form-control  input-lg" name="vin" placeholder="โวลต์" id="vin" ngModel>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="vdrop">แรงดันปลายสาย</label>
+                <input type="text" class="form-control  input-lg" name="vdrop" placeholder="โวลต์" id="vdrop" ngModel>
+              </div>
+            </div>
+            <div *ngIf="ftr" class="row">
+              <p class="text-primary input-lg">แรงดันปลายสาย {{minV}} โวลต์ | โหลดหม้อแปลง {{trLoad}}% </p>
+            </div>
+          </div>
+          <!-----------------------------ROW----------------------------------------------->
+
+          <div *ngIf="show" class="row">
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="loadTr">%โหลดหม้อแปลง</label>
+                <input type="text" class="form-control  input-lg" name="loadTr" placeholder="%" id="loadTr" ngModel>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="col-sm-8">
+                <label for="trTap">TAP หม้อแปลง</label>
+                <input type="text" class="form-control  input-lg" name="trTap" id="trTap" placeholder="TAP1,2,3,4,5"
+                  ngModel>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="col-sm-12">
+                <label for="len">ระยะทางไกลสุดจากหม้อแปลง</label>
+                <input type="text" class="form-control  input-lg" name="len" id="len" placeholder="เมตร" ngModel>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="show" class="row">
+            <div class="col-md-3">
+              <div class="col-sm-12">
+                <label for="ia">กรแสเฟส A แต่ละฟีดเดอร์</label>
+                <input type="text" class="form-control  input-lg" name="ia" placeholder="F1,F2,F3,F4" id="ia" ngModel>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="col-sm-12">
+                <label for="ib">กรแสเฟส B แต่ละฟีดเดอร์</label>
+                <input type="text" class="form-control  input-lg" name="ib" id="ib" placeholder="F1,F2,F3,F4" ngModel>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="col-sm-12">
+                <label for="ic">กรแสเฟส C แต่ละฟีดเดอร์</label>
+                <input type="text" class="form-control  input-lg" name="ic" id="ic" placeholder="F1,F2,F3,F4" ngModel>
+              </div>
+            </div>
+          </div>
+          <!-----------------------------END------------------------------------------------>
+          <div class="row">
+            <div class="col-md-12 row">
+              <div class="col-md-12 row">
+                <div class="form-group" *ngIf="chgWbs">
+                  <label class="input-lg" for="fileDocname">1.เลือกไฟล์อนุมัติประมาณการ</label>
+                  <input type="file" id="fileDocname" name="fileDocname" (change)="handleFileDoc($event)" ngModel
+                    required>
+                  <label class="input-lg"> {{uploadDocResponse}} </label>
+
+                </div>
+              </div>
+              <div class="col-md-12 row">
+                <div class="form-group" *ngIf="chgWbs">
+                  <label class="input-lg" for="file">2.เลือกไฟล์แผนผัง</label>
+                  <input type="file" id="file" name="filename" (change)="handleFileInput($event)" ngModel required>
+                  <label class="input-lg"> {{uploadResponse}} </label>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 mt-3">
+              <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4>งานที่ขออนุมัติเปิดงาน</h4>
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-label>งบ</mat-label>
+              <mat-select (selectionChange)="selectBudget2($event)">
+                <mat-option *ngFor="let budjet of budjets" [value]="budjet.value">
+                  {{budjet.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-label>เลือกสถานะงาน</mat-label>
+              <mat-select (selectionChange)="selectApprove($event)">
+                <mat-option *ngFor="let status of appStatus" [value]="status.value">
+                  {{status.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="legacy">
+              <mat-label>ค้นหาข้อมูล</mat-label>
+              <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput
+                (keyup)="applyFilter($event.target.value)">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            Dowload
+            <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
+                style="font-size:20px;color:blue"></i></button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="mat-elevation-z8" mat-table matSort #sort="matSort" [dataSource]="dataSource">
+
+            <ng-container matColumnDef="wbs">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> wbs </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata"> <a target="_blank" rel="noopener noreferrer"
+                  href={{URL+wbsdata.filename}}> {{wbsdata.wbs}} </a></td>
+            </ng-container>
+
+            <ng-container matColumnDef="jobName">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่องาน </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata"><a target="_blank" rel="noopener noreferrer"
+                  href={{URL+wbsdata.fileDocname}}> {{wbsdata.jobName}} </a></td>
+            </ng-container>
+
+            <ng-container matColumnDef="causeName">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สาเหตุการดำเนินการ </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <mat-form-field style="width: 80%;">
+                  <mat-label>{{wbsdata.causeName}}</mat-label>
+                  <mat-select (selectionChange)="selectStatus1($event)">
+                    <div
+                      *ngIf="(wbsdata['projectType'] == 'impPro' && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                      <mat-option *ngFor="let causeName of causeNamesIm" [value]="[causeName,wbsdata.wbs]">
+                        {{causeName}}
+                      </mat-option>
+                    </div>
+                    <div
+                      *ngIf="(wbsdata['projectType'] == 'movePole' && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                      <mat-option *ngFor="let causeName of causeNamesPole" [value]="[causeName,wbsdata.wbs]">
+                        {{causeName}}
+                      </mat-option>
+                    </div>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="solveMet">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วิธีการแก้ไข </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <mat-form-field style="width: 80%;">
+                  <mat-label>{{wbsdata.solveMet}}</mat-label>
+                  <mat-select (selectionChange)="selectStatus2($event)">
+                    <div
+                      *ngIf="(wbsdata['projectType'] == 'impPro' && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                      <mat-option *ngFor="let solveMet of solveMetsIm" [value]="[solveMet,wbsdata.wbs]">
+                        {{solveMet}}
+                      </mat-option>
+                    </div>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="note">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <mat-form-field style="width: 80%; padding: 0px;margin: 0px;">
+                  <mat-label>{{wbsdata.note}}</mat-label>
+                  <mat-select (selectionChange)="selectStatus3($event)">
+                    <div
+                      *ngIf="(wbsdata['projectType'] == 'impPro' && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                      <mat-option *ngFor="let note of notes" [value]="[note,wbsdata.wbs]">
+                        {{note}}
+                      </mat-option>
+                    </div>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <div *ngIf="wbsdata['status'] == 1"><label class="badge badge-warning"
+                    style="font-size: small;">กำลังดำเนินการ</label> </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="del">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <div *ngIf="(wbsdata['status'] != 1 && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                  <button class="btn btn-danger" mat-raised-button (click)="openDialog(wbsdata,1)">ลบ</button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rename">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <div *ngIf="(wbsdata['status'] != 1 && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                  <button class="btn btn-primary" mat-raised-button (click)="openDialog(wbsdata,2)">WBS</button>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="reTr">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+              <td class="table-lg" mat-cell *matCellDef="let wbsdata">
+                <div *ngIf="(wbsdata['status'] != 1 && wbsdata['peaCode'] == userPeaCode) || userPeaCode=='B000'">
+                  <button class="btn btn-primary" mat-raised-button (click)="openDialog(wbsdata,3)">TR</button>
+                </div>
+              </td>
+            </ng-container>
+            <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!---แสดงรายชืองานที่อนุมัติ-->
+<div class="row">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">งานที่อนุมัติแล้ว</h4>
+
+        <div class="row">
+          <div class="col-md-3">
+            <mat-form-field>
+              <mat-label>งบ</mat-label>
+              <mat-select (selectionChange)="selectBudget($event)">
+                <mat-option *ngFor="let budjet of budjets" [value]="budjet.value">
+                  {{budjet.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="legacy">
+              <mat-label>ค้นหาข้อมูล</mat-label>
+              <input matInput placeholder="ระบุข้อมูลที่ต้องการค้นหา" matInput
+                (keyup)="applyFilter1($event.target.value)">
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            Dowload
+            <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
+                style="font-size:20px;color:blue"></i></button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
+
+            <ng-container matColumnDef="wbs">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> wbs </th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.wbs}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="jobName">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>ชื่องาน </th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob">{{appJob.jobName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="mv">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงสูง (วงจร-กม.) </th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob">{{appJob.mv}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="lv">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงต่ำ (วงจร-กม.) </th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.lv}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tr">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หม้อแปลง (kVA)</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.tr}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalcost">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>เงินลงทุนตามประมาณการ</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.totalcost | number}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="matCostInPln">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>พัสดุเข้างานอนุมัติ</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.matCostInPln | number}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="workCostPln">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>คชจ.หน้างานอนุมัติ</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.workCostPln| number}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="appNo">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>อนุมัติครั้งที่</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.appNo}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="appDoc">
+              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>เลขที่บันทึก</th>
+              <td class="table-lg" mat-cell *matCellDef="let appJob"> {{appJob.appDoc}} </td>
+            </ng-container>
+
+            <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+            <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+          </table>
+          <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

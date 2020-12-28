@@ -1,0 +1,292 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>งานละเมิดทรัพย์สินของ กฟภ. <h4>บริเวณ{{PlaceDamage}} เมื่อวันที่ {{changeFormat()}}</h4>
+        </mat-card-title>
+        <mat-slide-toggle class="example-margin" [(ngModel)]="checked" name="checked">
+            <div *ngIf="checked">ซ่อนรายละเอียด</div>
+            <div *ngIf="!checked">แสดงรายละเอียด</div>
+        </mat-slide-toggle>
+
+    </mat-card-header>
+    <form #f="ngForm" (ngSubmit)="onSubmit()">
+        <div *ngIf="checked">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-md-8">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>เปิดงาน</mat-label>
+                            <mat-select (selectionChange)="selectJob($event)" name="selectEvt" ngModel>
+                                <mat-option *ngFor="let list of joblist" [value]="list.value">
+                                    {{list.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" mat-mini-fab color="accent" (click)="newJob()">+</button>
+
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" mat-raised-button color="primary"
+                            (click)="openDialog('',2)">ลบงาน</button>
+                    </div>
+                    <div class="row col-md-6">
+                        <div class="col-md-6">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>เหตุเกิดเมื่อ</mat-label>
+                                <input matInput [matDatepicker]="picker" name="DateDamge" [(ngModel)]="DateDamge"
+                                    ngModel required>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>เวลา</mat-label>
+                                <input matInput name="TimeDamge" [(ngModel)]="TimeDamge" ngModel required>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>สถานที่เกิดเหตุ</mat-label>
+                                <textarea matInput name="PlaceDamage" [(ngModel)]="PlaceDamage" ngModel
+                                    required></textarea>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>หมายเลขเบียนรถยนต์</mat-label>
+                                <input matInput name="PlateNum" [(ngModel)]="PlateNum" ngModel>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-8">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ชื่อ-นามสกุล ผู้ขับขี่</mat-label>
+                                <input matInput name="Name" [(ngModel)]="Name" ngModel>
+                            </mat-form-field>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>หมายเลขบัตรประชาชน</mat-label>
+                                <input matInput name="IdNum" [(ngModel)]="IdNum" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>เบอร์โทรศัพท์</mat-label>
+                                <input matInput name="tel1" [(ngModel)]="tel1" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ที่อยู่ตามบัตร</mat-label>
+                                <textarea matInput name="address" [(ngModel)]="address" ngModel></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-8">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ชื่อ/บริษัท เจ้าของรถยนต์</mat-label>
+                                <input matInput name="carOwnName" [(ngModel)]="carOwnName" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>เบอร์โทรศัพท์</mat-label>
+                                <input matInput name="tel2" [(ngModel)]="tel2" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ที่อยู่ตามบัตร</mat-label>
+                                <textarea matInput name="carAddress" [(ngModel)]="carAddress" ngModel></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row col-md-6">
+                        <div class="col-md-6"></div>
+
+
+                        <div class="col-md-8">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ชื่อ/บริษัท ประกันภัย</mat-label>
+                                <input matInput name="InsCom" [(ngModel)]="InsCom" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>เบอร์โทรศัพท์</mat-label>
+                                <input matInput name="tel3" [(ngModel)]="tel3" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-12">
+                            <p class="example-h1">ผู้ลงนามในหนังสือรับสภาพหนี้</p>
+                            <mat-radio-group name="debt" [(ngModel)]="debt" ngModel>
+                                <mat-radio-button class="example-margin" value="1">ผู้ขับขี่</mat-radio-button>
+                                <mat-radio-button class="example-margin" value="2">เจ้าของรถยนต์</mat-radio-button>
+                                <mat-radio-button class="example-margin" value="3">ไม่ยินยอม</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="col-md-12">
+                            <p class="example-h1">การแจ้งความร้องทุกข์กับเจ้าหน้าที่ตำรวจ</p>
+                            <mat-radio-group [(ngModel)]="police" name="police" ngModel>
+                                <mat-radio-button class="example-margin" value="1">แจ้งความเป็นหลักฐาน
+                                </mat-radio-button>
+                                <mat-radio-button class="example-margin" value="2">แจ้งความเป็นคดี</mat-radio-button>
+                                <div *ngIf="police==2">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>แจ้งความเป็นคดีเนื่องจาก</mat-label>
+                                        <input matInput name="policeNote" [(ngModel)]="policeNote" ngModel>
+                                    </mat-form-field>
+                                </div>
+                            </mat-radio-group>
+                        </div>
+                        <div class="col-md-12">
+                            กรณีรถยนต์เกี่ยวสายสื่อสารทำให้เกิดความเสียหายกับระบบจำหน่าย</div>
+
+                        <div class="col-md-8">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ชื่อ/บริษัท เจ้าของสายสื่อสาร</mat-label>
+                                <input matInput name="teleName" [(ngModel)]="teleName" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>ความสูง</mat-label>
+                                <input matInput name="teleHigh" [(ngModel)]="teleHigh" ngModel>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>หมายเลขใบสั่ง</mat-label>
+                                <input matInput name="orderN" [(ngModel)]="orderN" ngModel>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button type="submit" [disabled]="!f.valid" mat-raised-button color="primary"> บันทึกข้อมูล</button>
+                <button type="button" mat-raised-button color="primary" [disabled]="!onOpen" (click)="report()">
+                    พิมพ์รายงาน</button>
+            </mat-card-actions>
+        </div>
+    </form>
+</mat-card>
+<mat-card class="mt-3">
+    <mat-card-header>
+        <mat-card-title>รายละเอียดทรัพย์สินที่เสียหาย
+        </mat-card-title>
+    </mat-card-header>
+    <form #fdevice="ngForm" (ngSubmit)="newdevice()">
+        <mat-card-content>
+            <div class="row" *ngIf="onOpen">
+                <div class="col-md-12">
+                    <mat-form-field>
+                        <mat-label>เลือกประเภทพัสดุ</mat-label>
+                        <mat-select [(ngModel)]="selectType" name="selectType" (selectionChange)="SelectType()">
+                            <mat-option *ngFor="let Type of deviceType" [value]="Type.value">
+                                {{Type.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-8">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>เลือกพัสดุ</mat-label>
+                        <input matInput placeholder="ระบุเพื่อกรองพัสดุ" aria-label="State" [matAutocomplete]="auto"
+                            [formControl]="control" ngModel required>
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let device of filteredDevice | async" [value]="device">
+                                {{device}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-1">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>จำนวน</mat-label>
+                        <input matInput [(ngModel)]="DeviceQ" name="DeviceQ" placeholder="ระบุจำนวนพัสดุ" ngModel
+                            required>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="selectType=='reuse'" class="col-md-2">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>ค่าซ่อมพัสดุ</mat-label>
+                        <input matInput [(ngModel)]="fixPrice" name="fixPrice" placeholder="ระบุค่าซ่อมพัสดุ" ngModel
+                            required>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" [disabled]="!fdevice.valid" mat-mini-fab color="accent">+</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="mat-elevation-z8 table" mat-table matSort #sort="matSort" [dataSource]="dataSource">
+
+                    <ng-container matColumnDef="DeviceID">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>รหัสพัสดุ</th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.DeviceID}} </td>
+                        <td mat-footer-cell *matFooterCellDef> Total </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="deviceName">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ชื่อพัสดุ </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.deviceName}}</td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="unit">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> หน่วย </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.unit}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="DeviceQ">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> จำนวน </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.DeviceQ}}</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <ng-container matColumnDef="unitPrice">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ราคาต่อหน่วย </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.unitPrice|number:'1.0-2'}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <ng-container matColumnDef="total">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ราคาท้ังหมด </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">{{ezxdevice.total|number:'1.0-2'}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | number:'1.0-2'}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="del">
+                        <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
+                        <td class="table-lg" mat-cell *matCellDef="let ezxdevice">
+                            <button type="button" class="btn btn-success btn-fw btn-sm"
+                                (click)="openDialog(ezxdevice.DeviceID,1)"><i class="fa fa-plus-square"></i>ลบ</button>
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                </table>
+                <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+                </mat-paginator>
+            </div>
+
+        </mat-card-content>
+    </form>
+    <mat-card-actions>
+
+    </mat-card-actions>
+
+
+</mat-card>

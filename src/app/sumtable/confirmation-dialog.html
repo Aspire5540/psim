@@ -1,0 +1,118 @@
+<div *ngIf="choice==1">
+  <mat-dialog-content>
+    <p>
+      {{message}}
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+    <button mat-raised-button mat-dialog-close tabindex="-1">{{cancelButtonText}}</button>
+  </mat-dialog-actions>
+</div>
+<div *ngIf="choice==2">
+  <mat-dialog-content>
+    <h1 mat-dialog-title>แก้ไขหมายเลขงาน</h1>
+    <p>WBS เดิมคือ {{wbs.wbs}}</p>
+    <mat-form-field>
+      <mat-label>แก้ไข WBS เป็น</mat-label>
+      <input matInput [(ngModel)]="newWbs">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข ชื่องาน เป็น</mat-label>
+      <input matInput [(ngModel)]="newJobName">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข ระยะเวลาดำเนินการ เป็น</mat-label>
+      <input matInput [(ngModel)]="newNday">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข แรงสูง(วงจร-กม.) เป็น</mat-label>
+      <input matInput [(ngModel)]="newMv">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข แรงต่ำ(วงจร-กม.) เป็น</mat-label>
+      <input matInput [(ngModel)]="newLv">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข หม้อแปลง(kVA) เป็น</mat-label>
+      <input matInput [(ngModel)]="newTr">
+    </mat-form-field>
+  
+
+  <div class="col-md-12 row">
+    <div class="col-md-12 row">
+      <div class="form-group">
+        <label class="input-lg" for="fileDocname">1.เลือกไฟล์อนุมัติประมาณการ</label>
+        <input type="file" id="fileDocname" name="fileDocname" (change)="handleFileDoc($event)" ngModel required>
+        <label class="input-lg"> {{uploadDocResponse}} </label>
+
+      </div>
+    </div>
+    <div class="col-md-12 row">
+      <div class="form-group">
+        <label class="input-lg" for="file">2.เลือกไฟล์แผนผัง</label>
+        <input type="file" id="file" name="filename" (change)="handleFileInput($event)" ngModel required>
+        <label class="input-lg"> {{uploadResponse}} </label>
+
+      </div>
+    </div>
+  </div>
+
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+    <button mat-raised-button mat-dialog-close tabindex="-1">{{cancelButtonText}}</button>
+  </mat-dialog-actions>
+</mat-dialog-content>
+
+
+</div>
+<div *ngIf="choice==3">
+  <mat-dialog-content>
+    <h1 mat-dialog-title>แก้ไขข้อมูลหม้อแปลง</h1>
+    <mat-form-field>
+      <mat-label>แก้ไข PEA หม้อแปลง เป็น</mat-label>
+      <input matInput [(ngModel)]="newPeaTr">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข ขนาดหม้อแปลง เป็น</mat-label>
+      <input matInput [(ngModel)]="newKva">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข แรงดันต้นทาง เป็น</mat-label>
+      <input matInput [(ngModel)]="newVin">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข แรงดันปลายสาย เป็น</mat-label>
+      <input matInput [(ngModel)]="newVdrop">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข %โหลดหม้อแปลง เป็น</mat-label>
+      <input matInput [(ngModel)]="newLoadTr">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>TAP หม้อแปลง</mat-label>
+      <input matInput [(ngModel)]="newTrTap">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข กรแสเฟส A แต่ละฟีดเดอร์ เป็น</mat-label>
+      <input matInput [(ngModel)]="newIa">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข กรแสเฟส B แต่ละฟีดเดอร์ เป็น</mat-label>
+      <input matInput [(ngModel)]="newIb">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข กรแสเฟส C แต่ละฟีดเดอร์ เป็น</mat-label>
+      <input matInput [(ngModel)]="newIc">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แก้ไข ระยะทางไกลสุดจากหม้อแปลง เป็น</mat-label>
+      <input matInput [(ngModel)]="newLen">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
+    <button mat-raised-button mat-dialog-close tabindex="-1">{{cancelButtonText}}</button>
+  </mat-dialog-actions>
+
+</div>

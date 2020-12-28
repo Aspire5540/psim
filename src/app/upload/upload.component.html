@@ -1,0 +1,101 @@
+
+<app-loader></app-loader>
+<div class="row" *ngIf="peaCode != 'B00000'">
+    <h1 class="card-title">ไม่มีสิทธิ์ใช้งาน</h1> 
+
+</div>
+
+<div class="row" *ngIf="peaCode == 'B00000'">
+  <div class="col-6 grid-margin">
+    <div class="card">
+      <div class="card-body">     
+        <h1 class="card-title"> Upload File ZPSR048</h1>        
+        <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="input-lg" for="file">1.เลือกไฟล์ ZPSR048</label>
+                    <input type="file"
+                           id="file"
+                           name="filename"
+                           (change)="handleFile048($event)" ngModel required>
+                    <label class="input-lg"> {{uploadDocResponse}} </label>                  
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label  input-lg">ปี</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control  input-lg" name="year" ngModel required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label  input-lg">เดือน</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control  input-lg" name="mnt" ngModel required>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+            <div class="col-md-3">
+              <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2">Submit</button>
+            </div>
+        
+         </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 grid-margin">
+    <div class="card">
+      <div class="card-body">     
+        <h1 class="card-title"> Upload File GIS</h1>        
+        <form class="form-sample" #gisForm="ngForm" (ngSubmit)="onSubmit2()">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="input-lg" for="file">1.เลือกไฟล์ GIS</label>
+                    <input type="file"
+                           id="file"
+                           name="filename"
+                           (change)="handleFileGIS($event)" ngModel required>
+                    <label class="input-lg"> {{uploadDocResponse2}} </label>                  
+                </div>
+            </div>
+          </div>
+            <div class="col-md-3">
+              <button type="submit" [disabled]="!gisForm.valid" class="btn btn-success mr-2">Submit</button>
+            </div>
+        
+         </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 grid-margin">
+    <div class="card">
+      <div class="card-body">     
+        <h1 class="card-title"> Upload to LVPro</h1>        
+        <form class="form-sample" #LvproForm="ngForm" (ngSubmit)="uploadLvpro()">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="input-lg" for="file">1.เลือกไฟล์</label>
+                    <input type="file"
+                           id="file"
+                           name="filename"
+                           (change)="handleFileLvpro($event)" ngModel required>
+                    <label class="input-lg"> {{uploadDocResponse3}} </label>                  
+                </div>
+            </div>
+          </div>
+            <div class="col-md-3">
+              <button type="submit" [disabled]="!LvproForm.valid" class="btn btn-success mr-2">Submit</button>
+            </div>
+        
+         </form>
+      </div>
+    </div>
+  </div>
+</div>
