@@ -20,7 +20,7 @@ export class ConfigService {
   //private serviceUrl = 'https://jsonplaceholder.typicode.com/users';
 
   hostUrl = 'http://172.30.212.148/psisservice/';
-  //hostUrl = 'http://127.0.0.1/psisservice/';
+  // hostUrl = 'http://127.0.0.1/psisservice/';
   
   //headers = new Headers();
   //options = new RequestOptions()

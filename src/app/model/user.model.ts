@@ -120,7 +120,7 @@ export interface trdata {
   Feeder: number;
   LineSize: string;
   aoj: string;
-  Kva: number;
+  kva: number;
   minV: number;
   NumberCus: number;
   I: number;
@@ -144,6 +144,9 @@ export interface trdata {
   Ub: number;
   jobStatus: string;
   rundate: string;
+  Ia:number;
+  Ib:number;
+  Ic:number;
 }
 
 export interface meterdata {
