@@ -118,7 +118,8 @@ export class LVProComponent implements OnInit {
     { value: 'อยู่ระหว่างสำรวจประมาณการ' },
     { value: 'อยู่ระหว่างแก้ไขข้อมูล GIS' },
     { value: 'แก้ไขข้อมูล GIS แล้ว' },
-    { value: 'ไม่พบปัญหา' }
+    { value: 'ไม่พบปัญหา' },
+    { value: 'อื่นๆ โปรดระบุ' },
   ];
 
 
@@ -164,13 +165,25 @@ export class LVProComponent implements OnInit {
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
+  checkSelect(selected) {
+    if (selected != undefined) {
+      if (selected[0].includes("อื่นๆ โปรดระบุ")) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }else{
+      return 1;
+    }
+  }
   checkwbs(wbs, Status) {
     if (Status != null) {
       //console.log(Status, Status.includes("แก้ไขข้อมูล GIS แล้ว"));
       if (Status.includes("แก้ไขข้อมูล GIS แล้ว")) {
         return 0;
       }
-    } else if (wbs == null) {
+    }
+    if (wbs == null) {
       return 1;
     } else if (wbs.length == 0) {
       return 1;

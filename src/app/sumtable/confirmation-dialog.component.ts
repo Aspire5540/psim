@@ -101,7 +101,7 @@ export class ConfirmationDialog {
 
   handleFileDoc(event) {
     //console.log(event.target.files[0]);
-    console.log(event);
+    //console.log(event);
     const formData = new FormData();
     formData.append('avatar', event.target.files[0]);
     formData.append('wbs', this.wbs["wbs"]);

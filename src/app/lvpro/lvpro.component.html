@@ -258,7 +258,7 @@
               <td class="table-lg" mat-cell *matCellDef="let trdata">
                 <div *ngIf="checkAoj(trdata.aoj)">
                   <mat-form-field style="width:80px !important">
-                    <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="ใส่โหลดที่วัดได้จริง"
+                    <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="%โหลดที่วัดได้"
                       (change)="applyRLoad([$event.target.value,trdata])">
                   </mat-form-field>
                 </div>
@@ -273,7 +273,7 @@
               <td class="table-lg" mat-cell *matCellDef="let trdata">
                 <div *ngIf="checkAoj(trdata.aoj)">
                   <mat-form-field style="width:80px !important">
-                    <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="ใส่โหลดที่วัดได้จริง"
+                    <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="แรงดันต่ำสุด"
                       (change)="applyRVoltage([$event.target.value,trdata])">
                   </mat-form-field>
                 </div>
@@ -289,7 +289,7 @@
                 <div *ngIf="checkAoj(trdata.aoj)">
                   <mat-form-field>
                     <mat-label>{{trdata.Status}}</mat-label>
-                    <mat-select (selectionChange)="selectStatus($event)">
+                    <mat-select [(value)]="selected" (selectionChange)="selectStatus($event)">
                       <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
                         {{Status.value}}
                       </mat-option>
@@ -301,6 +301,10 @@
                   <mat-label>{{trdata.Status}}</mat-label>
 
                 </div>
+                <div *ngIf="checkSelect(trdata.Status)==0">
+                  You selected:
+                </div>
+               
               </td>
 
             </ng-container>
