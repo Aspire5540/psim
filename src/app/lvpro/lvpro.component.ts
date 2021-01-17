@@ -25,6 +25,7 @@ import {
   ApexFill,
 
 } from "ng-apexcharts";
+import { SummaryResolver } from '@angular/compiler';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -65,7 +66,7 @@ export class LVProComponent implements OnInit {
   public chartOptions3: Partial<ChartOptions>;
   myBarClsd: Chart;
   myBar3: Chart;
-  option = "1";
+  option = "2";
   displayedColumns = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'workstatus'];
   // displayedColumns1 = ['Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   // displayedColumns2 = ['PEA_TR','Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
@@ -79,25 +80,27 @@ export class LVProComponent implements OnInit {
   @ViewChild('sort2', { static: true }) sort2: MatSort;
   condition = 0;
   peaCode = "";
-  myDonut: Chart;
-  myDonut200: Chart;
-  myDonut80: Chart;
-  myDonutWBS4: Chart;
-  myDonutWBS5: Chart;
-  myDonutWBS6: Chart;
-  PEA_TR0: number;
-  PEA_TR1: number;
-  PEA_TR2: number;
-  PEA_TR3: number;
-  WBS4: number;
-  WBS5: number;
-  WBS6: number;
-  PEA_TR1perPEA_TR0: number;
-  PEA_TR2perPEA_TR0: number;
-  PEA_TR3perPEA_TR0: number;
-  WBS4perPEA_TR1: number;
-  WBS5perPEA_TR2: number;
-  WBS6perPEA_TR3: number;
+  // myDonut: Chart;
+  // myDonut200: Chart;
+  // myDonut80: Chart;
+  // myDonutWBS4: Chart;
+  // myDonutWBS5: Chart;
+  // myDonutWBS6: Chart;
+  chartResult: Chart;
+
+  // PEA_TR0: number;
+  // PEA_TR1: number;
+  // PEA_TR2: number;
+  // PEA_TR3: number;
+  // WBS4: number;
+  // WBS5: number;
+  // WBS6: number;
+  // PEA_TR1perPEA_TR0: number;
+  // PEA_TR2perPEA_TR0: number;
+  // PEA_TR3perPEA_TR0: number;
+  // WBS4perPEA_TR1: number;
+  // WBS5perPEA_TR2: number;
+  // WBS6perPEA_TR3: number;
   meterdata = [];
 
   peaname = {};
@@ -116,7 +119,7 @@ export class LVProComponent implements OnInit {
     { value: '-' },
     { value: 'อยู่ระหว่างตรวจสอบ' },
     { value: 'อยู่ระหว่างสำรวจประมาณการ' },
-    { value: 'อยู่ระหว่างแก้ไขข้อมูล GIS' },
+    // { value: 'อยู่ระหว่างแก้ไขข้อมูล GIS' },
     { value: 'แก้ไขข้อมูล GIS แล้ว' },
     { value: 'ไม่พบปัญหา' },
     { value: 'อื่นๆ โปรดระบุ' },
@@ -151,7 +154,7 @@ export class LVProComponent implements OnInit {
   ngOnInit() {
     //this.peaCode = localStorage.getItem('peaCode');
     this.getTrData();
-    this.getStatus();
+    // this.getStatus();
     this.getJobProgressPea();
     //this.getMeterData();
 
@@ -165,14 +168,93 @@ export class LVProComponent implements OnInit {
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
+  getChartResult() {
+    var chartData = {
+      labels: ['d', 'd', 'd', 'd', 'd'],
+      datasets: [
+        {
+          label: 'งานที่ขออนุมัติ',
+          stack: 'Stack 0',
+          data: [Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,],
+          backgroundColor: '#07CCD6',
+        },
+        {
+          label: 'งานที่อนุมัติครั้งนี้',
+          stack: 'Stack 0',
+          data: [Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,],
+          backgroundColor: '#DAF7A6',
+        },
+        {
+          label: 'งานที่อนุมัติครั้งนี้',
+          stack: 'Stack 1',
+          data: [Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,
+          Math.random() * 10,],
+          backgroundColor: '#DAF7A6',
+        }]
+    };
+    if (this.chartResult) this.chartResult.destroy();
+    this.chartResult = new Chart('chartResult', {
+      type: 'horizontalBar',
+      data: chartData,
+      options: {
+        indexAxis: 'y',
+        // Elements options apply to all of the options unless overridden in a dataset
+        // In this case, we are setting the border of each horizontal bar to be 2px wide
+        elements: {
+          bar: {
+            borderWidth: 2,
+          }
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Horizontal Bar Chart'
+          }
+        }
+      }
+
+    });
+
+  }
+  onOther(value, trdata) {
+    this.configService.postdata2('ldcad/wriNote.php', { TRNumber: trdata, note: value }).subscribe((data => {
+      if (data['status'] == 1) {
+        this.getTrData();
+        //  this.getStatus();
+        this.getJobProgressPea();
+        //console.log(this.peaname);
+      } else {
+        alert(data['data']);
+      }
+
+    }))
+    console.log(value);
+  }
   checkSelect(selected) {
+
     if (selected != undefined) {
-      if (selected[0].includes("อื่นๆ โปรดระบุ")) {
+      // console.log(selected);
+      if (selected.includes("อื่นๆ")) {
         return 0;
       } else {
         return 1;
       }
-    }else{
+    } else {
       return 1;
     }
   }
@@ -180,6 +262,8 @@ export class LVProComponent implements OnInit {
     if (Status != null) {
       //console.log(Status, Status.includes("แก้ไขข้อมูล GIS แล้ว"));
       if (Status.includes("แก้ไขข้อมูล GIS แล้ว")) {
+        return 0;
+      }else if(Status.includes("ไม่พบปัญหา")) {
         return 0;
       }
     }
@@ -267,21 +351,51 @@ export class LVProComponent implements OnInit {
 
         var Pea = [];
         var kva = [];
+        var GIS = [];
+        var CLSD = [];
+        var No = [];
+        var Volt = [];
         var kvaObj = [];
         this.TrTotal = 0;
         var kvaPln = [];
         var kvaPercent = [];
         this.TrPlnTal = 0;
         var unit = " เครื่อง";
-        var newKva = 0;
+        var GISObj = [];
+        var NoObj = [];
+        var CLSDObj = [];
+        var VoltObj = [];
+
         data['data'].forEach(element => {
           kvaObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
         });
+        data['dataGIS'].forEach(element => {
+          GISObj[element.Pea] = Number(element.totalTr);
+          this.TrTotal = this.TrTotal + Number(element.totalTr);
+        });
+        data['dataNo'].forEach(element => {
+          NoObj[element.Pea] = Number(element.totalTr);
+          this.TrTotal = this.TrTotal + Number(element.totalTr);
+        });
 
+        data['dataCLSD'].forEach(element => {
+          CLSDObj[element.Pea] = Number(element.totalTr);
+        });
+
+        if (this.option == '6') {
+          data['dataVoltage'].forEach(element => {
+            VoltObj[element.Pea] = Number(element.totalTr);
+          });
+        }
         data['dataP'].forEach(element => {
           Pea.push(this.peaname["B" + element.Pea]);
-          kvaPln.push(element.totalTr);
+          if (this.option != '6') {
+            kvaPln.push(element.totalTr);
+          } else {
+            kvaPln.push(element.totalTr - VoltObj[element.Pea]);
+          }
+
           this.TrPlnTal = this.TrPlnTal + Number(element.totalTr);
           //this.TrTotal = this.TrTotal + element.totalTr; 
           //------------new------
@@ -299,6 +413,40 @@ export class LVProComponent implements OnInit {
             kvaPercent.push(0);
           }
 
+          if (GISObj[element.Pea]) {
+            GIS.push(GISObj[element.Pea]);
+            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          } else {
+            GIS.push(0);
+            // kvaPercent.push(0);
+          }
+
+          if (NoObj[element.Pea]) {
+            No.push(NoObj[element.Pea]);
+            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          } else {
+            No.push(0);
+            // kvaPercent.push(0);
+          }
+
+          if (CLSDObj[element.Pea]) {
+            CLSD.push(CLSDObj[element.Pea]);
+            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          } else {
+            CLSD.push(0);
+            // kvaPercent.push(0);
+          }
+
+
+          if (this.option == '6') {
+            if (VoltObj[element.Pea]) {
+              Volt.push(VoltObj[element.Pea]);
+              // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+            } else {
+              Volt.push(0);
+              // kvaPercent.push(0);
+            }
+          }
 
         });
 
@@ -383,87 +531,276 @@ export class LVProComponent implements OnInit {
           labels: ["ผลการดำเนินการ"]
         };
         //กราฟแท่ง ราย กฟฟ
-        this.chartOptions2 = {
-          series: [
-            {
-              name: "มี WBS/ใบสั่ง แล้ว",
-              data: kva
-            },
-            {
-              name: "หม้อแปลงทั้งหมด",
-              data: kvaPln
-            }
-          ],
-          chart: {
-            type: "bar",
-            height: 650,
-            toolbar: {
-              show: false
-            },
-          },
-          plotOptions: {
-            bar: {
-              horizontal: true,
-              dataLabels: {
-                position: "top"
-              }
-            }
-          },
-          dataLabels: {
-            enabled: true,
-            formatter: function (val, index) {
-              var reslt;
-              //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-              //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              if (index.seriesIndex == 0) {
-                reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
-              } else {
-                reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
-              }
-              return reslt;
-            },
-            offsetX: 70,
-            style: {
-              fontSize: "12px",
-              colors: ["#304758"]
-            }
-          },
-          tooltip: {
-            x: {
-              formatter: function (val) {
-                return val.toString();
-              }
-            },
-            y: {
-              formatter: function (val, index) {
-                //console.log(index);
-                //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
-              }
-            }
-          },
-          xaxis: {
-            categories: Pea,
-            labels: {
-              formatter: function (val, index) {
-                //console.log(index);
-                //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
-              },
-              style: {
-                fontSize: "14px",
-              }
-            }
-          },
-          yaxis: {
-            labels: {
-              style: {
-                fontSize: "14px",
-              }
-            }
-          },
-        };
+        // this.chartOptions2 = {
+        //   series: [
+        //     {
+        //       name: "มี WBS/ใบสั่ง แล้ว",
+        //       data: kva
+        //     },
+        //     {
+        //       name: "หม้อแปลงทั้งหมด",
+        //       data: kvaPln
+        //     }
+        //   ],
+        //   chart: {
+        //     type: "bar",
+        //     height: 650,
+        //     toolbar: {
+        //       show: false
+        //     },
+        //   },
+        //   plotOptions: {
+        //     bar: {
+        //       horizontal: true,
+        //       dataLabels: {
+        //         position: "top"
+        //       }
+        //     }
+        //   },
+        //   dataLabels: {
+        //     enabled: true,
+        //     formatter: function (val, index) {
+        //       var reslt;
+        //       //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+        //       //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        //       if (index.seriesIndex == 0) {
+        //         reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
+        //       } else {
+        //         reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
+        //       }
+        //       return reslt;
+        //     },
+        //     offsetX: 70,
+        //     style: {
+        //       fontSize: "12px",
+        //       colors: ["#304758"]
+        //     }
+        //   },
+        //   tooltip: {
+        //     x: {
+        //       formatter: function (val) {
+        //         return val.toString();
+        //       }
+        //     },
+        //     y: {
+        //       formatter: function (val, index) {
+        //         //console.log(index);
+        //         //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+        //         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
+        //       }
+        //     }
+        //   },
+        //   xaxis: {
+        //     categories: Pea,
+        //     labels: {
+        //       formatter: function (val, index) {
+        //         //console.log(index);
+        //         //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+        //         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
+        //       },
+        //       style: {
+        //         fontSize: "14px",
+        //       }
+        //     }
+        //   },
+        //   yaxis: {
+        //     labels: {
+        //       style: {
+        //         fontSize: "14px",
+        //       }
+        //     }
+        //   },
+        // };
 
+        // Chart JS ====================================
+        if (this.option != '6') {
+          var chartData = {
+            labels: Pea,
+            datasets: [
+              {
+                label: 'ปิด WBS/ใบสั่ง แล้ว',
+                stack: 'Stack 1',
+                data: CLSD,
+                backgroundColor: '#7209b7',
+              },
+              {
+                label: 'มี WBS/ใบสั่ง แล้ว',
+                stack: 'Stack 2',
+                data: kva,
+                backgroundColor: '#118ab2',
+              },
+              {
+                label: 'แก้ไข GIS',
+                stack: 'Stack 2',
+                data: GIS,
+                backgroundColor: '#ffd166',
+              },
+              {
+                label: 'ไม่พบปัญหา',
+                stack: 'Stack 2',
+                data: No,
+                backgroundColor: '#f4a261',
+              },
+              {
+                label: 'หม้อแปลงทั้งหมด',
+                stack: 'Stack 3',
+                data: kvaPln,
+                backgroundColor: '#06d6a0',
+              },
+            ]
+          };
+        } else {
+          var chartData = {
+            labels: Pea,
+            datasets: [
+              {
+                label: 'ปิด WBS/ใบสั่ง แล้ว',
+                stack: 'Stack 1',
+                data: CLSD,
+                backgroundColor: '#7209b7',
+              },
+              {
+                label: 'มี WBS/ใบสั่ง แล้ว',
+                stack: 'Stack 2',
+                data: kva,
+                backgroundColor: '#118ab2',
+              },
+              {
+                label: 'แก้ไข GIS',
+                stack: 'Stack 2',
+                data: GIS,
+                backgroundColor: '#ffd166',
+              },
+              {
+                label: 'ไม่พบปัญหา',
+                stack: 'Stack 2',
+                data: No,
+                backgroundColor: '#f4a261',
+              },
+              {
+                label: 'แรงดัน 200-204 V',
+                stack: 'Stack 3',
+                data: Volt,
+                backgroundColor: '#40916c',
+              },
+              {
+                label: 'แรงดัน 205-210 V',
+                stack: 'Stack 3',
+                data: kvaPln,
+                backgroundColor: '#06d6a0',
+              },
+            ]
+          };
+        }
+        if (this.chartResult) this.chartResult.destroy();
+        this.chartResult = new Chart('chartResult', {
+          type: 'horizontalBar',
+          data: chartData,
+          options: {
+            indexAxis: 'y',
+            // Elements options apply to all of the options unless overridden in a dataset
+            // In this case, we are setting the border of each horizontal bar to be 2px wide
+            elements: {
+              bar: {
+                borderWidth: 2,
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: 'bottom',
+              display: true,
+              defaultFontSize: 30,
+
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  fontSize: 16
+                }
+              }]
+            },
+            animation: {
+              onComplete: function () {
+                var ctx = this.chart.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                ctx.fillStyle = "black";
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'center';
+                // console.log(this.data.datasets.length);
+                var sum = [];
+                var psum = [];
+                var pclsd = [];
+                if (this.data.datasets.length == 5) {
+                  for (var i = 0; i < this.data.datasets[1].data.length; i++) {
+                    sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
+                    psum.push(Math.round(sum[i] / this.data.datasets[4].data[i] * 100));
+                    pclsd.push(Math.round(this.data.datasets[0].data[i] / this.data.datasets[1].data[i] * 100));
+                  }
+
+                  this.data.datasets.forEach(function (dataset) {
+                    for (var i = 0; i < dataset.data.length; i++) {
+                      for (var key in dataset._meta) {
+                        var model = dataset._meta[key].data[i]._model;
+                        if (model.datasetLabel.includes("หม้อแปลงทั้งหมด")) {
+                          ctx.fillText(dataset.data[i] + " เครื่อง", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")) {
+                          ctx.fillText(sum[i] + " เครื่อง , " + psum[i] + "%", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
+                          ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
+                        }
+                        // console.log(model);
+                      }
+
+                    }
+                  });
+                }else{
+                  var total=[]
+                  for (var i = 0; i < this.data.datasets[1].data.length; i++) {
+                    total.push(this.data.datasets[4].data[i]+this.data.datasets[5].data[i]);
+                  }
+                  for (var i = 0; i < this.data.datasets[1].data.length; i++) {
+                    sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
+                    psum.push(Math.round(sum[i] / total[i] * 100));
+                    pclsd.push(Math.round(this.data.datasets[0].data[i] / this.data.datasets[1].data[i] * 100));
+                  }
+
+                  this.data.datasets.forEach(function (dataset) {
+                    for (var i = 0; i < dataset.data.length; i++) {
+                      for (var key in dataset._meta) {
+                        var model = dataset._meta[key].data[i]._model;
+                        if (model.datasetLabel.includes("แรงดัน 205-210")) {
+                          ctx.fillText(total[i] + " เครื่อง", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")) {
+                          ctx.fillText(sum[i] + " เครื่อง , " + psum[i] + "%", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
+                          ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
+                        }
+                        // console.log(model);
+                      }
+
+                    }
+                  });
+
+                }
+              }
+            }
+            // plugins: {
+            //   legend: {
+            //     labels: {
+            //       // This more specific font property overrides the global property
+            //       font: {
+            //         size: 18
+            //       }
+            //     },
+            //     position: 'right',
+            //   },
+            // }
+          }
+
+        });
+
+        // ====================================================
 
       } else {
         alert(data['data']);
@@ -497,7 +834,7 @@ export class LVProComponent implements OnInit {
       })
   }
   applyFilter(filterValue: string) {
-    console.log((filterValue + " " + localStorage.getItem('peaEng')).trim().toLowerCase());
+    // console.log((filterValue + " " + localStorage.getItem('peaEng')).trim().toLowerCase());
     this.dataSource.filter = (filterValue).trim().toLowerCase();
   }
   applyFilter1(filterValue: string) {
@@ -517,9 +854,21 @@ export class LVProComponent implements OnInit {
 
     }))
   }
+  // applyNote(event) {
+  //   this.configService.postdata2('wriNote.php', { TRNumber: event[1].PEA_TR, note: event[0] }).subscribe((data => {
+  //     if (data['status'] == 1) {
+  //       this.getTrData();
+  //       //  this.getStatus();
+  //       this.getJobProgressPea();
+  //       //console.log(this.peaname);
+  //     } else {
+  //       alert(data['data']);
+  //     }
 
+  //   }))
+  // }
   applyRLoad(event) {
-    console.log(event);
+    // console.log(event);
     this.configService.postdata2('wriRLoad.php', { TRNumber: event[1].PEA_TR, RLoad: event[0] }).subscribe((data => {
       if (data['status'] == 1) {
         this.getTrData();
@@ -532,10 +881,10 @@ export class LVProComponent implements OnInit {
   }
 
   applyRVoltage(event) {
-    console.log(event);
+    // console.log(event);
     this.configService.postdata2('wriRVoltage.php', { TRNumber: event[1].PEA_TR, RVoltage: event[0] }).subscribe((data => {
       if (data['status'] == 1) {
-        console.log(data['data']);
+        // console.log(data['data']);
         this.getTrData();
         //console.log(this.peaname);
       } else {
@@ -546,10 +895,10 @@ export class LVProComponent implements OnInit {
   }
 
   selectStatus(event) {
-    console.log(event);
+    // console.log(event);
     this.configService.postdata2('wristatus.php', { TRNumber: event.value[1].PEA_TR, status: event.value[0] }).subscribe((data => {
       if (data['status'] == 1) {
-        console.log(data['data']);
+        // console.log(data['data']);
         this.getTrData();
         //console.log(this.peaname);
       } else {
@@ -585,437 +934,437 @@ export class LVProComponent implements OnInit {
       })
   }
 
-  getStatus() {
-    this.configService.postdata2('rdstat.php', { peaCode: localStorage.getItem('peaCode') }).subscribe((data => {
-      if (data['status'] == 1) {
-        this.PEA_TR0 = data['data'][0];
-        this.PEA_TR1 = data['data'][1];
-        this.PEA_TR2 = data['data'][2];
-        this.PEA_TR3 = data['data'][3];
-        this.WBS4 = data['data'][4];
-        this.WBS5 = data['data'][5];
-        this.WBS6 = data['data'][6];
-        this.PEA_TR1perPEA_TR0 = Number(data['data'][1]) / Number(data['data'][0]) * 100;
-        this.PEA_TR2perPEA_TR0 = Number(data['data'][2]) / Number(data['data'][0]) * 100;
-        this.PEA_TR3perPEA_TR0 = Number(data['data'][3]) / Number(data['data'][0]) * 100;
-        this.WBS4perPEA_TR1 = Number(data['data'][4]) / Number(data['data'][1]) * 100;
-        this.WBS5perPEA_TR2 = Number(data['data'][5]) / Number(data['data'][2]) * 100;
-        this.WBS6perPEA_TR3 = Number(data['data'][6]) / Number(data['data'][3]) * 100;
+  // getStatus() {
+  //   this.configService.postdata2('rdstat.php', { peaCode: localStorage.getItem('peaCode') }).subscribe((data => {
+  //     if (data['status'] == 1) {
+  //       this.PEA_TR0 = data['data'][0];
+  //       this.PEA_TR1 = data['data'][1];
+  //       this.PEA_TR2 = data['data'][2];
+  //       this.PEA_TR3 = data['data'][3];
+  //       this.WBS4 = data['data'][4];
+  //       this.WBS5 = data['data'][5];
+  //       this.WBS6 = data['data'][6];
+  //       this.PEA_TR1perPEA_TR0 = Number(data['data'][1]) / Number(data['data'][0]) * 100;
+  //       this.PEA_TR2perPEA_TR0 = Number(data['data'][2]) / Number(data['data'][0]) * 100;
+  //       this.PEA_TR3perPEA_TR0 = Number(data['data'][3]) / Number(data['data'][0]) * 100;
+  //       this.WBS4perPEA_TR1 = Number(data['data'][4]) / Number(data['data'][1]) * 100;
+  //       this.WBS5perPEA_TR2 = Number(data['data'][5]) / Number(data['data'][2]) * 100;
+  //       this.WBS6perPEA_TR3 = Number(data['data'][6]) / Number(data['data'][3]) * 100;
 
-        console.log(this.PEA_TR0);
+  //       console.log(this.PEA_TR0);
 
-        //this.nwbsMR =data.data.MR.nwbs;
-        //this.workCostPerMR=Number(data.data.MR.workCostAct)/Number(data.data.MR.workCostPln)*100;
-        //this.nwbsBY =data.data.BY.nwbs;
-        //this.workCostPerBY=Number(data.data.BY.workCostAct)/Number(data.data.BY.workCostPln)*100;
-        //this.nwbsAll =data.data.BY.All;
-        //this.workCostPerAll=Number(data.data.All.workCostAct)/Number(data.data.All.workCostPln)*100;
-        //this.nwbs=data.data.nwbs;
-        //this.WorkCostPercent=Number(data.data.workCostAct)/Number(data.data.workCostPln*0.8)*100;
-        if (this.myDonut) this.myDonut.destroy();
+  //       //this.nwbsMR =data.data.MR.nwbs;
+  //       //this.workCostPerMR=Number(data.data.MR.workCostAct)/Number(data.data.MR.workCostPln)*100;
+  //       //this.nwbsBY =data.data.BY.nwbs;
+  //       //this.workCostPerBY=Number(data.data.BY.workCostAct)/Number(data.data.BY.workCostPln)*100;
+  //       //this.nwbsAll =data.data.BY.All;
+  //       //this.workCostPerAll=Number(data.data.All.workCostAct)/Number(data.data.All.workCostPln)*100;
+  //       //this.nwbs=data.data.nwbs;
+  //       //this.WorkCostPercent=Number(data.data.workCostAct)/Number(data.data.workCostPln*0.8)*100;
+  //       if (this.myDonut) this.myDonut.destroy();
 
-        this.myDonut = new Chart('myDonut', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.PEA_TR1perPEA_TR0.toFixed(2), (100 - this.PEA_TR1perPEA_TR0).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#a68fe8",
-              ],
-            }],
-            labels: [
-              ' แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.PEA_TR1perPEA_TR0.toFixed(2)] + ' %',
-              ' ' + [(100 - this.PEA_TR1perPEA_TR0).toFixed(2)] + ' %',]
-          }, plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonut = new Chart('myDonut', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.PEA_TR1perPEA_TR0.toFixed(2), (100 - this.PEA_TR1perPEA_TR0).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#a68fe8",
+  //             ],
+  //           }],
+  //           labels: [
+  //             ' แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.PEA_TR1perPEA_TR0.toFixed(2)] + ' %',
+  //             ' ' + [(100 - this.PEA_TR1perPEA_TR0).toFixed(2)] + ' %',]
+  //         }, plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: false,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: false,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
-        if (this.myDonut200) this.myDonut200.destroy();
+  //       if (this.myDonut200) this.myDonut200.destroy();
 
-        this.myDonut200 = new Chart('myDonut200', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.PEA_TR2perPEA_TR0.toFixed(2), (100 - this.PEA_TR2perPEA_TR0).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#ea73b2",
-              ],
-            }],
-            labels: [
-              ' แรงดันต่ำกว่า 200 Volt : ' + [this.PEA_TR2perPEA_TR0.toFixed(2)] + ' %',
-              ' ' + [(100 - this.PEA_TR2perPEA_TR0).toFixed(2)] + ' %',]
-          }, plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonut200 = new Chart('myDonut200', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.PEA_TR2perPEA_TR0.toFixed(2), (100 - this.PEA_TR2perPEA_TR0).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#ea73b2",
+  //             ],
+  //           }],
+  //           labels: [
+  //             ' แรงดันต่ำกว่า 200 Volt : ' + [this.PEA_TR2perPEA_TR0.toFixed(2)] + ' %',
+  //             ' ' + [(100 - this.PEA_TR2perPEA_TR0).toFixed(2)] + ' %',]
+  //         }, plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: true,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: true,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
-        if (this.myDonut80) this.myDonut80.destroy();
+  //       if (this.myDonut80) this.myDonut80.destroy();
 
-        this.myDonut80 = new Chart('myDonut80', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.PEA_TR3perPEA_TR0.toFixed(2), (100 - this.PEA_TR3perPEA_TR0).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#55bae0",
-              ],
-            }],
-            labels: [
-              'โหลดเกิน 80% : ' + [this.PEA_TR3perPEA_TR0.toFixed(2)] + ' %',
-              ' ' + [(100 - this.PEA_TR3perPEA_TR0).toFixed(2)] + ' %',]
-          },
-          plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonut80 = new Chart('myDonut80', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.PEA_TR3perPEA_TR0.toFixed(2), (100 - this.PEA_TR3perPEA_TR0).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#55bae0",
+  //             ],
+  //           }],
+  //           labels: [
+  //             'โหลดเกิน 80% : ' + [this.PEA_TR3perPEA_TR0.toFixed(2)] + ' %',
+  //             ' ' + [(100 - this.PEA_TR3perPEA_TR0).toFixed(2)] + ' %',]
+  //         },
+  //         plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: true,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: true,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
-        if (this.myDonutWBS4) this.myDonutWBS4.destroy();
+  //       if (this.myDonutWBS4) this.myDonutWBS4.destroy();
 
-        this.myDonutWBS4 = new Chart('myDonutWBS4', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.WBS4perPEA_TR1.toFixed(2), (100 - this.WBS4perPEA_TR1).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#a68fe8",
-              ],
-            }],
-            labels: [
-              'WBS จาก แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.WBS4perPEA_TR1.toFixed(2)] + '%',
-              ' ' + [(100 - this.WBS4perPEA_TR1).toFixed(2)] + '%',]
-          }, plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonutWBS4 = new Chart('myDonutWBS4', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.WBS4perPEA_TR1.toFixed(2), (100 - this.WBS4perPEA_TR1).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#a68fe8",
+  //             ],
+  //           }],
+  //           labels: [
+  //             'WBS จาก แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.WBS4perPEA_TR1.toFixed(2)] + '%',
+  //             ' ' + [(100 - this.WBS4perPEA_TR1).toFixed(2)] + '%',]
+  //         }, plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: true,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: true,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
-        if (this.myDonutWBS5) this.myDonutWBS5.destroy();
+  //       if (this.myDonutWBS5) this.myDonutWBS5.destroy();
 
-        this.myDonutWBS5 = new Chart('myDonutWBS5', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.WBS5perPEA_TR2.toFixed(2), (100 - this.WBS5perPEA_TR2).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#ea73b2",
-              ],
-            }],
-            labels: [
-              'WBS จาก แรงดันต่ำกว่า 200 Volt : ' + [this.WBS5perPEA_TR2.toFixed(2)] + '%',
-              ' ' + [(100 - this.WBS5perPEA_TR2).toFixed(2)] + '%',]
-          }, plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonutWBS5 = new Chart('myDonutWBS5', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.WBS5perPEA_TR2.toFixed(2), (100 - this.WBS5perPEA_TR2).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#ea73b2",
+  //             ],
+  //           }],
+  //           labels: [
+  //             'WBS จาก แรงดันต่ำกว่า 200 Volt : ' + [this.WBS5perPEA_TR2.toFixed(2)] + '%',
+  //             ' ' + [(100 - this.WBS5perPEA_TR2).toFixed(2)] + '%',]
+  //         }, plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: true,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: true,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
-        if (this.myDonutWBS6) this.myDonutWBS6.destroy();
+  //       if (this.myDonutWBS6) this.myDonutWBS6.destroy();
 
-        this.myDonutWBS6 = new Chart('myDonutWBS6', {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [this.WBS6perPEA_TR3.toFixed(2), (100 - this.WBS6perPEA_TR3).toFixed(2)
-              ],
-              backgroundColor: [
-                "#FFC300", "#55bae0",
-              ],
-            }],
-            labels: [
-              'WBS จาก โหลดเกิน 80% : ' + [this.WBS6perPEA_TR3.toFixed(2)] + '%',
-              ' ' + [(100 - this.WBS6perPEA_TR3).toFixed(2)] + '%',]
-          }, plugins: [{
-            beforeDraw: function (chart) {
-              var width = chart.chart.width,
-                height = chart.chart.height,
-                ctx = chart.chart.ctx;
-              //text =chart.config.data.dataset[0].data[0];
+  //       this.myDonutWBS6 = new Chart('myDonutWBS6', {
+  //         type: 'doughnut',
+  //         data: {
+  //           datasets: [{
+  //             data: [this.WBS6perPEA_TR3.toFixed(2), (100 - this.WBS6perPEA_TR3).toFixed(2)
+  //             ],
+  //             backgroundColor: [
+  //               "#FFC300", "#55bae0",
+  //             ],
+  //           }],
+  //           labels: [
+  //             'WBS จาก โหลดเกิน 80% : ' + [this.WBS6perPEA_TR3.toFixed(2)] + '%',
+  //             ' ' + [(100 - this.WBS6perPEA_TR3).toFixed(2)] + '%',]
+  //         }, plugins: [{
+  //           beforeDraw: function (chart) {
+  //             var width = chart.chart.width,
+  //               height = chart.chart.height,
+  //               ctx = chart.chart.ctx;
+  //             //text =chart.config.data.dataset[0].data[0];
 
-              ctx.restore();
-              var fontSize = (height / 120).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "middle";
-              ctx.fillStyle = "#FFFEFF";
-              var text = chart.config.data.datasets[0].data[0] + "%",
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
+  //             ctx.restore();
+  //             var fontSize = (height / 120).toFixed(2);
+  //             ctx.font = fontSize + "em sans-serif";
+  //             ctx.textBaseline = "middle";
+  //             ctx.fillStyle = "#FFFEFF";
+  //             var text = chart.config.data.datasets[0].data[0] + "%",
+  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
+  //               textY = height / 2;
 
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            }
-          }],
-          options: {
-            // Elements options apply to all of the options unless overridden in a dataset
-            // In this case, we are setting the border of each horizontal bar to be 2px wide
-            tooltips: {
-              enabled: true,
-              mode: 'single',
-              callbacks: {
-                label: function (tooltipItems, data) {
-                  return data.labels[tooltipItems.index];
-                }
-              }
-            },
-            elements: {
-              rectangle: {
-                borderWidth: 2,
-              }
-            },
-            responsive: true,
-            legend: {
-              position: 'bottom',
-              display: false,
+  //             ctx.fillText(text, textX, textY);
+  //             ctx.save();
+  //           }
+  //         }],
+  //         options: {
+  //           // Elements options apply to all of the options unless overridden in a dataset
+  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
+  //           tooltips: {
+  //             enabled: true,
+  //             mode: 'single',
+  //             callbacks: {
+  //               label: function (tooltipItems, data) {
+  //                 return data.labels[tooltipItems.index];
+  //               }
+  //             }
+  //           },
+  //           elements: {
+  //             rectangle: {
+  //               borderWidth: 2,
+  //             }
+  //           },
+  //           responsive: true,
+  //           legend: {
+  //             position: 'bottom',
+  //             display: false,
 
-            },
-            title: {
-              display: false,
-              text: "tst"
-            }
-          }
-        });
-
-
-
-      } else {
-        alert(data['data']);
-      }
+  //           },
+  //           title: {
+  //             display: false,
+  //             text: "tst"
+  //           }
+  //         }
+  //       });
 
 
 
-    }));
+  //     } else {
+  //       alert(data['data']);
+  //     }
 
 
 
-  }
+  //   }));
+
+
+
+  // }
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource.data, 'TRdata');
   }

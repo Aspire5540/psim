@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
    
 
     //this.returnUrl = '/phasecheck';
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/roic';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/ldcad';
     console.log(this.returnUrl);
     this.authService.logout();
     this.configService.changeMessage();

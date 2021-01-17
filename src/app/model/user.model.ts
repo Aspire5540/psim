@@ -147,6 +147,7 @@ export interface trdata {
   Ia:number;
   Ib:number;
   Ic:number;
+  note:string;
 }
 
 export interface meterdata {
