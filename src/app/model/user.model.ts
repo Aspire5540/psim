@@ -149,7 +149,13 @@ export interface trdata {
   Ic:number;
   note:string;
 }
-
+export interface matreq{
+matName:string;
+matCode:string;
+nMat:number;
+peaCode:string;
+peaName:string;
+}
 export interface meterdata {
   PEA_TR: string;
   PEA_Meter: string;

@@ -14,7 +14,8 @@ background-color: #dae8f5;
 }
 th.mat-header-cell{
   color: rgb(10, 6, 223);
-  font-weight: bold
+  font-weight: bold;
+  justify-content:center;
 }
 .wrfont{
   color: #FFF;
@@ -40,3 +41,19 @@ background-color: #e0308e;
 color: rgb(255, 255, 255);
 
 }
+
+input.ng-invalid.ng-touched{
+  border: solid 1px red;
+  }
+  
+  .input-lg {
+      font-size: 15px;
+    }
+  
+  
+    .table-lg {
+      font-size: 14px;
+    }
+  
+  
+   

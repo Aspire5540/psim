@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ConfigService } from '../config/config.service';
 
 import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { trdata, meterdata, meterdata2 } from '../model/user.model';
+import { trdata, meterdata, meterdata2,matreq } from '../model/user.model';
 import { AuthService } from '../config/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { FileuploadService } from '../config/fileupload.service';
@@ -54,6 +54,18 @@ export type ChartOptions2 = {
   yaxis: ApexYAxis;
 };
 
+export type ChartOptions3 = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  labels: string[];
+  plotOptions: ApexPlotOptions;
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  stroke: ApexStroke;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+};
+
 @Component({
   selector: 'app-lvpro',
   templateUrl: './lvpro.component.html',
@@ -64,22 +76,29 @@ export class LVProComponent implements OnInit {
   public chartOptions1: Partial<ChartOptions2>;
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions>;
+
   myBarClsd: Chart;
   myBar3: Chart;
   option = "2";
   displayedColumns = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'workstatus'];
+  displayedColumns3 = ['matCode', 'matName', 'nMat', 'peaName'];
   // displayedColumns1 = ['Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   // displayedColumns2 = ['PEA_TR','Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   //TRNo = "00-050333";
   @ViewChild('f', { static: true }) registerForm: NgForm;
+  @ViewChild('mat', { static: true }) matForm: NgForm;
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild('paginator1', { static: true }) paginator1: MatPaginator;
   @ViewChild('sort1', { static: true }) sort1: MatSort;
   @ViewChild('paginator2', { static: true }) paginator2: MatPaginator;
   @ViewChild('sort2', { static: true }) sort2: MatSort;
+  @ViewChild('paginator3', { static: true }) paginator3: MatPaginator;
+  @ViewChild('sort3', { static: true }) sort3: MatSort;
   condition = 0;
   peaCode = "";
+  nDate = "15 วัน";
   // myDonut: Chart;
   // myDonut200: Chart;
   // myDonut80: Chart;
@@ -108,7 +127,7 @@ export class LVProComponent implements OnInit {
   selBudjet = ['', ''];
   selPea = '';
   selPeaName = 'กฟน.2';
-  selPeapeaCode = '';
+  selPeapeaCode = 'B00000';
   selPeapeaCode2 = 'B000';
   currentMatherPea = "";
   currentPea = "";
@@ -143,7 +162,7 @@ export class LVProComponent implements OnInit {
   public dataSource = new MatTableDataSource<trdata>();
   public dataSource1 = new MatTableDataSource<meterdata>();
   public dataSource2 = new MatTableDataSource<meterdata2>();
-
+  public dataSource3 = new MatTableDataSource<matreq>();
 
 
   constructor(private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
@@ -155,15 +174,19 @@ export class LVProComponent implements OnInit {
     //this.peaCode = localStorage.getItem('peaCode');
     this.getTrData();
     // this.getStatus();
+    this.getMat("1");
     this.getJobProgressPea();
+    this.getMatReq();
     //this.getMeterData();
 
     this.dataSource.paginator = this.paginator;
     this.dataSource1.paginator = this.paginator1;
     this.dataSource2.paginator = this.paginator2;
+    this.dataSource3.paginator = this.paginator3;
     this.dataSource.sort = this.sort;
     this.dataSource1.sort = this.sort1;
     this.dataSource2.sort = this.sort2;
+    this.dataSource3.sort = this.sort3;
     this.peaCode = localStorage.getItem('peaCode');
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
@@ -263,7 +286,7 @@ export class LVProComponent implements OnInit {
       //console.log(Status, Status.includes("แก้ไขข้อมูล GIS แล้ว"));
       if (Status.includes("แก้ไขข้อมูล GIS แล้ว")) {
         return 0;
-      }else if(Status.includes("ไม่พบปัญหา")) {
+      } else if (Status.includes("ไม่พบปัญหา")) {
         return 0;
       }
     }
@@ -754,10 +777,10 @@ export class LVProComponent implements OnInit {
 
                     }
                   });
-                }else{
-                  var total=[]
+                } else {
+                  var total = []
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
-                    total.push(this.data.datasets[4].data[i]+this.data.datasets[5].data[i]);
+                    total.push(this.data.datasets[4].data[i] + this.data.datasets[5].data[i]);
                   }
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
@@ -822,9 +845,200 @@ export class LVProComponent implements OnInit {
       .subscribe(res => {
         this.dataSource.data = res as trdata[];
       })
+
+  }
+  getMatReq(){
+    this.configService.getMatReq('ldcad/getmatreq.php')
+      //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
+      .subscribe(res => {
+        this.dataSource3.data = res as matreq[];
+      })
+
+
   }
 
 
+  getMat(choice) {
+    this.configService.postdata2('ldcad/rdMat.php', {}).subscribe((data => {
+      if (data['status'] == 1) {
+        // console.log(data);
+        var label = ["30 kVA", "50 kVA", "100  kVA", "160  kVA"];
+        var TRStock = [data["nStock"]["30"], data["nStock"]["50"], data["nStock"]["100"], data["nStock"]["160"]];
+        var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"], data["nTR"]["15"]["100"], data["nTR"]["15"]["160"]];
+        var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
+        var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
+        if (choice == "1") {
+          this.nDate = "15 วัน";
+          this.chartOptions2 = {
+            series: [
+              {
+                name: "หม้อแปลงที่ต้องใช้งาน",
+                data: TR15
+              },
+              {
+                name: "หม้อแปลงคงคลัง",
+                data: TRStock
+              }
+            ],
+            chart: {
+              type: "bar",
+              height: 350,
+              toolbar: {
+                show: false
+              },
+            },
+            plotOptions: {
+              bar: {
+                horizontal: true,
+                dataLabels: {
+                  position: "top"
+                }
+              }
+            },
+            dataLabels: {
+              enabled: true,
+              // formatter: function (val, index) {
+              //   var reslt;
+              //   //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+              //   //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              //   if (index.seriesIndex == 0) {
+              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
+              //   } else {
+              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
+              //   }
+              //   return reslt;
+              // },
+              offsetX: 70,
+              style: {
+                fontSize: "12px",
+                colors: ["#304758"]
+              }
+            },
+            tooltip: {
+              x: {
+                formatter: function (val) {
+                  return val.toString();
+                }
+              },
+              y: {
+                formatter: function (val, index) {
+                  //console.log(index);
+                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
+                }
+              }
+            },
+            xaxis: {
+              categories: label,
+              labels: {
+                formatter: function (val, index) {
+                  //console.log(index);
+                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
+                },
+                style: {
+                  fontSize: "14px",
+                }
+              }
+            },
+            yaxis: {
+              labels: {
+                style: {
+                  fontSize: "14px",
+                }
+              }
+            },
+          };
+        } else {
+          this.nDate = "45 วัน";
+          this.chartOptions2 = {
+            series: [
+              {
+                name: "หม้อแปลงที่ต้องใช้งาน",
+                data: TR45
+              },
+              {
+                name: "หม้อแปลงคงคลัง",
+                data: TRStock2
+              }
+            ],
+            chart: {
+              type: "bar",
+              height: 350,
+              toolbar: {
+                show: false
+              },
+            },
+            plotOptions: {
+              bar: {
+                horizontal: true,
+                dataLabels: {
+                  position: "top"
+                }
+              }
+            },
+            dataLabels: {
+              enabled: true,
+              // formatter: function (val, index) {
+              //   var reslt;
+              //   //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+              //   //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              //   if (index.seriesIndex == 0) {
+              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
+              //   } else {
+              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
+              //   }
+              //   return reslt;
+              // },
+              offsetX: 70,
+              style: {
+                fontSize: "12px",
+                colors: ["#304758"]
+              }
+            },
+            tooltip: {
+              x: {
+                formatter: function (val) {
+                  return val.toString();
+                }
+              },
+              y: {
+                formatter: function (val, index) {
+                  //console.log(index);
+                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
+                }
+              }
+            },
+            xaxis: {
+              categories: label,
+              labels: {
+                formatter: function (val, index) {
+                  //console.log(index);
+                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
+                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
+                },
+                style: {
+                  fontSize: "14px",
+                }
+              }
+            },
+            yaxis: {
+              labels: {
+                style: {
+                  fontSize: "14px",
+                }
+              }
+            },
+          };
+        }
+      } else {
+        alert(data['data']);
+      }
+
+    }));
+
+  }
   public getMtData = (PEA_TR) => {
 
     this.configService.getMeter('Meter.php?PEA_TR=' + PEA_TR)
@@ -852,7 +1066,7 @@ export class LVProComponent implements OnInit {
         alert(data['data']);
       }
 
-    }))
+    }));
   }
   // applyNote(event) {
   //   this.configService.postdata2('wriNote.php', { TRNumber: event[1].PEA_TR, note: event[0] }).subscribe((data => {
@@ -916,455 +1130,31 @@ export class LVProComponent implements OnInit {
 
 
   onSubmit() {
-
-    /*if(data['status']==1){
-      this.registerForm.resetForm();
-      this.getData();
-      alert("เก็บข้อมูลแล้วเสร็จ");
-    }else{
-    alert(data.data);
-    }*/
-
-    this.configService.getmeterdata2('serchmeter.php?PEA_Meter=' + this.registerForm.value.PEAMeter)
-      //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
-      .subscribe(res => {
+    var input = this.registerForm.value;
+    input["user"] = localStorage.getItem('name');
+    input["peaCode"] = localStorage.getItem('peaCode');
+    console.log(this.registerForm.value);
+    this.configService.postdata2('ldcad/wriMat.php', this.registerForm.value).subscribe((data => {
+      if (data['status'] == 1) {
+        //this.getTrData();
+        this.getMatReq();
         this.registerForm.resetForm();
-        this.dataSource2.data = res as meterdata2[];
+      } else {
+        alert(data['data']);
+      }
 
-      })
+    }));
+
+    // this.configService.getmeterdata2('serchmeter.php?PEA_Meter=' + this.registerForm.value.PEAMeter)
+    //   //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
+    //   .subscribe(res => {
+    //     this.registerForm.resetForm();
+    //     this.dataSource2.data = res as meterdata2[];
+
+    // })
   }
 
-  // getStatus() {
-  //   this.configService.postdata2('rdstat.php', { peaCode: localStorage.getItem('peaCode') }).subscribe((data => {
-  //     if (data['status'] == 1) {
-  //       this.PEA_TR0 = data['data'][0];
-  //       this.PEA_TR1 = data['data'][1];
-  //       this.PEA_TR2 = data['data'][2];
-  //       this.PEA_TR3 = data['data'][3];
-  //       this.WBS4 = data['data'][4];
-  //       this.WBS5 = data['data'][5];
-  //       this.WBS6 = data['data'][6];
-  //       this.PEA_TR1perPEA_TR0 = Number(data['data'][1]) / Number(data['data'][0]) * 100;
-  //       this.PEA_TR2perPEA_TR0 = Number(data['data'][2]) / Number(data['data'][0]) * 100;
-  //       this.PEA_TR3perPEA_TR0 = Number(data['data'][3]) / Number(data['data'][0]) * 100;
-  //       this.WBS4perPEA_TR1 = Number(data['data'][4]) / Number(data['data'][1]) * 100;
-  //       this.WBS5perPEA_TR2 = Number(data['data'][5]) / Number(data['data'][2]) * 100;
-  //       this.WBS6perPEA_TR3 = Number(data['data'][6]) / Number(data['data'][3]) * 100;
 
-  //       console.log(this.PEA_TR0);
-
-  //       //this.nwbsMR =data.data.MR.nwbs;
-  //       //this.workCostPerMR=Number(data.data.MR.workCostAct)/Number(data.data.MR.workCostPln)*100;
-  //       //this.nwbsBY =data.data.BY.nwbs;
-  //       //this.workCostPerBY=Number(data.data.BY.workCostAct)/Number(data.data.BY.workCostPln)*100;
-  //       //this.nwbsAll =data.data.BY.All;
-  //       //this.workCostPerAll=Number(data.data.All.workCostAct)/Number(data.data.All.workCostPln)*100;
-  //       //this.nwbs=data.data.nwbs;
-  //       //this.WorkCostPercent=Number(data.data.workCostAct)/Number(data.data.workCostPln*0.8)*100;
-  //       if (this.myDonut) this.myDonut.destroy();
-
-  //       this.myDonut = new Chart('myDonut', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.PEA_TR1perPEA_TR0.toFixed(2), (100 - this.PEA_TR1perPEA_TR0).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#a68fe8",
-  //             ],
-  //           }],
-  //           labels: [
-  //             ' แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.PEA_TR1perPEA_TR0.toFixed(2)] + ' %',
-  //             ' ' + [(100 - this.PEA_TR1perPEA_TR0).toFixed(2)] + ' %',]
-  //         }, plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: false,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-  //       if (this.myDonut200) this.myDonut200.destroy();
-
-  //       this.myDonut200 = new Chart('myDonut200', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.PEA_TR2perPEA_TR0.toFixed(2), (100 - this.PEA_TR2perPEA_TR0).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#ea73b2",
-  //             ],
-  //           }],
-  //           labels: [
-  //             ' แรงดันต่ำกว่า 200 Volt : ' + [this.PEA_TR2perPEA_TR0.toFixed(2)] + ' %',
-  //             ' ' + [(100 - this.PEA_TR2perPEA_TR0).toFixed(2)] + ' %',]
-  //         }, plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: true,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-  //       if (this.myDonut80) this.myDonut80.destroy();
-
-  //       this.myDonut80 = new Chart('myDonut80', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.PEA_TR3perPEA_TR0.toFixed(2), (100 - this.PEA_TR3perPEA_TR0).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#55bae0",
-  //             ],
-  //           }],
-  //           labels: [
-  //             'โหลดเกิน 80% : ' + [this.PEA_TR3perPEA_TR0.toFixed(2)] + ' %',
-  //             ' ' + [(100 - this.PEA_TR3perPEA_TR0).toFixed(2)] + ' %',]
-  //         },
-  //         plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: true,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-  //       if (this.myDonutWBS4) this.myDonutWBS4.destroy();
-
-  //       this.myDonutWBS4 = new Chart('myDonutWBS4', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.WBS4perPEA_TR1.toFixed(2), (100 - this.WBS4perPEA_TR1).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#a68fe8",
-  //             ],
-  //           }],
-  //           labels: [
-  //             'WBS จาก แรงดันต่ำกว่า 200 Volt และโหลดเกิน 80% : ' + [this.WBS4perPEA_TR1.toFixed(2)] + '%',
-  //             ' ' + [(100 - this.WBS4perPEA_TR1).toFixed(2)] + '%',]
-  //         }, plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: true,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-  //       if (this.myDonutWBS5) this.myDonutWBS5.destroy();
-
-  //       this.myDonutWBS5 = new Chart('myDonutWBS5', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.WBS5perPEA_TR2.toFixed(2), (100 - this.WBS5perPEA_TR2).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#ea73b2",
-  //             ],
-  //           }],
-  //           labels: [
-  //             'WBS จาก แรงดันต่ำกว่า 200 Volt : ' + [this.WBS5perPEA_TR2.toFixed(2)] + '%',
-  //             ' ' + [(100 - this.WBS5perPEA_TR2).toFixed(2)] + '%',]
-  //         }, plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: true,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-  //       if (this.myDonutWBS6) this.myDonutWBS6.destroy();
-
-  //       this.myDonutWBS6 = new Chart('myDonutWBS6', {
-  //         type: 'doughnut',
-  //         data: {
-  //           datasets: [{
-  //             data: [this.WBS6perPEA_TR3.toFixed(2), (100 - this.WBS6perPEA_TR3).toFixed(2)
-  //             ],
-  //             backgroundColor: [
-  //               "#FFC300", "#55bae0",
-  //             ],
-  //           }],
-  //           labels: [
-  //             'WBS จาก โหลดเกิน 80% : ' + [this.WBS6perPEA_TR3.toFixed(2)] + '%',
-  //             ' ' + [(100 - this.WBS6perPEA_TR3).toFixed(2)] + '%',]
-  //         }, plugins: [{
-  //           beforeDraw: function (chart) {
-  //             var width = chart.chart.width,
-  //               height = chart.chart.height,
-  //               ctx = chart.chart.ctx;
-  //             //text =chart.config.data.dataset[0].data[0];
-
-  //             ctx.restore();
-  //             var fontSize = (height / 120).toFixed(2);
-  //             ctx.font = fontSize + "em sans-serif";
-  //             ctx.textBaseline = "middle";
-  //             ctx.fillStyle = "#FFFEFF";
-  //             var text = chart.config.data.datasets[0].data[0] + "%",
-  //               textX = Math.round((width - ctx.measureText(text).width) / 2),
-  //               textY = height / 2;
-
-  //             ctx.fillText(text, textX, textY);
-  //             ctx.save();
-  //           }
-  //         }],
-  //         options: {
-  //           // Elements options apply to all of the options unless overridden in a dataset
-  //           // In this case, we are setting the border of each horizontal bar to be 2px wide
-  //           tooltips: {
-  //             enabled: true,
-  //             mode: 'single',
-  //             callbacks: {
-  //               label: function (tooltipItems, data) {
-  //                 return data.labels[tooltipItems.index];
-  //               }
-  //             }
-  //           },
-  //           elements: {
-  //             rectangle: {
-  //               borderWidth: 2,
-  //             }
-  //           },
-  //           responsive: true,
-  //           legend: {
-  //             position: 'bottom',
-  //             display: false,
-
-  //           },
-  //           title: {
-  //             display: false,
-  //             text: "tst"
-  //           }
-  //         }
-  //       });
-
-
-
-  //     } else {
-  //       alert(data['data']);
-  //     }
-
-
-
-  //   }));
-
-
-
-  // }
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource.data, 'TRdata');
   }

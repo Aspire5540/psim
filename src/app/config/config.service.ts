@@ -3,7 +3,7 @@ import { HttpClient} from '@angular/common/http';
 import { Observable ,  BehaviorSubject }   from 'rxjs';
 
 import { wbsdata,jobreq,trdata,appJob,jobprogress,meterdata,meterdata2,
-  trphase,meterdata3,jobRemain,jobRemain2,ezxdevice} from '../model/user.model';
+  trphase,meterdata3,jobRemain,jobRemain2,ezxdevice,matreq} from '../model/user.model';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
@@ -45,6 +45,9 @@ export class ConfigService {
     return this.http.get<jobreq[]>(this.hostUrl+endpoint);
   }
 
+  getMatReq(endpoint): Observable<matreq[]> {
+    return this.http.get<matreq[]>(this.hostUrl+endpoint);
+  }
   getTr(endpoint): Observable<trdata[]> {
     return this.http.get<trdata[]>(this.hostUrl+endpoint);
   }
