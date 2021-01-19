@@ -96,9 +96,10 @@ export class JobapproveComponent implements OnInit {
   getAppData = (filter) => {
     this.configService.getAppJob('rdAppJob.php?peaEng=' + localStorage.getItem('peaEng') + '&filter1=' + filter[0] + '&filter2=' + filter[1])
       .subscribe(res => {
-        this.dataSource1.data = res as appJob[];
         this.dataSource1.paginator = this.paginator1;
         this.dataSource1.sort = this.sort1;
+        this.dataSource1.data = res as appJob[];
+
       })
   }
   getFilter() {

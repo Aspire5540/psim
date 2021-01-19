@@ -133,21 +133,21 @@
             </div>
 
             <div class="table-responsive">
-              <table class="mat-elevation-z8" mat-table matSort #sort3="matSort" [dataSource]="dataSource3">
+              <table class="mat-elevation-z8" mat-table  [dataSource]="dataSource2">
                 <ng-container matColumnDef="matCode">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> รหัสพัสดุ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef > รหัสพัสดุ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq"> {{matreq.matCode}}</td>
                 </ng-container>
                 <ng-container matColumnDef="matName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ชื่อพัสดุ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef > ชื่อพัสดุ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq"> {{matreq.matName}}</td>
                 </ng-container>
                 <ng-container matColumnDef="nMat">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>จำนวน </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef >จำนวน </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq">{{matreq.nMat}}</td>
                 </ng-container>
                 <ng-container matColumnDef="peaName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>กฟฟ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef >กฟฟ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq">{{matreq.peaName}}</td>
                 </ng-container>
                 
@@ -155,8 +155,8 @@
                 <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
                 <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
               </table>
-              <mat-paginator #paginator3 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
-              </mat-paginator>
+              <!-- <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
+              </mat-paginator> -->
             </div>
 
 

@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ConfigService } from '../config/config.service';
 
 import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { trdata, meterdata, meterdata2,matreq } from '../model/user.model';
+import { trdata, meterdata, meterdata2, matreq } from '../model/user.model';
 import { AuthService } from '../config/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { FileuploadService } from '../config/fileupload.service';
@@ -82,20 +82,28 @@ export class LVProComponent implements OnInit {
   option = "2";
   displayedColumns = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'workstatus'];
   displayedColumns3 = ['matCode', 'matName', 'nMat', 'peaName'];
+
+  public dataSource = new MatTableDataSource<trdata>();
+  // public dataSource1 = new MatTableDataSource<meterdata>();
+  // public dataSource2 = new MatTableDataSource<meterdata2>();
+  public dataSource2 = new MatTableDataSource<matreq>();
   // displayedColumns1 = ['Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   // displayedColumns2 = ['PEA_TR','Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   //TRNo = "00-050333";
   @ViewChild('f', { static: true }) registerForm: NgForm;
-  @ViewChild('mat', { static: true }) matForm: NgForm;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild('paginator1', { static: true }) paginator1: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort1: MatSort;
+
+  // @ViewChild('paginator1', { static: false }) paginator1: MatPaginator;
+  // @ViewChild('sort1', { static: false }) sort1: MatSort;
+
   @ViewChild('paginator2', { static: true }) paginator2: MatPaginator;
   @ViewChild('sort2', { static: true }) sort2: MatSort;
-  @ViewChild('paginator3', { static: true }) paginator3: MatPaginator;
-  @ViewChild('sort3', { static: true }) sort3: MatSort;
+
+  // @ViewChild('paginator3', { static: true }) paginator3: MatPaginator;
+  // @ViewChild('sort3', { static: true }) sort3: MatSort;
+
   condition = 0;
   peaCode = "";
   nDate = "15 วัน";
@@ -159,10 +167,7 @@ export class LVProComponent implements OnInit {
 
   ];
 
-  public dataSource = new MatTableDataSource<trdata>();
-  public dataSource1 = new MatTableDataSource<meterdata>();
-  public dataSource2 = new MatTableDataSource<meterdata2>();
-  public dataSource3 = new MatTableDataSource<matreq>();
+ 
 
 
   constructor(private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
@@ -170,90 +175,31 @@ export class LVProComponent implements OnInit {
     this.getpeaList2();
 
   }
+
   ngOnInit() {
     //this.peaCode = localStorage.getItem('peaCode');
-    this.getTrData();
+    // this.getTrData();
     // this.getStatus();
     this.getMat("1");
     this.getJobProgressPea();
     this.getMatReq();
     //this.getMeterData();
 
-    this.dataSource.paginator = this.paginator;
-    this.dataSource1.paginator = this.paginator1;
-    this.dataSource2.paginator = this.paginator2;
-    this.dataSource3.paginator = this.paginator3;
-    this.dataSource.sort = this.sort;
-    this.dataSource1.sort = this.sort1;
-    this.dataSource2.sort = this.sort2;
-    this.dataSource3.sort = this.sort3;
+    // this.dataSource.paginator = this.paginator;
+    // this.dataSource1.paginator = this.paginator1;
+    // this.dataSource2.paginator = this.paginator2;
+    // this.dataSource3.paginator = this.paginator3;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource1.sort = this.sort1;
+    // this.dataSource2.sort = this.sort2;
+    // this.dataSource3.sort = this.sort3;
+    // this.dataSource.paginator = this.paginator1;
+    // this.dataSource.sort = this.sort1;
     this.peaCode = localStorage.getItem('peaCode');
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
-  getChartResult() {
-    var chartData = {
-      labels: ['d', 'd', 'd', 'd', 'd'],
-      datasets: [
-        {
-          label: 'งานที่ขออนุมัติ',
-          stack: 'Stack 0',
-          data: [Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,],
-          backgroundColor: '#07CCD6',
-        },
-        {
-          label: 'งานที่อนุมัติครั้งนี้',
-          stack: 'Stack 0',
-          data: [Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,],
-          backgroundColor: '#DAF7A6',
-        },
-        {
-          label: 'งานที่อนุมัติครั้งนี้',
-          stack: 'Stack 1',
-          data: [Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,
-          Math.random() * 10,],
-          backgroundColor: '#DAF7A6',
-        }]
-    };
-    if (this.chartResult) this.chartResult.destroy();
-    this.chartResult = new Chart('chartResult', {
-      type: 'horizontalBar',
-      data: chartData,
-      options: {
-        indexAxis: 'y',
-        // Elements options apply to all of the options unless overridden in a dataset
-        // In this case, we are setting the border of each horizontal bar to be 2px wide
-        elements: {
-          bar: {
-            borderWidth: 2,
-          }
-        },
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'right',
-          },
-          title: {
-            display: true,
-            text: 'Chart.js Horizontal Bar Chart'
-          }
-        }
-      }
 
-    });
-
-  }
   onOther(value, trdata) {
     this.configService.postdata2('ldcad/wriNote.php', { TRNumber: trdata, note: value }).subscribe((data => {
       if (data['status'] == 1) {
@@ -704,7 +650,7 @@ export class LVProComponent implements OnInit {
                 label: 'แรงดัน 200-204 V',
                 stack: 'Stack 3',
                 data: Volt,
-                backgroundColor: '#40916c',
+                backgroundColor: '#ef476f',
               },
               {
                 label: 'แรงดัน 205-210 V',
@@ -843,15 +789,21 @@ export class LVProComponent implements OnInit {
     this.configService.getTr('TR.php?condition=' + this.condition + '&peaCode0=' + this.peaCode)
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
+        // this.dataSource.paginator = this.paginator1;
+        // this.dataSource.sort = this.sort1;
         this.dataSource.data = res as trdata[];
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       })
 
   }
-  getMatReq(){
+  getMatReq() {
     this.configService.getMatReq('ldcad/getmatreq.php')
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
-        this.dataSource3.data = res as matreq[];
+        this.dataSource2.data = res as matreq[];
+        this.dataSource2.paginator = this.paginator2;
+        this.dataSource2.sort = this.sort2;
       })
 
 
@@ -993,7 +945,7 @@ export class LVProComponent implements OnInit {
               offsetX: 70,
               style: {
                 fontSize: "12px",
-                colors: ["#304758"]
+                colors: ["#9e2a2b"]
               }
             },
             tooltip: {
@@ -1039,22 +991,22 @@ export class LVProComponent implements OnInit {
     }));
 
   }
-  public getMtData = (PEA_TR) => {
+  // public getMtData = (PEA_TR) => {
 
-    this.configService.getMeter('Meter.php?PEA_TR=' + PEA_TR)
-      //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
-      .subscribe(res => {
-        this.dataSource1.data = res as meterdata[];
-      })
-  }
+  //   this.configService.getMeter('Meter.php?PEA_TR=' + PEA_TR)
+  //     //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
+  //     .subscribe(res => {
+  //       this.dataSource1.data = res as meterdata[];
+  //     })
+  // }
   applyFilter(filterValue: string) {
     // console.log((filterValue + " " + localStorage.getItem('peaEng')).trim().toLowerCase());
     this.dataSource.filter = (filterValue).trim().toLowerCase();
   }
-  applyFilter1(filterValue: string) {
+  // applyFilter1(filterValue: string) {
 
-    this.dataSource1.filter = (filterValue).trim().toLowerCase();
-  }
+  //   this.dataSource1.filter = (filterValue).trim().toLowerCase();
+  // }
   applyWBS(event) {
     this.configService.postdata2('wriWBS.php', { TRNumber: event[1].PEA_TR, WBS: event[0] }).subscribe((data => {
       if (data['status'] == 1) {
@@ -1158,9 +1110,9 @@ export class LVProComponent implements OnInit {
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource.data, 'TRdata');
   }
-  exportAsXLSX2(): void {
-    this.configService.exportAsExcelFile(this.dataSource1.data, 'MeterData');
-  }
+  // exportAsXLSX2(): void {
+  //   this.configService.exportAsExcelFile(this.dataSource1.data, 'MeterData');
+  // }
   /*
   getTrData(){ 
     this.configService.postdata2('TR.php',{TRNumber:this.TRNo}).subscribe((data=>{
