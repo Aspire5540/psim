@@ -738,7 +738,7 @@ export class LVProComponent implements OnInit {
                 var sum = [];
                 var psum = [];
                 var pclsd = [];
-                if (this.data.datasets.length == 5) {
+                if (this.data.datasets.length == 7) {
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
                     psum.push(Math.round(sum[i] / this.data.datasets[4].data[i] * 100));
