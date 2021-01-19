@@ -167,7 +167,7 @@ export class LVProComponent implements OnInit {
 
   ];
 
- 
+
 
 
   constructor(private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
@@ -497,7 +497,8 @@ export class LVProComponent implements OnInit {
           stroke: {
             lineCap: "round"
           },
-          labels: ["ผลการดำเนินการ"]
+          labels: ["ผลการดำเนินการ"],
+
         };
         //กราฟแท่ง ราย กฟฟ
         // this.chartOptions2 = {
@@ -585,12 +586,14 @@ export class LVProComponent implements OnInit {
         if (this.option != '6') {
           var chartData = {
             labels: Pea,
+            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
+                fontColor: '#fff'
               },
               {
                 label: 'มี WBS/ใบสั่ง แล้ว',
@@ -617,22 +620,32 @@ export class LVProComponent implements OnInit {
                 backgroundColor: '#06d6a0',
               },
             ]
-          };
+          },
+            options: {
+              legend: {
+                labels: {
+                  fontColor: 'white' //set your desired color
+                }
+              }
+            };
         } else {
           var chartData = {
             labels: Pea,
+            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
+                color: '#ffffff'
               },
               {
                 label: 'มี WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 2',
                 data: kva,
                 backgroundColor: '#118ab2',
+                color: '#fff',
               },
               {
                 label: 'แก้ไข GIS',
@@ -656,10 +669,11 @@ export class LVProComponent implements OnInit {
                 label: 'แรงดัน 205-210 V',
                 stack: 'Stack 3',
                 data: kvaPln,
+                color: '#ffffff',
                 backgroundColor: '#06d6a0',
               },
             ]
-          };
+          }
         }
         if (this.chartResult) this.chartResult.destroy();
         this.chartResult = new Chart('chartResult', {
@@ -674,18 +688,30 @@ export class LVProComponent implements OnInit {
                 borderWidth: 2,
               }
             },
+            color: '#fff',
             responsive: true,
             maintainAspectRatio: false,
             legend: {
+              color: '#ffffff',
               position: 'bottom',
               display: true,
               defaultFontSize: 30,
-
+              labels: {
+                fontColor: 'white'
+              }
             },
+
             scales: {
+              xAxes: [{
+                ticks: {
+                  fontSize: 16,
+                  fontColor: "white",
+                }
+              }],
               yAxes: [{
                 ticks: {
-                  fontSize: 16
+                  fontSize: 16,
+                  fontColor: "white",
                 }
               }]
             },
@@ -693,7 +719,7 @@ export class LVProComponent implements OnInit {
               onComplete: function () {
                 var ctx = this.chart.ctx;
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-                ctx.fillStyle = "black";
+                ctx.fillStyle = "white";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
                 // console.log(this.data.datasets.length);
