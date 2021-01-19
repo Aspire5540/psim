@@ -592,10 +592,10 @@ export class LVProComponent implements OnInit {
         // };
 
         // Chart JS ====================================
+        var chartData={};
         if (this.option != '6') {
-          var chartData = {
+          chartData = {
             labels: Pea,
-            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
@@ -641,32 +641,22 @@ export class LVProComponent implements OnInit {
                 backgroundColor: '#06d6a0',
               },
             ]
-          },
-            options: {
-              legend: {
-                labels: {
-                  fontColor: 'white' //set your desired color
-                }
-              }
-            };
+          };
         } else {
-          var chartData = {
+          chartData = {
             labels: Pea,
-            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
-                color: '#ffffff'
               },
               {
                 label: 'มี WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 2',
                 data: kva,
                 backgroundColor: '#118ab2',
-                color: '#fff',
               },
               {
                 label: 'แก้ไข GIS',
@@ -690,7 +680,6 @@ export class LVProComponent implements OnInit {
                 label: 'แรงดัน 205-210 V',
                 stack: 'Stack 3',
                 data: kvaPln,
-                color: '#ffffff',
                 backgroundColor: '#06d6a0',
               },
             ]
@@ -724,6 +713,7 @@ export class LVProComponent implements OnInit {
               }
             },
             legend: {
+              position: 'bottom',
               labels: {
                 filter: function (item, chart) {
                   var show = true;
@@ -733,7 +723,6 @@ export class LVProComponent implements OnInit {
                   return show;
                 },
                 color: '#ffffff',
-                position: 'bottom',
                 display: true,
                 defaultFontSize: 30,
                 labels: {
