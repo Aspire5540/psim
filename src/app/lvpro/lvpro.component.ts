@@ -595,12 +595,14 @@ export class LVProComponent implements OnInit {
         if (this.option != '6') {
           var chartData = {
             labels: Pea,
+            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
+                fontColor: '#fff'
               },
               {
                 label: 'แก้ไข GIS',
@@ -639,22 +641,32 @@ export class LVProComponent implements OnInit {
                 backgroundColor: '#06d6a0',
               },
             ]
-          };
+          },
+            options: {
+              legend: {
+                labels: {
+                  fontColor: 'white' //set your desired color
+                }
+              }
+            };
         } else {
           var chartData = {
             labels: Pea,
+            color: '#fff',
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
+                color: '#ffffff'
               },
               {
                 label: 'มี WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 2',
                 data: kva,
                 backgroundColor: '#118ab2',
+                color: '#fff',
               },
               {
                 label: 'แก้ไข GIS',
@@ -678,10 +690,11 @@ export class LVProComponent implements OnInit {
                 label: 'แรงดัน 205-210 V',
                 stack: 'Stack 3',
                 data: kvaPln,
+                color: '#ffffff',
                 backgroundColor: '#06d6a0',
               },
             ]
-          };
+          }
         }
 
         if (this.chartResult) this.chartResult.destroy();
@@ -697,18 +710,19 @@ export class LVProComponent implements OnInit {
                 borderWidth: 2,
               }
             },
+            color: '#fff',
             responsive: true,
             maintainAspectRatio: false,
             tooltips: {
               filter: function (tooltipItem, data) {
-                  var label = data.datasets[tooltipItem.datasetIndex].label;
-                  if ((label.includes('GIS') || label.includes('ไม่พบปัญหา')) && tooltipItem.datasetIndex > 2) {
-                    return false;
-                  } else {
-                    return true;
-                  }
+                var label = data.datasets[tooltipItem.datasetIndex].label;
+                if ((label.includes('GIS') || label.includes('ไม่พบปัญหา')) && tooltipItem.datasetIndex > 2) {
+                  return false;
+                } else {
+                  return true;
+                }
               }
-           },
+            },
             legend: {
               labels: {
                 filter: function (item, chart) {
@@ -717,13 +731,27 @@ export class LVProComponent implements OnInit {
                     show = false;
                   }
                   return show;
+                },
+                color: '#ffffff',
+                position: 'bottom',
+                display: true,
+                defaultFontSize: 30,
+                labels: {
+                  fontColor: 'white'
                 }
               }
             },
             scales: {
+              xAxes: [{
+                ticks: {
+                  fontSize: 16,
+                  fontColor: "white",
+                }
+              }],
               yAxes: [{
                 ticks: {
-                  fontSize: 16
+                  fontSize: 16,
+                  fontColor: "white",
                 }
               }]
             },
@@ -731,7 +759,7 @@ export class LVProComponent implements OnInit {
               onComplete: function () {
                 var ctx = this.chart.ctx;
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-                ctx.fillStyle = "black";
+                ctx.fillStyle = "white";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
                 console.log(this.data.datasets);
@@ -739,7 +767,7 @@ export class LVProComponent implements OnInit {
                 var sumClsd = [];
                 var psum = [];
                 var pclsd = [];
-                var aryLen=this.data.datasets.length-1;
+                var aryLen = this.data.datasets.length - 1;
                 if (this.data.datasets.length == 7) {
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
@@ -755,11 +783,11 @@ export class LVProComponent implements OnInit {
                         //console.log(i,model,dataset.stack);
                         if (model.datasetLabel.includes("หม้อแปลงทั้งหมด")) {
                           ctx.fillText(dataset.data[i] + " เครื่อง", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")  && dataset.stack.includes("Stack 1")) {
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 1")) {
                           ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")  && dataset.stack.includes("Stack 2")) {
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 2")) {
                           ctx.fillText(sum[i] + " เครื่อง , " + psum[i] + "%", model.x + 10, model.y);
-                        } 
+                        }
                         // else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
                         //   ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
                         // }
@@ -800,7 +828,6 @@ export class LVProComponent implements OnInit {
               }
             }
           }
-
         });
 
         // ====================================================
