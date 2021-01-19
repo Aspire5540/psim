@@ -736,26 +736,33 @@ export class LVProComponent implements OnInit {
                 ctx.textBaseline = 'center';
                 console.log(this.data.datasets);
                 var sum = [];
+                var sumClsd = [];
                 var psum = [];
                 var pclsd = [];
+                var aryLen=this.data.datasets.length-1;
                 if (this.data.datasets.length == 7) {
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
-                    psum.push(Math.round(sum[i] / this.data.datasets[4].data[i] * 100));
-                    pclsd.push(Math.round(this.data.datasets[0].data[i] / this.data.datasets[1].data[i] * 100));
+                    sumClsd.push(this.data.datasets[0].data[i] + this.data.datasets[1].data[i] + this.data.datasets[2].data[i])
+                    psum.push(Math.round(sum[i] / this.data.datasets[aryLen].data[i] * 100));
+                    pclsd.push(Math.round(sumClsd[i] / this.data.datasets[aryLen].data[i] * 100));
                   }
 
                   this.data.datasets.forEach(function (dataset) {
                     for (var i = 0; i < dataset.data.length; i++) {
                       for (var key in dataset._meta) {
                         var model = dataset._meta[key].data[i]._model;
+                        //console.log(i,model,dataset.stack);
                         if (model.datasetLabel.includes("หม้อแปลงทั้งหมด")) {
                           ctx.fillText(dataset.data[i] + " เครื่อง", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")) {
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")  && dataset.stack.includes("Stack 1")) {
+                          ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")  && dataset.stack.includes("Stack 2")) {
                           ctx.fillText(sum[i] + " เครื่อง , " + psum[i] + "%", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
-                          ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
-                        }
+                        } 
+                        // else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
+                        //   ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
+                        // }
                         // console.log(model);
                       }
 
