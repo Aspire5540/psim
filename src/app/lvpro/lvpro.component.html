@@ -88,10 +88,16 @@
 
           </div>
           <mat-label>จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}}</mat-label>
-          <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
-            [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
-            [tooltip]="chartOptions2.tooltip" [xaxis]="chartOptions2.xaxis" [yaxis]="chartOptions2.yaxis"
-            [stroke]="chartOptions2.stroke"></apx-chart>
+
+          <div class="col-md-12 col-sm-12" style="height: 20pc;">
+
+            <canvas id='chartMat'></canvas>
+            <!-- <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
+                [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
+                [tooltip]="chartOptions2.tooltip" [xaxis]="chartOptions2.xaxis" [yaxis]="chartOptions2.yaxis"
+                [stroke]="chartOptions2.stroke"></apx-chart> -->
+    
+          </div>
         </div>
 
         <div class="col-md-6">
@@ -133,24 +139,24 @@
             </div>
 
             <div class="table-responsive">
-              <table class="mat-elevation-z8" mat-table  [dataSource]="dataSource2">
+              <table class="mat-elevation-z8" mat-table [dataSource]="dataSource2">
                 <ng-container matColumnDef="matCode">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef > รหัสพัสดุ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef> รหัสพัสดุ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq"> {{matreq.matCode}}</td>
                 </ng-container>
                 <ng-container matColumnDef="matName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef > ชื่อพัสดุ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef> ชื่อพัสดุ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq"> {{matreq.matName}}</td>
                 </ng-container>
                 <ng-container matColumnDef="nMat">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef >จำนวน </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef>จำนวน </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq">{{matreq.nMat}}</td>
                 </ng-container>
                 <ng-container matColumnDef="peaName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef >กฟฟ </th>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef>กฟฟ </th>
                   <td class="table-lg" mat-cell *matCellDef="let matreq">{{matreq.peaName}}</td>
                 </ng-container>
-                
+
 
                 <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
                 <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
@@ -321,18 +327,7 @@
               <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
             </ng-container>
 
-            <!-- <ng-container matColumnDef="Ia">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> Ia </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ia | number:'1.2-2'}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Ib">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> Ib </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ib | number:'1.2-2'}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Ic">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> Ic </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ic | number:'1.2-2'}} </td>
-            </ng-container> -->
+
             <ng-container matColumnDef="wbs">
               <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
               <td class="table-lg" mat-cell *matCellDef="let trdata">

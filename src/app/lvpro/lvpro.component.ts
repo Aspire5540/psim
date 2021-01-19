@@ -77,8 +77,8 @@ export class LVProComponent implements OnInit {
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions>;
 
-  myBarClsd: Chart;
-  myBar3: Chart;
+  // myBarClsd: Chart;
+  // BarMat: Chart;
   option = "2";
   displayedColumns = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'workstatus'];
   displayedColumns3 = ['matCode', 'matName', 'nMat', 'peaName'];
@@ -114,7 +114,7 @@ export class LVProComponent implements OnInit {
   // myDonutWBS5: Chart;
   // myDonutWBS6: Chart;
   chartResult: Chart;
-
+  chartMat: Chart;
   // PEA_TR0: number;
   // PEA_TR1: number;
   // PEA_TR2: number;
@@ -167,7 +167,7 @@ export class LVProComponent implements OnInit {
 
   ];
 
- 
+
 
 
   constructor(private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
@@ -219,6 +219,8 @@ export class LVProComponent implements OnInit {
     if (selected != undefined) {
       // console.log(selected);
       if (selected.includes("อื่นๆ")) {
+        return 0;
+      } else if (selected.includes("ไม่พบปัญหา")) {
         return 0;
       } else {
         return 1;
@@ -334,6 +336,7 @@ export class LVProComponent implements OnInit {
         var NoObj = [];
         var CLSDObj = [];
         var VoltObj = [];
+        var totalClsd = 0;
 
         data['data'].forEach(element => {
           kvaObj[element.Pea] = Number(element.totalTr);
@@ -342,14 +345,17 @@ export class LVProComponent implements OnInit {
         data['dataGIS'].forEach(element => {
           GISObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
+          totalClsd = totalClsd + Number(element.totalTr);
         });
         data['dataNo'].forEach(element => {
           NoObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
+          totalClsd = totalClsd + Number(element.totalTr);
         });
 
         data['dataCLSD'].forEach(element => {
           CLSDObj[element.Pea] = Number(element.totalTr);
+          totalClsd = totalClsd + Number(element.totalTr);
         });
 
         if (this.option == '6') {
@@ -423,13 +429,17 @@ export class LVProComponent implements OnInit {
         //APEX CHART
 
         this.chartOptions1 = {
-          series: [this.TrTotal / this.TrPlnTal * 100],
+          series: [this.TrTotal / this.TrPlnTal * 100, totalClsd / this.TrPlnTal * 100],
           chart: {
             height: 400,
             type: "radialBar",
+            stacked: true,
             toolbar: {
               show: false
             }
+          },
+          fill: {
+            colors: ['#118ab2', '#06d6a0'],
           },
           plotOptions: {
             radialBar: {
@@ -470,6 +480,17 @@ export class LVProComponent implements OnInit {
                   color: "#888",
                   fontSize: "17px"
                 },
+                total: {
+                  show: true,
+                  label: 'ผลการตรวจสอบ',
+                  formatter: function (val) {
+                    return parseInt(val.config.series[0].toString(), 10).toString() + "%";;
+                  }
+                  // formatter: function () {
+                  //   // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                  //   return 249
+                  // }
+                },
                 value: {
                   formatter: function (val) {
                     return parseInt(val.toString(), 10).toString() + "%";
@@ -481,24 +502,13 @@ export class LVProComponent implements OnInit {
               }
             }
           },
-          fill: {
-            type: "gradient",
-            gradient: {
-              shade: "dark",
-              type: "horizontal",
-              shadeIntensity: 0.5,
-              gradientToColors: ["#ABE5A1"],
-              inverseColors: true,
-              opacityFrom: 1,
-              opacityTo: 1,
-              stops: [0, 100]
-            }
-          },
           stroke: {
             lineCap: "round"
           },
-          labels: ["ผลการดำเนินการ"]
+          labels: ["ผลการตรวจสอบ", "ผลการปิดงาน"]
         };
+
+
         //กราฟแท่ง ราย กฟฟ
         // this.chartOptions2 = {
         //   series: [
@@ -593,6 +603,18 @@ export class LVProComponent implements OnInit {
                 backgroundColor: '#7209b7',
               },
               {
+                label: 'แก้ไข GIS',
+                stack: 'Stack 1',
+                data: GIS,
+                backgroundColor: '#ffd166',
+              },
+              {
+                label: 'ไม่พบปัญหา',
+                stack: 'Stack 1',
+                data: No,
+                backgroundColor: '#ffd166',
+              },
+              {
                 label: 'มี WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 2',
                 data: kva,
@@ -608,7 +630,7 @@ export class LVProComponent implements OnInit {
                 label: 'ไม่พบปัญหา',
                 stack: 'Stack 2',
                 data: No,
-                backgroundColor: '#f4a261',
+                backgroundColor: '#ffd166',
               },
               {
                 label: 'หม้อแปลงทั้งหมด',
@@ -661,6 +683,7 @@ export class LVProComponent implements OnInit {
             ]
           };
         }
+
         if (this.chartResult) this.chartResult.destroy();
         this.chartResult = new Chart('chartResult', {
           type: 'horizontalBar',
@@ -676,11 +699,26 @@ export class LVProComponent implements OnInit {
             },
             responsive: true,
             maintainAspectRatio: false,
+            tooltips: {
+              filter: function (tooltipItem, data) {
+                  var label = data.datasets[tooltipItem.datasetIndex].label;
+                  if ((label.includes('GIS') || label.includes('ไม่พบปัญหา')) && tooltipItem.datasetIndex > 2) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+              }
+           },
             legend: {
-              position: 'bottom',
-              display: true,
-              defaultFontSize: 30,
-
+              labels: {
+                filter: function (item, chart) {
+                  var show = true;
+                  if ((item.text.includes('GIS') || item.text.includes('ไม่พบปัญหา') && item.datasetIndex > 2)) {
+                    show = false;
+                  }
+                  return show;
+                }
+              }
             },
             scales: {
               yAxes: [{
@@ -696,7 +734,7 @@ export class LVProComponent implements OnInit {
                 ctx.fillStyle = "black";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
-                // console.log(this.data.datasets.length);
+                console.log(this.data.datasets);
                 var sum = [];
                 var psum = [];
                 var pclsd = [];
@@ -754,17 +792,6 @@ export class LVProComponent implements OnInit {
                 }
               }
             }
-            // plugins: {
-            //   legend: {
-            //     labels: {
-            //       // This more specific font property overrides the global property
-            //       font: {
-            //         size: 18
-            //       }
-            //     },
-            //     position: 'right',
-            //   },
-            // }
           }
 
         });
@@ -821,169 +848,93 @@ export class LVProComponent implements OnInit {
         var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
         if (choice == "1") {
           this.nDate = "15 วัน";
-          this.chartOptions2 = {
-            series: [
+          var chartData = {
+            labels: label,
+            datasets: [
               {
-                name: "หม้อแปลงที่ต้องใช้งาน",
-                data: TR15
+                label: 'หม้อแปลงที่ต้องการใช้งาน',
+                data: TR15,
+                backgroundColor: '#e36414',
               },
               {
-                name: "หม้อแปลงคงคลัง",
-                data: TRStock
+                label: 'หม้อแปลงคงคลัง',
+                data: TRStock,
+                backgroundColor: '#9a031e',
               }
-            ],
-            chart: {
-              type: "bar",
-              height: 350,
-              toolbar: {
-                show: false
-              },
-            },
-            plotOptions: {
-              bar: {
-                horizontal: true,
-                dataLabels: {
-                  position: "top"
-                }
-              }
-            },
-            dataLabels: {
-              enabled: true,
-              // formatter: function (val, index) {
-              //   var reslt;
-              //   //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-              //   //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              //   if (index.seriesIndex == 0) {
-              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
-              //   } else {
-              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
-              //   }
-              //   return reslt;
-              // },
-              offsetX: 70,
-              style: {
-                fontSize: "12px",
-                colors: ["#304758"]
-              }
-            },
-            tooltip: {
-              x: {
-                formatter: function (val) {
-                  return val.toString();
-                }
-              },
-              y: {
-                formatter: function (val, index) {
-                  //console.log(index);
-                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
-                }
-              }
-            },
-            xaxis: {
-              categories: label,
-              labels: {
-                formatter: function (val, index) {
-                  //console.log(index);
-                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
-                },
-                style: {
-                  fontSize: "14px",
-                }
-              }
-            },
-            yaxis: {
-              labels: {
-                style: {
-                  fontSize: "14px",
-                }
-              }
-            },
+            ]
           };
         } else {
           this.nDate = "45 วัน";
-          this.chartOptions2 = {
-            series: [
+          var chartData = {
+            labels: label,
+            datasets: [
               {
-                name: "หม้อแปลงที่ต้องใช้งาน",
-                data: TR45
+                label: 'หม้อแปลงที่ต้องการใช้งาน',
+                data: TR45,
+                backgroundColor: '#e36414',
               },
               {
-                name: "หม้อแปลงคงคลัง",
-                data: TRStock2
+                label: 'หม้อแปลงคงคลัง',
+                data: TRStock2,
+                backgroundColor: '#9a031e',
               }
-            ],
-            chart: {
-              type: "bar",
-              height: 350,
-              toolbar: {
-                show: false
-              },
-            },
-            plotOptions: {
-              bar: {
-                horizontal: true,
-                dataLabels: {
-                  position: "top"
-                }
-              }
-            },
-            dataLabels: {
-              enabled: true,
-              // formatter: function (val, index) {
-              //   var reslt;
-              //   //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-              //   //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              //   if (index.seriesIndex == 0) {
-              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
-              //   } else {
-              //     reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
-              //   }
-              //   return reslt;
-              // },
-              offsetX: 70,
-              style: {
-                fontSize: "12px",
-                colors: ["#9e2a2b"]
-              }
-            },
-            tooltip: {
-              x: {
-                formatter: function (val) {
-                  return val.toString();
-                }
-              },
-              y: {
-                formatter: function (val, index) {
-                  //console.log(index);
-                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
-                }
-              }
-            },
-            xaxis: {
-              categories: label,
-              labels: {
-                formatter: function (val, index) {
-                  //console.log(index);
-                  //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-                  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
-                },
-                style: {
-                  fontSize: "14px",
-                }
-              }
-            },
-            yaxis: {
-              labels: {
-                style: {
-                  fontSize: "14px",
-                }
-              }
-            },
+            ]
           };
+
+
         }
+        if (this.chartMat) this.chartMat.destroy();
+        this.chartMat = new Chart('chartMat', {
+          type: 'horizontalBar',
+          data: chartData,
+          options: {
+            indexAxis: 'y',
+            // Elements options apply to all of the options unless overridden in a dataset
+            // In this case, we are setting the border of each horizontal bar to be 2px wide
+            elements: {
+              bar: {
+                borderWidth: 2,
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: 'bottom',
+              display: true,
+              defaultFontSize: 30,
+
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  fontSize: 16
+                }
+              }]
+            },
+            animation: {
+              onComplete: function () {
+                var ctx = this.chart.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                ctx.fillStyle = "black";
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'center';
+                this.data.datasets.forEach(function (dataset) {
+                  for (var i = 0; i < dataset.data.length; i++) {
+                    for (var key in dataset._meta) {
+                      var model = dataset._meta[key].data[i]._model;
+                      ctx.fillText(dataset.data[i] + " เครื่อง", model.x + 10, model.y);
+                    }
+
+                  }
+                });
+
+              }
+            }
+          }
+
+        });
+
+
       } else {
         alert(data['data']);
       }
