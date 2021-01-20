@@ -106,7 +106,8 @@ export class LVProComponent implements OnInit {
 
   condition = 0;
   peaCode = "";
-  nDate = "15 วัน";
+  nDate ="15";
+  choice='1';
   // myDonut: Chart;
   // myDonut200: Chart;
   // myDonut80: Chart;
@@ -141,7 +142,7 @@ export class LVProComponent implements OnInit {
   currentPea = "";
   TrTotal = 0;
   TrPlnTal = 0;
-
+  TrTotalClsd=0;
   Statuss = [
     { value: '-' },
     { value: 'อยู่ระหว่างตรวจสอบ' },
@@ -345,17 +346,17 @@ export class LVProComponent implements OnInit {
         data['dataGIS'].forEach(element => {
           GISObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
         data['dataNo'].forEach(element => {
           NoObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
         data['dataCLSD'].forEach(element => {
           CLSDObj[element.Pea] = Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
         if (this.option == '6') {
@@ -429,7 +430,7 @@ export class LVProComponent implements OnInit {
         //APEX CHART
 
         this.chartOptions1 = {
-          series: [this.TrTotal / this.TrPlnTal * 100, totalClsd / this.TrPlnTal * 100],
+          series: [this.TrTotal / this.TrPlnTal * 100, this.TrTotalClsd / this.TrPlnTal * 100],
           chart: {
             height: 400,
             type: "radialBar",
@@ -654,6 +655,18 @@ export class LVProComponent implements OnInit {
                 backgroundColor: '#7209b7',
               },
               {
+                label: 'แก้ไข GIS',
+                stack: 'Stack 1',
+                data: GIS,
+                backgroundColor: '#ffd166',
+              },
+              {
+                label: 'ไม่พบปัญหา',
+                stack: 'Stack 1',
+                data: No,
+                backgroundColor: '#ffd166',
+              },
+              {
                 label: 'มี WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 2',
                 data: kva,
@@ -749,7 +762,7 @@ export class LVProComponent implements OnInit {
                 ctx.fillStyle = "white";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
-                console.log(this.data.datasets);
+                // console.log(this.data.datasets);
                 var sum = [];
                 var sumClsd = [];
                 var psum = [];
@@ -786,12 +799,13 @@ export class LVProComponent implements OnInit {
                 } else {
                   var total = []
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
-                    total.push(this.data.datasets[4].data[i] + this.data.datasets[5].data[i]);
+                    total.push(this.data.datasets[aryLen-1].data[i] + this.data.datasets[aryLen].data[i]);
                   }
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
+                    sumClsd.push(this.data.datasets[0].data[i] + this.data.datasets[1].data[i] + this.data.datasets[2].data[i])
                     psum.push(Math.round(sum[i] / total[i] * 100));
-                    pclsd.push(Math.round(this.data.datasets[0].data[i] / this.data.datasets[1].data[i] * 100));
+                    pclsd.push(Math.round(sumClsd[i] / total[i] * 100));
                   }
 
                   this.data.datasets.forEach(function (dataset) {
@@ -800,10 +814,10 @@ export class LVProComponent implements OnInit {
                         var model = dataset._meta[key].data[i]._model;
                         if (model.datasetLabel.includes("แรงดัน 205-210")) {
                           ctx.fillText(total[i] + " เครื่อง", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ไม่พบปัญหา")) {
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 1")) {
+                          ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
+                        } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 2")) {
                           ctx.fillText(sum[i] + " เครื่อง , " + psum[i] + "%", model.x + 10, model.y);
-                        } else if (model.datasetLabel.includes("ปิด WBS/ใบสั่ง")) {
-                          ctx.fillText(dataset.data[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
                         }
                         // console.log(model);
                       }
@@ -846,7 +860,7 @@ export class LVProComponent implements OnInit {
 
   }
   getMatReq() {
-    this.configService.getMatReq('ldcad/getmatreq.php')
+    this.configService.getMatReq('ldcad/getmatreq.php?nDay=' + this.nDate)
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
         this.dataSource2.data = res as matreq[];
@@ -859,6 +873,7 @@ export class LVProComponent implements OnInit {
 
 
   getMat(choice) {
+    this.choice=choice;
     this.configService.postdata2('ldcad/rdMat.php', {}).subscribe((data => {
       if (data['status'] == 1) {
         // console.log(data);
@@ -867,8 +882,23 @@ export class LVProComponent implements OnInit {
         var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"], data["nTR"]["15"]["100"], data["nTR"]["15"]["160"]];
         var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
         var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
+        console.log(data);
+        data['req'].forEach(element => {
+          if(element.nDay=="15" && choice == "1"){
+            label.push(element.matNameShort);
+            TR15.push(Number(element.nMat));
+            TRStock.push(Number(element.stock));
+            
+          }
+          if(element.nDay=="45" && choice != "1"){
+            label.push(element.matNameShort);
+            TR45.push(Number(element.nMat));
+            TRStock2.push(Number(element.stock));
+          }
+
+        });
         if (choice == "1") {
-          this.nDate = "15 วัน";
+          this.nDate = "15";
           var chartData = {
             labels: label,
             datasets: [
@@ -885,7 +915,7 @@ export class LVProComponent implements OnInit {
             ]
           };
         } else {
-          this.nDate = "45 วัน";
+          this.nDate = "45";
           var chartData = {
             labels: label,
             datasets: [
@@ -952,7 +982,7 @@ export class LVProComponent implements OnInit {
                   for (var i = 0; i < dataset.data.length; i++) {
                     for (var key in dataset._meta) {
                       var model = dataset._meta[key].data[i]._model;
-                      ctx.fillText(dataset.data[i] + " เครื่อง", model.x + 10, model.y);
+                      ctx.fillText(dataset.data[i], model.x + 10, model.y);
                     }
 
                   }
@@ -963,7 +993,7 @@ export class LVProComponent implements OnInit {
           }
 
         });
-
+        this.getMatReq();
 
       } else {
         alert(data['data']);
@@ -1066,7 +1096,9 @@ export class LVProComponent implements OnInit {
     var input = this.registerForm.value;
     input["user"] = localStorage.getItem('name');
     input["peaCode"] = localStorage.getItem('peaCode');
-    console.log(this.registerForm.value);
+    input["nDay"] = this.nDate;
+    this.getMat(this.choice);
+    // console.log(this.registerForm.value);
     this.configService.postdata2('ldcad/wriMat.php', this.registerForm.value).subscribe((data => {
       if (data['status'] == 1) {
         //this.getTrData();
@@ -1077,14 +1109,6 @@ export class LVProComponent implements OnInit {
       }
 
     }));
-
-    // this.configService.getmeterdata2('serchmeter.php?PEA_Meter=' + this.registerForm.value.PEAMeter)
-    //   //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
-    //   .subscribe(res => {
-    //     this.registerForm.resetForm();
-    //     this.dataSource2.data = res as meterdata2[];
-
-    // })
   }
 
 
