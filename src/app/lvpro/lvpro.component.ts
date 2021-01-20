@@ -440,7 +440,7 @@ export class LVProComponent implements OnInit {
             }
           },
           fill: {
-            colors: ['#118ab2', '#06d6a0'],
+            colors: ['#118ab2', '#ffd166'],
           },
           plotOptions: {
             radialBar: {
@@ -605,7 +605,7 @@ export class LVProComponent implements OnInit {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
-                backgroundColor: '#00bbf9',
+                backgroundColor: '#cc8400',
               },
               {
                 label: 'แก้ไข GIS',
@@ -653,7 +653,7 @@ export class LVProComponent implements OnInit {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
-                backgroundColor: '#00bbf9',
+                backgroundColor: '#cc8400',
               },
               {
                 label: 'แก้ไข GIS',
@@ -1115,6 +1115,10 @@ export class LVProComponent implements OnInit {
 
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource.data, 'TRdata');
+  }
+
+  exportAsXLSX2(): void {
+    this.configService.exportAsExcelFile(this.dataSource2.data, 'Matdata');
   }
   // exportAsXLSX2(): void {
   //   this.configService.exportAsExcelFile(this.dataSource1.data, 'MeterData');

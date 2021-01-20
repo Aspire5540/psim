@@ -44,14 +44,28 @@ background-color: #e0308e;
 color: rgb(255, 255, 255);
 
 }
+.mat-form-field.placeholder {
+  color: #00D318;
+}
 
-input.ng-invalid.ng-touched{
-  border: solid 1px red;
-  }
-  
-  .input-lg {
-      font-size: 15px;
-    }
+.mat-input-element::placeholder{
+  color: white;
+}
+
+
+.not-empty-select.mat-selected {
+  color: green !important;
+}
+.mat-select-value-text {
+  color:white !important;
+}
+
+::ng-deep .mat-select-value{    
+  color: white!important;  }
+
+.input-lg {
+  font-size: 15px;
+}
   
   
 .table-lg {
