@@ -1018,12 +1018,12 @@ export class LVProComponent implements OnInit {
             labels: label,
             datasets: [
               {
-                label: 'หม้อแปลงที่ต้องการใช้งาน',
+                label: 'พัสดุที่ต้องการใช้งาน',
                 data: TR15,
                 backgroundColor: '#F0BC46',
               },
               {
-                label: 'หม้อแปลงคงคลัง',
+                label: 'พัสดุคงคลัง',
                 data: TRStock,
                 backgroundColor: '#F08646',
               }
@@ -1035,12 +1035,12 @@ export class LVProComponent implements OnInit {
             labels: label,
             datasets: [
               {
-                label: 'หม้อแปลงที่ต้องการใช้งาน',
+                label: 'พัสดุที่ต้องการใช้งาน',
                 data: TR45,
                 backgroundColor: '#F0BC46',
               },
               {
-                label: 'หม้อแปลงคงคลัง',
+                label: 'พัสดุคงคลัง',
                 data: TRStock2,
                 backgroundColor: '#F08646',
               }
@@ -1095,11 +1095,27 @@ export class LVProComponent implements OnInit {
                 ctx.fillStyle = "white";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
-                this.data.datasets.forEach(function (dataset) {
+                // console.log(this.data.datasets[1].data[0])
+                var mat=[];
+                this.data.datasets.forEach(function (dataset,) {
+                  
                   for (var i = 0; i < dataset.data.length; i++) {
                     for (var key in dataset._meta) {
                       var model = dataset._meta[key].data[i]._model;
-                      ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                      
+                      if (dataset.label.includes("พัสดุที่ต้องการใช้งาน")){
+                        mat.push(dataset.data[i]);
+                        ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                        // console.log(mat)
+                      }else{
+                        if(dataset.data[i]-mat[i]>0){
+                          ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                        }else{
+                          ctx.fillText(dataset.data[i]+" ,ขาด "+(mat[i]-dataset.data[i]), model.x + 10, model.y);
+                        }
+                      }
+                      
+                      
                     }
 
                   }
