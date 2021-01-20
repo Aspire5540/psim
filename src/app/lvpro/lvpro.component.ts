@@ -337,7 +337,7 @@ export class LVProComponent implements OnInit {
         var NoObj = [];
         var CLSDObj = [];
         var VoltObj = [];
-        var totalClsd = 0;
+        this.TrTotalClsd = 0;
 
         data['data'].forEach(element => {
           kvaObj[element.Pea] = Number(element.totalTr);
@@ -599,12 +599,13 @@ export class LVProComponent implements OnInit {
         if (this.option != '6') {
           chartData = {
             labels: Pea,
+            segmentShowStroke: false,
             datasets: [
               {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
-                backgroundColor: '#7209b7',
+                backgroundColor: '#00bbf9',
               },
               {
                 label: 'แก้ไข GIS',
@@ -652,7 +653,7 @@ export class LVProComponent implements OnInit {
                 label: 'ปิด WBS/ใบสั่ง แล้ว',
                 stack: 'Stack 1',
                 data: CLSD,
-                backgroundColor: '#7209b7',
+                backgroundColor: '#00bbf9',
               },
               {
                 label: 'แก้ไข GIS',
@@ -682,7 +683,7 @@ export class LVProComponent implements OnInit {
                 label: 'ไม่พบปัญหา',
                 stack: 'Stack 2',
                 data: No,
-                backgroundColor: '#f4a261',
+                backgroundColor: '#ffd166',
               },
               {
                 label: 'แรงดัน 200-204 V',
