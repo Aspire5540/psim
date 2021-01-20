@@ -106,8 +106,9 @@ export class LVProComponent implements OnInit {
 
   condition = 0;
   peaCode = "";
-  nDate ="15";
-  choice='1';
+  nDate = "15";
+  choice = '1';
+  showTR= false;
   // myDonut: Chart;
   // myDonut200: Chart;
   // myDonut80: Chart;
@@ -116,6 +117,7 @@ export class LVProComponent implements OnInit {
   // myDonutWBS6: Chart;
   chartResult: Chart;
   chartMat: Chart;
+  chartTR: Chart;
   // PEA_TR0: number;
   // PEA_TR1: number;
   // PEA_TR2: number;
@@ -142,7 +144,7 @@ export class LVProComponent implements OnInit {
   currentPea = "";
   TrTotal = 0;
   TrPlnTal = 0;
-  TrTotalClsd=0;
+  TrTotalClsd = 0;
   Statuss = [
     { value: '-' },
     { value: 'อยู่ระหว่างตรวจสอบ' },
@@ -302,8 +304,106 @@ export class LVProComponent implements OnInit {
   }
   onValChange(val) {
     this.option = val;
+    this.showTR=false;
+    if (val == 5) {
+      this.showTR=true;
+      this.getLoad100();
+    }
     this.getJobProgressPea();
 
+  }
+  getLoad100() {
+    this.configService.postdata2('ldcad/rdLoad100.php', {}).subscribe((data => {
+      if (data['status'] == 1) {
+        console.log(data['data']);
+        var label=['30 kVA']
+        var nTR=[0];
+        data['data'].forEach(element => {
+          if (Number(element.kva)<=30){
+            nTR[0]=nTR[0]+Number(element.nTR)
+          }else{
+            label.push(element.kva+" kVA");
+            nTR.push(element.nTR)
+          }
+
+        });
+        var chartData = {
+          labels: label,
+          datasets: [
+            {
+              label: 'จำนวนหม้อแปลง',
+              data: nTR,
+              backgroundColor: '#FFFFF',
+            },
+          ]
+        };
+
+        if (this.chartTR) this.chartTR.destroy();
+        this.chartTR = new Chart('chartTR', {
+          type: 'horizontalBar',
+          data: chartData,
+          options: {
+            indexAxis: 'y',
+            // Elements options apply to all of the options unless overridden in a dataset
+            // In this case, we are setting the border of each horizontal bar to be 2px wide
+            elements: {
+              bar: {
+                borderWidth: 2,
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: 'bottom',
+              display: true,
+              defaultFontSize: 30,
+              labels: {
+                display: true,
+                defaultFontSize: 30,
+                fontColor: 'white'
+              }
+            },
+            scales: {
+              xAxes: [{
+                ticks: {
+                  fontSize: 14,
+                  fontColor: "white",
+                }
+              }],
+              yAxes: [{
+                ticks: {
+                  fontSize: 14,
+                  fontColor: "white",
+                }
+              }]
+            },
+            animation: {
+              onComplete: function () {
+                var ctx = this.chart.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                ctx.fillStyle = "white";
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'center';
+                this.data.datasets.forEach(function (dataset) {
+                  for (var i = 0; i < dataset.data.length; i++) {
+                    for (var key in dataset._meta) {
+                      var model = dataset._meta[key].data[i]._model;
+                      ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                    }
+
+                  }
+                });
+
+              }
+            }
+          }
+
+        });
+      } else {
+        alert(data['data']);
+      }
+
+    }));
   }
   selectPea(event) {
     this.selPea = event.value[0];
@@ -483,10 +583,10 @@ export class LVProComponent implements OnInit {
                 },
                 total: {
                   show: true,
-                  label: 'ผลการตรวจสอบ',
-                  color:"white",
+                  label: 'ผลการตรวจสอบ : ผลการปิดงาน',
+                  color: "white",
                   formatter: function (val) {
-                    return parseInt(val.config.series[0].toString(), 10).toString() + "%";;
+                    return parseInt(val.config.series[0].toString(), 10).toString() + "%" + " : " + parseInt(val.config.series[1].toString(), 10).toString() + "%";
                   }
                   // formatter: function () {
                   //   // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
@@ -508,7 +608,7 @@ export class LVProComponent implements OnInit {
             lineCap: "round"
           },
           labels: ["ผลการตรวจสอบ", "ผลการปิดงาน"]
-         
+
         };
 
 
@@ -595,7 +695,7 @@ export class LVProComponent implements OnInit {
         // };
 
         // Chart JS ====================================
-        var chartData={};
+        var chartData = {};
         if (this.option != '6') {
           chartData = {
             labels: Pea,
@@ -718,14 +818,31 @@ export class LVProComponent implements OnInit {
             responsive: true,
             maintainAspectRatio: false,
             tooltips: {
-              filter: function (tooltipItem, data) {
-                var label = data.datasets[tooltipItem.datasetIndex].label;
-                if ((label.includes('GIS') || label.includes('ไม่พบปัญหา')) && tooltipItem.datasetIndex > 2) {
-                  return false;
-                } else {
-                  return true;
+              position: 'nearest',
+              mode: 'single',
+              callbacks: {
+                // title: function(tooltipItem, data) {
+                //     return "yy";
+                // },
+
+                label: function (tooltipItem, data) {
+                  var ind = tooltipItem.datasetIndex;
+                  if (ind == 1 || ind == 2 || ind == 4 || ind == 5) {
+                    return data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง"
+                  } else {
+                    return data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง"
+                  }
                 }
-              }
+              },
+              // filter: function (tooltipItem, data) {
+              //   console.log(tooltipItem, data);
+              //   var label = data.datasets[tooltipItem.datasetIndex].label;
+              //   if ((label.includes('GIS') || label.includes('ไม่พบปัญหา')) && tooltipItem.datasetIndex > 2) {
+              //     return false;
+              //   } else {
+              //     return true;
+              //   }
+              // }
             },
             legend: {
               position: 'bottom',
@@ -800,7 +917,7 @@ export class LVProComponent implements OnInit {
                 } else {
                   var total = []
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
-                    total.push(this.data.datasets[aryLen-1].data[i] + this.data.datasets[aryLen].data[i]);
+                    total.push(this.data.datasets[aryLen - 1].data[i] + this.data.datasets[aryLen].data[i]);
                   }
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
@@ -871,10 +988,8 @@ export class LVProComponent implements OnInit {
 
 
   }
-
-
   getMat(choice) {
-    this.choice=choice;
+    this.choice = choice;
     this.configService.postdata2('ldcad/rdMat.php', {}).subscribe((data => {
       if (data['status'] == 1) {
         // console.log(data);
@@ -883,15 +998,14 @@ export class LVProComponent implements OnInit {
         var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"], data["nTR"]["15"]["100"], data["nTR"]["15"]["160"]];
         var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
         var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
-        console.log(data);
         data['req'].forEach(element => {
-          if(element.nDay=="15" && choice == "1"){
+          if (element.nDay == "15" && choice == "1") {
             label.push(element.matNameShort);
             TR15.push(Number(element.nMat));
             TRStock.push(Number(element.stock));
-            
+
           }
-          if(element.nDay=="45" && choice != "1"){
+          if (element.nDay == "45" && choice != "1") {
             label.push(element.matNameShort);
             TR45.push(Number(element.nMat));
             TRStock2.push(Number(element.stock));
@@ -954,9 +1068,11 @@ export class LVProComponent implements OnInit {
               position: 'bottom',
               display: true,
               defaultFontSize: 30,
-              labels:{display: true,
+              labels: {
+                display: true,
                 defaultFontSize: 30,
-                fontColor: 'white'}
+                fontColor: 'white'
+              }
             },
             scales: {
               xAxes: [{
@@ -1096,6 +1212,8 @@ export class LVProComponent implements OnInit {
   onSubmit() {
     var input = this.registerForm.value;
     input["user"] = localStorage.getItem('name');
+    // input["peaCode"] = "B06101";
+    // input["peaCode"] = "B01101";
     input["peaCode"] = localStorage.getItem('peaCode');
     input["nDay"] = this.nDate;
     this.getMat(this.choice);

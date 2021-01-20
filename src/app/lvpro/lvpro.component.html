@@ -14,7 +14,7 @@
         <mat-form-field>
           <mat-label style = "color:white;">กฟฟ. </mat-label>
           <mat-select (selectionChange)="selectPea($event)">
-            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]" style="color: white; background-color: #30366C;">
               {{pea.peaCode +" "+pea.peaName}}
             </mat-option>
           </mat-select>
@@ -59,16 +59,16 @@
             </div>
 
           </div>
-        </div>
+        </div>  
       </div>
       <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12" style="height: 50pc;">
 
         <canvas id='chartResult'></canvas>
-        <!-- <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
-            [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
-            [tooltip]="chartOptions2.tooltip" [xaxis]="chartOptions2.xaxis" [yaxis]="chartOptions2.yaxis"
-            [stroke]="chartOptions2.stroke"></apx-chart> -->
 
+      </div>
+      <div class="col-md-4 col-sm-4 float-right"></div>
+      <div *ngIf="showTR"  class="col-md-8 col-sm-8 float-right" style="height: 15pc;">
+        <canvas id='chartTR'></canvas>
       </div>
     </div>
   </mat-card-content>
@@ -85,18 +85,11 @@
               <mat-button-toggle (change)="getMat($event.value)" value="1">15 วัน</mat-button-toggle>
               <mat-button-toggle (change)="getMat($event.value)" value="2">45 วัน</mat-button-toggle>
             </mat-button-toggle-group>
-
           </div>
           <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน</mat-label>
 
           <div class="col-md-12 col-sm-12" style="height: 20pc;">
-
             <canvas id='chartMat'></canvas>
-            <!-- <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart"
-                [dataLabels]="chartOptions2.dataLabels" [plotOptions]="chartOptions2.plotOptions"
-                [tooltip]="chartOptions2.tooltip" [xaxis]="chartOptions2.xaxis" [yaxis]="chartOptions2.yaxis"
-                [stroke]="chartOptions2.stroke"></apx-chart> -->
-    
           </div>
         </div>
 
@@ -272,7 +265,7 @@
               <mat-form-field appearance="legacy">
                 <mat-label style="color: white;">ระบุเงื่อนไข</mat-label>
                 <mat-select (selectionChange)="selectCondition($event)">
-                  <mat-option *ngFor="let Condition of Conditions" [value]="[Condition.value]">
+                  <mat-option *ngFor="let Condition of Conditions" [value]="[Condition.value]" style="color: white; background-color: #30366C;">
                     {{Condition.viewvalue}}
                   </mat-option>
                 </mat-select>
