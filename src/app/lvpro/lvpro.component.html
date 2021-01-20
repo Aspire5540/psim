@@ -14,7 +14,7 @@
         <mat-form-field>
           <mat-label style = "color:white;">กฟฟ. </mat-label>
           <mat-select (selectionChange)="selectPea($event)">
-            <mat-option *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]" style="color: white; background-color: #30366C;">
+            <mat-option class="not-empty-select" *ngFor="let pea of peaname2" [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
               {{pea.peaCode +" "+pea.peaName}}
             </mat-option>
           </mat-select>
@@ -100,7 +100,7 @@
               <!-- <div class="col-md-3">
                 <input type="text" class="form-control" name="PEAMeter" placeholder="ระบุหมายเลขมิเตอร์หรือชื่อผู้ใช้ไฟฟ้า" ngModel required> 
               </div> -->
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="form-group row">
                   <label class="col-sm-9 col-form-label  input-lg" style="color: white;">รหัสพัสดุ</label>
                   <div class="col-sm-12">
@@ -109,7 +109,7 @@
                 </div>
               </div>
 
-              <div class="col-md-5">
+              <div class="col-md-4">
                 <div class="form-group row">
                   <label class="col-sm-9 col-form-label  input-lg" style="color: white;">ชื่อพัสดุ</label>
                   <div class="col-sm-12">
@@ -126,8 +126,13 @@
                   </div>
                 </div>
               </div>
-
+              
               <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2" style="font-size: 18px; margin-top: 29px; ;width: 100px; height: 39px; color: white; background-color:green;border-color:whitesmoke; ">บันทึก</button>
+
+              <div class="col-md-2" style="margin-top: 29px; ">
+                <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
+                    style="font-size:30px;color:green;"></i></button>
+              </div>
 
             </div>
 
@@ -265,7 +270,7 @@
               <mat-form-field appearance="legacy">
                 <mat-label style="color: white;">ระบุเงื่อนไข</mat-label>
                 <mat-select (selectionChange)="selectCondition($event)">
-                  <mat-option *ngFor="let Condition of Conditions" [value]="[Condition.value]" style="color: white; background-color: #30366C;">
+                  <mat-option class="not-empty-select" *ngFor="let Condition of Conditions" [value]="[Condition.value]">
                     {{Condition.viewvalue}}
                   </mat-option>
                 </mat-select>
@@ -279,7 +284,7 @@
 
             <div class="col-md-3">
               <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
-                  style="font-size:20px;color:blue"></i></button>
+                  style="font-size:20px;color:green"></i></button>
             </div>
 
           </div>
