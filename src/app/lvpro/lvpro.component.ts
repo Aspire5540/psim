@@ -479,7 +479,7 @@ export class LVProComponent implements OnInit {
                   offsetY: -10,
                   show: true,
                   color: "#888",
-                  fontSize: "17px"
+                  fontSize: "17px",
                 },
                 total: {
                   show: true,
@@ -603,7 +603,6 @@ export class LVProComponent implements OnInit {
                 stack: 'Stack 1',
                 data: CLSD,
                 backgroundColor: '#7209b7',
-                fontColor: '#fff'
               },
               {
                 label: 'แก้ไข GIS',
@@ -735,24 +734,21 @@ export class LVProComponent implements OnInit {
                   }
                   return show;
                 },
-                color: '#ffffff',
                 display: true,
                 defaultFontSize: 30,
-                labels: {
-                  fontColor: 'white'
-                }
+                fontColor: 'white'
               }
             },
             scales: {
               xAxes: [{
                 ticks: {
-                  fontSize: 16,
+                  fontSize: 14,
                   fontColor: "white",
                 }
               }],
               yAxes: [{
                 ticks: {
-                  fontSize: 16,
+                  fontSize: 14,
                   fontColor: "white",
                 }
               }]
@@ -907,12 +903,12 @@ export class LVProComponent implements OnInit {
               {
                 label: 'หม้อแปลงที่ต้องการใช้งาน',
                 data: TR15,
-                backgroundColor: '#e36414',
+                backgroundColor: '#F0BC46',
               },
               {
                 label: 'หม้อแปลงคงคลัง',
                 data: TRStock,
-                backgroundColor: '#9a031e',
+                backgroundColor: '#F08646',
               }
             ]
           };
@@ -924,12 +920,12 @@ export class LVProComponent implements OnInit {
               {
                 label: 'หม้อแปลงที่ต้องการใช้งาน',
                 data: TR45,
-                backgroundColor: '#e36414',
+                backgroundColor: '#F0BC46',
               },
               {
                 label: 'หม้อแปลงคงคลัง',
                 data: TRStock2,
-                backgroundColor: '#9a031e',
+                backgroundColor: '#F08646',
               }
             ]
           };
@@ -955,12 +951,21 @@ export class LVProComponent implements OnInit {
               position: 'bottom',
               display: true,
               defaultFontSize: 30,
-
+              labels:{display: true,
+                defaultFontSize: 30,
+                fontColor: 'white'}
             },
             scales: {
+              xAxes: [{
+                ticks: {
+                  fontSize: 14,
+                  fontColor: "white",
+                }
+              }],
               yAxes: [{
                 ticks: {
-                  fontSize: 16
+                  fontSize: 14,
+                  fontColor: "white",
                 }
               }]
             },
@@ -968,7 +973,7 @@ export class LVProComponent implements OnInit {
               onComplete: function () {
                 var ctx = this.chart.ctx;
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-                ctx.fillStyle = "black";
+                ctx.fillStyle = "white";
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
                 this.data.datasets.forEach(function (dataset) {
