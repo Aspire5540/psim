@@ -142,7 +142,7 @@ export class LVProComponent implements OnInit {
   currentPea = "";
   TrTotal = 0;
   TrPlnTal = 0;
-
+  TrTotalClsd=0;
   Statuss = [
     { value: '-' },
     { value: 'อยู่ระหว่างตรวจสอบ' },
@@ -346,17 +346,17 @@ export class LVProComponent implements OnInit {
         data['dataGIS'].forEach(element => {
           GISObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
         data['dataNo'].forEach(element => {
           NoObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
         data['dataCLSD'].forEach(element => {
           CLSDObj[element.Pea] = Number(element.totalTr);
-          totalClsd = totalClsd + Number(element.totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
         if (this.option == '6') {
@@ -430,7 +430,7 @@ export class LVProComponent implements OnInit {
         //APEX CHART
 
         this.chartOptions1 = {
-          series: [this.TrTotal / this.TrPlnTal * 100, totalClsd / this.TrPlnTal * 100],
+          series: [this.TrTotal / this.TrPlnTal * 100, this.TrTotalClsd / this.TrPlnTal * 100],
           chart: {
             height: 400,
             type: "radialBar",
