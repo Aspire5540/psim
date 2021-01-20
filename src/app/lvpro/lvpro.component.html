@@ -252,9 +252,9 @@
 
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
-      <div class="card-body">
+      <mat-card class="card-body">
         <div class="form-group">
-          <mat-label>รายละเอียดหม้อแปลง</mat-label>
+          <mat-label style="color: white;">รายละเอียดหม้อแปลง</mat-label>
           <div class="row">
 
             <div class="col-md-3">
@@ -263,14 +263,14 @@
                   -->
 
               <mat-form-field appearance="legacy">
-                <mat-label>ค้นหา</mat-label>
-                <input matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput (keyup)="applyFilter($event.target.value)">
+                <mat-label style="color: white;">ค้นหา</mat-label>
+                <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput (keyup)="applyFilter($event.target.value)">
               </mat-form-field>
             </div>
 
             <div class="col-md-3">
               <mat-form-field appearance="legacy">
-                <mat-label>ระบุเงื่อนไข</mat-label>
+                <mat-label style="color: white;">ระบุเงื่อนไข</mat-label>
                 <mat-select (selectionChange)="selectCondition($event)">
                   <mat-option *ngFor="let Condition of Conditions" [value]="[Condition.value]">
                     {{Condition.viewvalue}}
@@ -429,7 +429,7 @@
           </table>
           <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
         </div>
-      </div>
+      </mat-card>
     </div>
   </div>
 

@@ -448,7 +448,7 @@ export class LVProComponent implements OnInit {
               hollow: {
                 margin: 0,
                 size: "70%",
-                background: "#fff",
+                background: "#30366C",
                 image: undefined,
                 position: "front",
                 dropShadow: {
@@ -477,12 +477,13 @@ export class LVProComponent implements OnInit {
                 name: {
                   offsetY: -10,
                   show: true,
-                  color: "#888",
+                  color: "#fff",
                   fontSize: "17px",
                 },
                 total: {
                   show: true,
                   label: 'ผลการตรวจสอบ',
+                  color:"white",
                   formatter: function (val) {
                     return parseInt(val.config.series[0].toString(), 10).toString() + "%";;
                   }
@@ -495,7 +496,7 @@ export class LVProComponent implements OnInit {
                   formatter: function (val) {
                     return parseInt(val.toString(), 10).toString() + "%";
                   },
-                  color: "#111",
+                  color: "#fff",
                   fontSize: "36px",
                   show: true
                 }
@@ -506,6 +507,7 @@ export class LVProComponent implements OnInit {
             lineCap: "round"
           },
           labels: ["ผลการตรวจสอบ", "ผลการปิดงาน"]
+         
         };
 
 
