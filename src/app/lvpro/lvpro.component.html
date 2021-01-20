@@ -141,20 +141,20 @@
             <div class="table-responsive" style="background-color:royalblue">
               <table class="mat-elevation-z8" style="background-color:royalblue" mat-table  [dataSource]="dataSource2">
                 <ng-container matColumnDef="matCode">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: white;"> รหัสพัสดุ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: white;"> {{matreq.matCode}}</td>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;"> รหัสพัสดุ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matCode}}</td>
                 </ng-container>
                 <ng-container matColumnDef="matName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: white;"> ชื่อพัสดุ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: white;"> {{matreq.matName}}</td>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;"> ชื่อพัสดุ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matName}}</td>
                 </ng-container>
                 <ng-container matColumnDef="nMat">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: white;">จำนวน </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: white;">{{matreq.nMat}}</td>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">จำนวน </th>
+                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.nMat}}</td>
                 </ng-container>
                 <ng-container matColumnDef="peaName">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: white;">กฟฟ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: white;">{{matreq.peaName}}</td>
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">กฟฟ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.peaName}}</td>
                 </ng-container>
 
 
@@ -262,7 +262,7 @@
                 <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
                   -->
 
-              <mat-form-field appearance="legacy">
+              <mat-form-field>
                 <mat-label style="color: white;">ค้นหา</mat-label>
                 <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput (keyup)="applyFilter($event.target.value)">
               </mat-form-field>
