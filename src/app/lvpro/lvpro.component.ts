@@ -108,7 +108,7 @@ export class LVProComponent implements OnInit {
   peaCode = "";
   nDate = "15";
   choice = '1';
-  showTR= false;
+  showTR = false;
   // myDonut: Chart;
   // myDonut200: Chart;
   // myDonut80: Chart;
@@ -304,9 +304,9 @@ export class LVProComponent implements OnInit {
   }
   onValChange(val) {
     this.option = val;
-    this.showTR=false;
+    this.showTR = false;
     if (val == 5) {
-      this.showTR=true;
+      this.showTR = true;
       this.getLoad100();
     }
     this.getJobProgressPea();
@@ -316,13 +316,13 @@ export class LVProComponent implements OnInit {
     this.configService.postdata2('ldcad/rdLoad100.php', {}).subscribe((data => {
       if (data['status'] == 1) {
         console.log(data['data']);
-        var label=['30 kVA']
-        var nTR=[0];
+        var label = ['30 kVA']
+        var nTR = [0];
         data['data'].forEach(element => {
-          if (Number(element.kva)<=30){
-            nTR[0]=nTR[0]+Number(element.nTR)
-          }else{
-            label.push(element.kva+" kVA");
+          if (Number(element.kva) <= 30) {
+            nTR[0] = nTR[0] + Number(element.nTR)
+          } else {
+            label.push(element.kva + " kVA");
             nTR.push(element.nTR)
           }
 
@@ -459,14 +459,14 @@ export class LVProComponent implements OnInit {
           this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
-        if (this.option == '6') {
+        if (this.option == '6' || this.option == '3') {
           data['dataVoltage'].forEach(element => {
             VoltObj[element.Pea] = Number(element.totalTr);
           });
         }
         data['dataP'].forEach(element => {
           Pea.push(this.peaname["B" + element.Pea]);
-          if (this.option != '6') {
+          if (this.option != '6' && this.option != '3' ) {
             kvaPln.push(element.totalTr);
           } else {
             kvaPln.push(element.totalTr - VoltObj[element.Pea]);
@@ -514,7 +514,7 @@ export class LVProComponent implements OnInit {
           }
 
 
-          if (this.option == '6') {
+          if (this.option == '3' || this.option == '6') {
             if (VoltObj[element.Pea]) {
               Volt.push(VoltObj[element.Pea]);
               // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
@@ -696,7 +696,7 @@ export class LVProComponent implements OnInit {
 
         // Chart JS ====================================
         var chartData = {};
-        if (this.option != '6') {
+        if (this.option != '3' && this.option != '6') {
           chartData = {
             labels: Pea,
             segmentShowStroke: false,
@@ -746,58 +746,115 @@ export class LVProComponent implements OnInit {
             ]
           };
         } else {
-          chartData = {
-            labels: Pea,
-            datasets: [
-              {
-                label: 'ปิด WBS/ใบสั่ง แล้ว',
-                stack: 'Stack 1',
-                data: CLSD,
-                backgroundColor: '#cc8400',
-              },
-              {
-                label: 'แก้ไข GIS',
-                stack: 'Stack 1',
-                data: GIS,
-                backgroundColor: '#ffd166',
-              },
-              {
-                label: 'ไม่พบปัญหา',
-                stack: 'Stack 1',
-                data: No,
-                backgroundColor: '#ffd166',
-              },
-              {
-                label: 'มี WBS/ใบสั่ง แล้ว',
-                stack: 'Stack 2',
-                data: kva,
-                backgroundColor: '#118ab2',
-              },
-              {
-                label: 'แก้ไข GIS',
-                stack: 'Stack 2',
-                data: GIS,
-                backgroundColor: '#ffd166',
-              },
-              {
-                label: 'ไม่พบปัญหา',
-                stack: 'Stack 2',
-                data: No,
-                backgroundColor: '#ffd166',
-              },
-              {
-                label: 'แรงดัน 200-204 V',
-                stack: 'Stack 3',
-                data: Volt,
-                backgroundColor: '#ef476f',
-              },
-              {
-                label: 'แรงดัน 205-210 V',
-                stack: 'Stack 3',
-                data: kvaPln,
-                backgroundColor: '#06d6a0',
-              },
-            ]
+          if (this.option == '6') {
+            chartData = {
+              labels: Pea,
+              datasets: [
+                {
+                  label: 'ปิด WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 1',
+                  data: CLSD,
+                  backgroundColor: '#cc8400',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 1',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 1',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'มี WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 2',
+                  data: kva,
+                  backgroundColor: '#118ab2',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 2',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 2',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'แรงดัน 200-204 V',
+                  stack: 'Stack 3',
+                  data: Volt,
+                  backgroundColor: '#ef476f',
+                },
+                {
+                  label: 'แรงดัน 205-210 V',
+                  stack: 'Stack 3',
+                  data: kvaPln,
+                  backgroundColor: '#06d6a0',
+                },
+              ]
+            }
+          }else{
+            chartData = {
+              labels: Pea,
+              datasets: [
+                {
+                  label: 'ปิด WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 1',
+                  data: CLSD,
+                  backgroundColor: '#cc8400',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 1',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 1',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'มี WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 2',
+                  data: kva,
+                  backgroundColor: '#118ab2',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 2',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 2',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: '%UB 25-50%',
+                  stack: 'Stack 3',
+                  data: Volt,
+                  backgroundColor: '#06d6a0',
+                },
+                {
+                  label: '%UB >50%',
+                  stack: 'Stack 3',
+                  data: kvaPln,
+                  backgroundColor: '#ef476f',
+                },
+              ]
+            }
+            console.log(chartData);
           }
         }
 
@@ -930,7 +987,7 @@ export class LVProComponent implements OnInit {
                     for (var i = 0; i < dataset.data.length; i++) {
                       for (var key in dataset._meta) {
                         var model = dataset._meta[key].data[i]._model;
-                        if (model.datasetLabel.includes("แรงดัน 205-210")) {
+                        if (model.datasetLabel.includes("แรงดัน 205-210") || model.datasetLabel.includes("%UB >50")) {
                           ctx.fillText(total[i] + " เครื่อง", model.x + 10, model.y);
                         } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 1")) {
                           ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
@@ -1096,26 +1153,26 @@ export class LVProComponent implements OnInit {
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'center';
                 // console.log(this.data.datasets[1].data[0])
-                var mat=[];
+                var mat = [];
                 this.data.datasets.forEach(function (dataset,) {
-                  
+
                   for (var i = 0; i < dataset.data.length; i++) {
                     for (var key in dataset._meta) {
                       var model = dataset._meta[key].data[i]._model;
-                      
-                      if (dataset.label.includes("พัสดุที่ต้องการใช้งาน")){
+
+                      if (dataset.label.includes("พัสดุที่ต้องการใช้งาน")) {
                         mat.push(dataset.data[i]);
                         ctx.fillText(dataset.data[i], model.x + 10, model.y);
                         // console.log(mat)
-                      }else{
-                        if(dataset.data[i]-mat[i]>0){
+                      } else {
+                        if (dataset.data[i] - mat[i] > 0) {
                           ctx.fillText(dataset.data[i], model.x + 10, model.y);
-                        }else{
-                          ctx.fillText(dataset.data[i]+" ,ขาด "+(mat[i]-dataset.data[i]), model.x + 10, model.y);
+                        } else {
+                          ctx.fillText(dataset.data[i] + " ,ขาด " + (mat[i] - dataset.data[i]), model.x + 10, model.y);
                         }
                       }
-                      
-                      
+
+
                     }
 
                   }
