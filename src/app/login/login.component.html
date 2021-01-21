@@ -1,40 +1,43 @@
+<div style="background-color: cadetblue;height: 100vh;">
+<br>
+<br>
+<br>
 
-<br>
-<br>
-<br>
-<br>
-<div class="row">
-  <div class="col-md-12 d-flex align-items-stretch grid-margin">
-    <h3 style="margin:0 auto; text-align: left;color: rebeccapurple;font-weight:900;">ยินดีต้อนรับเข้าสู่</h3>
+  <div class="row">
+    <div class="col-md-12 d-flex align-items-stretch grid-margin">
+      <h3 style="margin:0 auto; text-align: left;color: rgb(246, 246, 246);font-weight:900;">ยินดีต้อนรับเข้าสู่</h3>
+    </div>
+    <div class="col-md-12 d-flex align-items-stretch grid-margin">
+      <h1 style="margin:0 auto; text-align: left;color: rgb(243, 241, 245);font-weight:900;">ระบบ PSIM ของ กฟน.2</h1>
+    </div>
   </div>
-  <div class="col-md-12 d-flex align-items-stretch grid-margin">
-    <h1 style="margin:0 auto; text-align: left;color: rebeccapurple;font-weight:900;">ระบบ PSIM ของ กฟน.2</h1>
-  </div>
-</div> 
-<br>
-<div class="row">
-  <div class="col-md-4 d-flex align-items-stretch grid-margin" style="margin:0 auto;">
-    <div class="row flex-grow">
-      <div class="col-12 grid-margin" >
-        <div class="card" >
-          <div class="card-body" >
-            <h3 style="color: rebeccapurple;">Log In</h3>
-            <p *ngIf="message" class="text-center error">{{message}}</p>
-            <form class="forms-sample" #f="ngForm" (ngSubmit)="onSubmit()">
-              <div class="form-group">
-                <label for="exampleInputEmail1">Userid</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="รหัสพนักงาน" name="userName" ngModel required>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="รหัสเข้าคอมพิวเตอร์" name="password" ngModel required>
-              </div>
-              <button type="submit" class="btn btn-success mr-2">Login</button>
-              
-            </form>
+  <br>
+  <div class="row">
+    <div class="col-md-4 d-flex align-items-stretch grid-margin" style="margin:0 auto;">
+      <div class="row flex-grow">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h3 style="color: rebeccapurple;">Log In</h3>
+              <p *ngIf="message" class="text-center error">{{message}}</p>
+              <form class="forms-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Userid</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="รหัสพนักงาน"
+                    name="userName" ngModel required>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1"
+                    placeholder="รหัสเข้าคอมพิวเตอร์" name="password" ngModel required>
+                </div>
+                <button type="submit" class="btn btn-success mr-2">Login</button>
+
+              </form>
+            </div>
           </div>
         </div>
       </div>
-  </div>
-  
+
+    </div>
   </div>
