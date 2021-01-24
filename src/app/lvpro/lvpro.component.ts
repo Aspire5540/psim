@@ -183,9 +183,9 @@ export class LVProComponent implements OnInit {
     //this.peaCode = localStorage.getItem('peaCode');
     // this.getTrData();
     // this.getStatus();
-    this.getMat("1");
+    // this.getMat("1");
     this.getJobProgressPea();
-    this.getMatReq();
+    // this.getMatReq();
     //this.getMeterData();
 
     // this.dataSource.paginator = this.paginator;

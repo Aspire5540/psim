@@ -29,6 +29,9 @@ export class ConfigService {
     //this.headers.append('Content-Type','application/x-www-form-urlencoded');
     //this.options.headers = this.headers;
    }
+   getData(endpoint){
+     return this.http.get(this.hostUrl+endpoint);
+   }
    getWbs(endpoint): Observable<wbsdata[]> {
     return this.http.get<wbsdata[]>(this.hostUrl+endpoint);
   }

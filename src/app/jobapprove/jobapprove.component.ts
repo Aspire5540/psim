@@ -44,6 +44,7 @@ export class JobapproveComponent implements OnInit {
   chartTitle: string;
   selectAppChoice = '';
   budjets = [];
+  trObj = {};
   dataTypes = [
     { value: 0, viewValue: 'จำนวนงานคงค้าง' },
     { value: 1, viewValue: '% เบิกจ่าย' },
@@ -62,7 +63,7 @@ export class JobapproveComponent implements OnInit {
   selected = 2;
   nWbs = 0;
   choice: number;
-  displayedColumns = ['wbs', 'jobName', 'mv', 'lv', 'tr', 'causeName', 'solveMet', 'note', 'workCostPln', 'rename', 'reTr', 'del'];
+  displayedColumns = ['wbs', 'jobName', 'mv', 'lv', 'tr', 'causeName', 'solveMet', 'note', 'workCostPln', 'rename', 'reTr', 'del', 'ldcad'];
   displayedColumns1 = ['wbs', 'jobName', 'mv', 'lv', 'tr', 'totalcost', 'matCostInPln', 'workCostPln', 'appNo', 'appDoc'];
   notes = ['1.งานร้องเรียน', '2.PM/PS', '3.งานเร่งด่วน', '4.งานปกติ']
   @ViewChild('paginator', { static: false }) paginator: MatPaginator;
@@ -85,7 +86,45 @@ export class JobapproveComponent implements OnInit {
     this.getFilter();
     //this.getJobProgress();
     this.getJobProgressPea();
+    this.getTRList();
 
+
+  }
+  getTRList() {
+    this.configService.getData('ldcad/rdtr.php').subscribe(res => {
+      this.trObj = {};
+      res["data"].forEach(element => {
+        this.trObj[element.PEA_TR] = { 'minV': element.minV, 'Load': element.PLoadTOT, 'Ub': element.Ub }
+      });
+      // console.log(this.trObj);
+    })
+
+  }
+  chkLDCAD(peaTR) {
+    var status = '';
+    // if (peaTR.trim().length>9){
+    //   console.log(peaTR.trim().split(","));
+    // 
+    if(peaTR){
+      peaTR.trim().split(",").forEach(element => {
+        // console.log(peaTR.trim().split(","),this.trObj[element.trim()]);
+        if (this.trObj[element.trim()] != undefined) {
+          if (this.trObj[element.trim()].minV < 200) {
+            status = status + "V";
+          }
+          if (this.trObj[element.trim()].Load > 80) {
+            status = status + "L";
+          }
+  
+          if (this.trObj[element.trim()].Ub > 25) {
+            status = status + "U";
+          }
+  
+        }
+      });
+    }
+
+    return status;
 
   }
   selectDataType(event) {
