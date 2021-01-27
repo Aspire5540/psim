@@ -98,4 +98,29 @@
       </div>
     </div>
   </div>
+  <div class="col-6 grid-margin">
+    <div class="card">
+      <div class="card-body">     
+        <h1 class="card-title"> Upload PM </h1>        
+        <form class="form-sample" #PMForm="ngForm" (ngSubmit)="uploadPM()">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="input-lg" for="file">1.เลือกไฟล์ PM </label>
+                    <input type="file"
+                           id="file"
+                           name="filename"
+                           (change)="handleFilePM($event)" ngModel required>
+                    <label class="input-lg"> {{uploadDocResponse4}} </label>                  
+                </div>
+            </div>
+          </div>
+            <div class="col-md-3">
+              <button type="submit" [disabled]="!PMForm.valid" class="btn btn-success mr-2">Submit</button>
+            </div>
+        
+         </form>
+      </div>
+    </div>
+  </div>
 </div>

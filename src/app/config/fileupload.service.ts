@@ -44,6 +44,10 @@ export class FileuploadService {
   public uploadLvpro(data) {
     let uploadURL = `${this.SERVER_URL}/uploadLvpro.php`; 
     return this.http.post<any>(uploadURL, data);
-  } 
+  }
+  public uploadPM(data) {
+    let uploadURL = `${this.SERVER_URL}/uploadPM.php`; 
+    return this.http.post<any>(uploadURL, data);
+  }  
 }
 
