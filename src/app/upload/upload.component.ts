@@ -104,7 +104,7 @@ export class UploadComponent implements OnInit {
     }))
   }
   uploadPM(){
-    this.configService.postdata2('uploadssap/PMtosql.php',{}).subscribe((data=>{
+    this.configService.postdata2('uploadsql/PMtosql.php',{}).subscribe((data=>{
       if(data['status']==1){
           this.registerForm.resetForm();
           alert("เก็บข้อมูลแล้วเสร็จ");

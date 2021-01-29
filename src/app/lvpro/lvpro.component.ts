@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfigService } from '../config/config.service';
-
+import { Router } from '@angular/router';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { trdata, meterdata, meterdata2, matreq } from '../model/user.model';
+import { trdata, meterdata, meterdata2, matreq, trmatch } from '../model/user.model';
 import { AuthService } from '../config/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { FileuploadService } from '../config/fileupload.service';
@@ -25,7 +25,8 @@ import {
   ApexFill,
 
 } from "ng-apexcharts";
-import { SummaryResolver } from '@angular/compiler';
+import { DotDotDashUnderline } from 'docx';
+// import { SummaryResolver } from '@angular/compiler';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -79,14 +80,26 @@ export class LVProComponent implements OnInit {
 
   // myBarClsd: Chart;
   // BarMat: Chart;
-  option = "2";
-  displayedColumns = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'workstatus'];
-  displayedColumns3 = ['matCode', 'matName', 'nMat', 'peaName'];
+  testArry={'100':20};
 
-  public dataSource = new MatTableDataSource<trdata>();
-  // public dataSource1 = new MatTableDataSource<meterdata>();
-  // public dataSource2 = new MatTableDataSource<meterdata2>();
-  public dataSource2 = new MatTableDataSource<matreq>();
+  option = "2";
+  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate','expDate', 'workstatus'];
+
+  displayedColumns2 = ['PEA_TR',
+  'PEANAME',
+    'kva',
+    'newTR',
+    'newPEANAME',
+    'newkva',
+    'distance',
+    'map'];
+
+  displayedColumns3 = ['matCode', 'matName', 'nMat', 'peaName'];
+  // public dataSource = new MatTableDataSource<trdata>();
+  // public dataSource = new MatTableDataSource<trdata>();
+  public dataSource1 = new MatTableDataSource<trdata>();
+  public dataSource2 = new MatTableDataSource<trmatch>();
+  public dataSource3 = new MatTableDataSource<matreq>();
   // displayedColumns1 = ['Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   // displayedColumns2 = ['PEA_TR','Feeder','PEA_Meter','CustName','SUBTYPECOD', 'kWh','rate','rateMeter','Voltage','Line_Type'];
   //TRNo = "00-050333";
@@ -95,14 +108,14 @@ export class LVProComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  // @ViewChild('paginator1', { static: false }) paginator1: MatPaginator;
-  // @ViewChild('sort1', { static: false }) sort1: MatSort;
+  @ViewChild('paginator1', { static: false }) paginator1: MatPaginator;
+  @ViewChild('sort1', { static: false }) sort1: MatSort;
 
   @ViewChild('paginator2', { static: true }) paginator2: MatPaginator;
   @ViewChild('sort2', { static: true }) sort2: MatSort;
 
-  // @ViewChild('paginator3', { static: true }) paginator3: MatPaginator;
-  // @ViewChild('sort3', { static: true }) sort3: MatSort;
+  @ViewChild('paginator3', { static: true }) paginator3: MatPaginator;
+  @ViewChild('sort3', { static: true }) sort3: MatSort;
 
   condition = 0;
   peaCode = "";
@@ -173,7 +186,7 @@ export class LVProComponent implements OnInit {
 
 
 
-  constructor(private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
+  constructor(private router: Router, private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
     this.getpeaList();
     this.getpeaList2();
 
@@ -183,9 +196,13 @@ export class LVProComponent implements OnInit {
     //this.peaCode = localStorage.getItem('peaCode');
     // this.getTrData();
     // this.getStatus();
-    // this.getMat("1");
+    this.getLoad100();
+    this.getMat("1");
+    this.getTRmatch();
     this.getJobProgressPea();
-    // this.getMatReq();
+    // console.log("url:", this.router.url);
+    // console.log(window.location);
+    this.getMatReq();
     //this.getMeterData();
 
     // this.dataSource.paginator = this.paginator;
@@ -438,7 +455,18 @@ export class LVProComponent implements OnInit {
         var CLSDObj = [];
         var VoltObj = [];
         this.TrTotalClsd = 0;
-
+        var kvaByPeaObj=[];
+        var kvaByPea=[];
+        data['dataPkva'].forEach(element => {
+          if (kvaByPeaObj[this.peaname["B" + element.Pea]]){
+            kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva,Number(element.totalTr)]);
+          }else{
+            kvaByPeaObj[this.peaname["B" + element.Pea]] = [];
+            kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva,Number(element.totalTr)]);
+          }
+          // kvaByPea[element.Pea][element.kva] = Number(element.totalTr);
+        });
+        // console.log(kvaByPeaObj);
         data['data'].forEach(element => {
           kvaObj[element.Pea] = Number(element.totalTr);
           this.TrTotal = this.TrTotal + Number(element.totalTr);
@@ -459,14 +487,14 @@ export class LVProComponent implements OnInit {
           this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
         });
 
-        if (this.option == '6' || this.option == '3') {
+        if (this.option == '1' || this.option == '6' || this.option == '3') {
           data['dataVoltage'].forEach(element => {
             VoltObj[element.Pea] = Number(element.totalTr);
           });
         }
         data['dataP'].forEach(element => {
           Pea.push(this.peaname["B" + element.Pea]);
-          if (this.option != '6' && this.option != '3' ) {
+          if (this.option != '6' && this.option != '3') {
             kvaPln.push(element.totalTr);
           } else {
             kvaPln.push(element.totalTr - VoltObj[element.Pea]);
@@ -514,7 +542,7 @@ export class LVProComponent implements OnInit {
           }
 
 
-          if (this.option == '3' || this.option == '6') {
+          if (this.option == '1' || this.option == '3' || this.option == '6') {
             if (VoltObj[element.Pea]) {
               Volt.push(VoltObj[element.Pea]);
               // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
@@ -612,91 +640,9 @@ export class LVProComponent implements OnInit {
         };
 
 
-        //กราฟแท่ง ราย กฟฟ
-        // this.chartOptions2 = {
-        //   series: [
-        //     {
-        //       name: "มี WBS/ใบสั่ง แล้ว",
-        //       data: kva
-        //     },
-        //     {
-        //       name: "หม้อแปลงทั้งหมด",
-        //       data: kvaPln
-        //     }
-        //   ],
-        //   chart: {
-        //     type: "bar",
-        //     height: 650,
-        //     toolbar: {
-        //       show: false
-        //     },
-        //   },
-        //   plotOptions: {
-        //     bar: {
-        //       horizontal: true,
-        //       dataLabels: {
-        //         position: "top"
-        //       }
-        //     }
-        //   },
-        //   dataLabels: {
-        //     enabled: true,
-        //     formatter: function (val, index) {
-        //       var reslt;
-        //       //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-        //       //return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //       if (index.seriesIndex == 0) {
-        //         reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit + " , " + Math.abs(kvaPercent[index.dataPointIndex]).toFixed(0) + "%";
-        //       } else {
-        //         reslt = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + unit;
-        //       }
-        //       return reslt;
-        //     },
-        //     offsetX: 70,
-        //     style: {
-        //       fontSize: "12px",
-        //       colors: ["#304758"]
-        //     }
-        //   },
-        //   tooltip: {
-        //     x: {
-        //       formatter: function (val) {
-        //         return val.toString();
-        //       }
-        //     },
-        //     y: {
-        //       formatter: function (val, index) {
-        //         //console.log(index);
-        //         //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-        //         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' เครื่อง';
-        //       }
-        //     }
-        //   },
-        //   xaxis: {
-        //     categories: Pea,
-        //     labels: {
-        //       formatter: function (val, index) {
-        //         //console.log(index);
-        //         //return Math.abs(kva[index.dataPointIndex]) + " kVA";
-        //         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ''
-        //       },
-        //       style: {
-        //         fontSize: "14px",
-        //       }
-        //     }
-        //   },
-        //   yaxis: {
-        //     labels: {
-        //       style: {
-        //         fontSize: "14px",
-        //       }
-        //     }
-        //   },
-        // };
-
         // Chart JS ====================================
         var chartData = {};
-        if (this.option != '3' && this.option != '6') {
+        if (this.option != '1' && this.option != '3' && this.option != '6') {
           chartData = {
             labels: Pea,
             segmentShowStroke: false,
@@ -800,7 +746,7 @@ export class LVProComponent implements OnInit {
                 },
               ]
             }
-          }else{
+          } else if (this.option == '3') {
             chartData = {
               labels: Pea,
               datasets: [
@@ -853,11 +799,66 @@ export class LVProComponent implements OnInit {
                   backgroundColor: '#ef476f',
                 },
               ]
-            }
-            console.log(chartData);
+            }  
+          }else if (this.option == '1') {
+            chartData = {
+              labels: Pea,
+              datasets: [
+                {
+                  label: 'ปิด WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 1',
+                  data: CLSD,
+                  backgroundColor: '#cc8400',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 1',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 1',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'มี WBS/ใบสั่ง แล้ว',
+                  stack: 'Stack 2',
+                  data: kva,
+                  backgroundColor: '#118ab2',
+                },
+                {
+                  label: 'แก้ไข GIS',
+                  stack: 'Stack 2',
+                  data: GIS,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'ไม่พบปัญหา',
+                  stack: 'Stack 2',
+                  data: No,
+                  backgroundColor: '#ffd166',
+                },
+                {
+                  label: 'โหลด 80-90%',
+                  stack: 'Stack 3',
+                  data: Volt,
+                  backgroundColor: '#06d6a0',
+                },
+                {
+                  label: 'โหลด 90-100%',
+                  stack: 'Stack 3',
+                  data: kvaPln,
+                  backgroundColor: '#ef476f',
+                },
+              ]
+            }  
           }
-        }
+          
 
+        }
+    
         if (this.chartResult) this.chartResult.destroy();
         this.chartResult = new Chart('chartResult', {
           type: 'horizontalBar',
@@ -878,16 +879,21 @@ export class LVProComponent implements OnInit {
               position: 'nearest',
               mode: 'single',
               callbacks: {
-                // title: function(tooltipItem, data) {
-                //     return "yy";
-                // },
-
-                label: function (tooltipItem, data) {
+                label: function (tooltipItem, data,myData=kvaByPeaObj) {
+                  // console.log(myData[tooltipItem.label],tooltipItem);
                   var ind = tooltipItem.datasetIndex;
+                  var arryLabel=[];
+
+                  
                   if (ind == 1 || ind == 2 || ind == 4 || ind == 5) {
-                    return data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง"
+                    return [data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง"]
                   } else {
-                    return data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง"
+                    arryLabel.push(data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง");
+                    myData[tooltipItem.label].forEach(element => {
+                      arryLabel.push(element[0]+' kVA ' +element[1]+' เครื่อง')
+                    });
+                    console.log(arryLabel);
+                    return arryLabel 
                   }
                 }
               },
@@ -974,7 +980,7 @@ export class LVProComponent implements OnInit {
                 } else {
                   var total = []
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
-                    total.push(this.data.datasets[aryLen - 1].data[i] + this.data.datasets[aryLen].data[i]);
+                    total.push(Number(this.data.datasets[aryLen - 1].data[i]) + Number(this.data.datasets[aryLen].data[i]));
                   }
                   for (var i = 0; i < this.data.datasets[1].data.length; i++) {
                     sum.push(this.data.datasets[1].data[i] + this.data.datasets[2].data[i] + this.data.datasets[3].data[i])
@@ -987,7 +993,7 @@ export class LVProComponent implements OnInit {
                     for (var i = 0; i < dataset.data.length; i++) {
                       for (var key in dataset._meta) {
                         var model = dataset._meta[key].data[i]._model;
-                        if (model.datasetLabel.includes("แรงดัน 205-210") || model.datasetLabel.includes("%UB >50")) {
+                        if (model.datasetLabel.includes("แรงดัน 205-210") || model.datasetLabel.includes("%UB >50") || model.datasetLabel.includes("โหลด 90-100")) {
                           ctx.fillText(total[i] + " เครื่อง", model.x + 10, model.y);
                         } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 1")) {
                           ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
@@ -1028,19 +1034,32 @@ export class LVProComponent implements OnInit {
       .subscribe(res => {
         // this.dataSource.paginator = this.paginator1;
         // this.dataSource.sort = this.sort1;
-        this.dataSource.data = res as trdata[];
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.dataSource1.data = res as trdata[];
+        this.dataSource1.paginator = this.paginator1;
+        this.dataSource1.sort = this.sort1;
       })
 
   }
+  getTRmatch() {
+    this.configService.getTrMatch('ldcad/rdMatchTR.php')
+      //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
+      .subscribe(res => {
+        this.dataSource2.data = res as trmatch[];
+        this.dataSource2.paginator = this.paginator2;
+        this.dataSource2.sort = this.sort2;
+        console.log(this.dataSource2.data);
+      })
+
+
+  }
+
   getMatReq() {
     this.configService.getMatReq('ldcad/getmatreq.php?nDay=' + this.nDate)
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
-        this.dataSource2.data = res as matreq[];
-        this.dataSource2.paginator = this.paginator2;
-        this.dataSource2.sort = this.sort2;
+        this.dataSource3.data = res as matreq[];
+        this.dataSource3.paginator = this.paginator3;
+        this.dataSource3.sort = this.sort3;
       })
 
 
@@ -1052,7 +1071,7 @@ export class LVProComponent implements OnInit {
         // console.log(data);
         var label = ["30 kVA", "50 kVA", "100  kVA", "160  kVA"];
         var TRStock = [data["nStock"]["30"], data["nStock"]["50"], data["nStock"]["100"], data["nStock"]["160"]];
-        var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"], data["nTR"]["15"]["100"], data["nTR"]["15"]["160"]];
+        var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"]-76, data["nTR"]["15"]["100"]-27, data["nTR"]["15"]["160"]-18];
         var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
         var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
         data['req'].forEach(element => {
@@ -1202,12 +1221,12 @@ export class LVProComponent implements OnInit {
   // }
   applyFilter(filterValue: string) {
     // console.log((filterValue + " " + localStorage.getItem('peaEng')).trim().toLowerCase());
-    this.dataSource.filter = (filterValue).trim().toLowerCase();
+    this.dataSource1.filter = (filterValue).trim().toLowerCase();
   }
-  // applyFilter1(filterValue: string) {
+  applyFilter1(filterValue: string) {
 
-  //   this.dataSource1.filter = (filterValue).trim().toLowerCase();
-  // }
+    this.dataSource2.filter = (filterValue).trim().toLowerCase();
+  }
   applyWBS(event) {
     this.configService.postdata2('wriWBS.php', { TRNumber: event[1].PEA_TR, WBS: event[0] }).subscribe((data => {
       if (data['status'] == 1) {
@@ -1305,11 +1324,13 @@ export class LVProComponent implements OnInit {
 
 
   exportAsXLSX(): void {
-    this.configService.exportAsExcelFile(this.dataSource.data, 'TRdata');
+    this.configService.exportAsExcelFile(this.dataSource1.data, 'TRdata');
   }
-
+  exportAsXLSX3(): void {
+    this.configService.exportAsExcelFile(this.dataSource3.data, 'Matdata');
+  }
   exportAsXLSX2(): void {
-    this.configService.exportAsExcelFile(this.dataSource2.data, 'Matdata');
+    this.configService.exportAsExcelFile(this.dataSource2.data, 'MatchTR');
   }
   // exportAsXLSX2(): void {
   //   this.configService.exportAsExcelFile(this.dataSource1.data, 'MeterData');

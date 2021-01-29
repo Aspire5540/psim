@@ -143,7 +143,8 @@ export interface trdata {
   RVoltage: number;
   Ub: number;
   jobStatus: string;
-  rundate: string;
+  rundate: Date;
+  expDate: Date;
   Ia:number;
   Ib:number;
   Ic:number;
@@ -156,6 +157,19 @@ nMat:number;
 peaCode:string;
 peaName:string;
 }
+
+export interface trmatch{
+  PEA_TR:string;
+  kva:string;
+  PEANAME:string;
+  newTR:string;
+  newkva:number;
+  newAoj:string;
+  newPEANAME:string;
+  distance:number;
+  }
+
+
 export interface meterdata {
   PEA_TR: string;
   PEA_Meter: string;

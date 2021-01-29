@@ -3,7 +3,7 @@ import { HttpClient} from '@angular/common/http';
 import { Observable ,  BehaviorSubject }   from 'rxjs';
 
 import { wbsdata,jobreq,trdata,appJob,jobprogress,meterdata,meterdata2,
-  trphase,meterdata3,jobRemain,jobRemain2,ezxdevice,matreq} from '../model/user.model';
+  trphase,meterdata3,jobRemain,jobRemain2,ezxdevice,matreq,trmatch} from '../model/user.model';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 
@@ -65,6 +65,9 @@ export class ConfigService {
   }
   getMeter(endpoint): Observable<meterdata[]> {
     return this.http.get<meterdata[]>(this.hostUrl+endpoint);
+  }
+  getTrMatch(endpoint): Observable<trmatch[]> {
+    return this.http.get<trmatch[]>(this.hostUrl+endpoint);
   }
   getAppJob(endpoint): Observable<appJob[]> {
     return this.http.get<appJob[]>(this.hostUrl+endpoint);
