@@ -9,6 +9,13 @@
   </mat-card-header>
   <mat-card-content>
     <div class="row">
+      <mat-tab-group>
+        <mat-tab label="First"> Content 1 </mat-tab>
+        <mat-tab label="Second"> Content 2 </mat-tab>
+        <mat-tab label="Third"> Content 3 </mat-tab>
+      </mat-tab-group>
+    </div>
+    <div class="row">
 
       <div class="col-md-12">
         <mat-form-field>
@@ -87,11 +94,21 @@
 
           <div class="row">
             <div class="col-md-6 col-sm-6 mt-3" style="height: 20pc;">
-              <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน</mat-label>
+              <div *ngIf="nDate==15">
+                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน</mat-label>
+              </div>
+              <div *ngIf="nDate!=15">
+                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน ก่อน Matching </mat-label>
+              </div>
               <canvas id='chartMat'></canvas>
             </div>
             <div class="col-md-6 col-sm-6 mt-3 float-right" style="height: 20pc;">
-              <mat-label style="color: white;">จำนวนหม้อแปลงที่มีโหลดเกิน 100%</mat-label>
+              <div *ngIf="nDate==15">
+                <mat-label style="color: white;">จำนวนหม้อแปลงที่มีโหลดเกิน 100%</mat-label>
+              </div>
+              <div *ngIf="nDate!=15">
+                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน หลัง Matching</mat-label>
+              </div>
               <canvas id='chartTR'></canvas>
             </div>
           </div>
@@ -198,12 +215,12 @@
               [dataSource]="dataSource2">
               <ng-container matColumnDef="PEA_TR">
                 <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  PEA หม้อแปลง </th>
+                  PEA หม้อแปลง<BR>โหดลด 80-100% </th>
                 <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.PEA_TR}}</td>
               </ng-container>
               <ng-container matColumnDef="kva">
                 <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  พิกัด (kvA) </th>
+                  พิกัด<BR> (kvA) </th>
                 <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.kva}}</td>
               </ng-container>
               <ng-container matColumnDef="PEANAME">
@@ -213,12 +230,12 @@
               </ng-container>
               <ng-container matColumnDef="newTR">
                 <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  PEA หม้อแปลงสับเปลี่ยน </th>
+                  PEA หม้อแปลง<BR>โหดลด < 30% </th>
                 <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newTR}}</td>
               </ng-container>
               <ng-container matColumnDef="newkva">
                 <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  พิกัด (kvA)</th>
+                  พิกัด<BR>(kvA)</th>
                 <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newkva}}</td>
               </ng-container>
               <ng-container matColumnDef="newPEANAME">
@@ -229,7 +246,7 @@
               </ng-container>
               <ng-container matColumnDef="distance">
                 <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  ระยะทาง (km) </th>
+                  ระยะทาง<BR>(km) </th>
                 <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.distance/1000 |
                   number:'1.2-2'}}</td>
               </ng-container>

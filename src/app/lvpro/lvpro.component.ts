@@ -80,13 +80,13 @@ export class LVProComponent implements OnInit {
 
   // myBarClsd: Chart;
   // BarMat: Chart;
-  testArry={'100':20};
+  testArry = { '100': 20 };
 
   option = "2";
-  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate','expDate', 'workstatus'];
+  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'expDate', 'workstatus'];
 
   displayedColumns2 = ['PEA_TR',
-  'PEANAME',
+    'PEANAME',
     'kva',
     'newTR',
     'newPEANAME',
@@ -179,7 +179,8 @@ export class LVProComponent implements OnInit {
     { value: 4, viewvalue: 'โหลด<30%' },
     { value: 11, viewvalue: '%UB>50%' },
     { value: 10, viewvalue: '%UB 25-50%' },
-    { value: 6, viewvalue: 'ทั้งหมด' }
+    // { value: 12, viewvalue: 'ทุกปัญหา' },
+    { value: 6, viewvalue: 'ทั้งหมด' },
 
   ];
 
@@ -196,7 +197,6 @@ export class LVProComponent implements OnInit {
     //this.peaCode = localStorage.getItem('peaCode');
     // this.getTrData();
     // this.getStatus();
-    this.getLoad100();
     this.getMat("1");
     this.getTRmatch();
     this.getJobProgressPea();
@@ -322,15 +322,15 @@ export class LVProComponent implements OnInit {
   onValChange(val) {
     this.option = val;
     this.showTR = false;
-    if (val == 5) {
-      this.showTR = true;
-      this.getLoad100();
-    }
+    // if (val == 5) {
+    //   this.showTR = true;
+    //   this.getLoad100();
+    // }
     this.getJobProgressPea();
 
   }
   getLoad100() {
-    this.configService.postdata2('ldcad/rdLoad100.php', {}).subscribe((data => {
+    this.configService.postdata2('ldcad/rdLoad100.php', { nDay: this.nDate }).subscribe((data => {
       if (data['status'] == 1) {
         console.log(data['data']);
         var label = ['30 kVA']
@@ -455,52 +455,222 @@ export class LVProComponent implements OnInit {
         var CLSDObj = [];
         var VoltObj = [];
         this.TrTotalClsd = 0;
-        var kvaByPeaObj=[];
-        var kvaByPea=[];
-        data['dataPkva'].forEach(element => {
-          if (kvaByPeaObj[this.peaname["B" + element.Pea]]){
-            kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva,Number(element.totalTr)]);
-          }else{
-            kvaByPeaObj[this.peaname["B" + element.Pea]] = [];
-            kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva,Number(element.totalTr)]);
-          }
-          // kvaByPea[element.Pea][element.kva] = Number(element.totalTr);
-        });
+        var kvaByPeaObj = [];
+        var kvaByPea = [];
+        var firstLoop = true;
+        var lastPea = '';
+        var total = 0;
+
+        // data['dataPkva'].forEach(element => {
+        //   if (kvaByPeaObj[this.peaname["B" + element.Pea]]) {
+        //     kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva, Number(element.totalTr)]);
+        //   } else {
+        //     kvaByPeaObj[this.peaname["B" + element.Pea]] = [];
+        //     kvaByPeaObj[this.peaname["B" + element.Pea]].push([element.kva, Number(element.totalTr)]);
+        //   }
+        // });
         // console.log(kvaByPeaObj);
-        data['data'].forEach(element => {
-          kvaObj[element.Pea] = Number(element.totalTr);
-          this.TrTotal = this.TrTotal + Number(element.totalTr);
-        });
-        data['dataGIS'].forEach(element => {
-          GISObj[element.Pea] = Number(element.totalTr);
-          this.TrTotal = this.TrTotal + Number(element.totalTr);
-          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
-        });
-        data['dataNo'].forEach(element => {
-          NoObj[element.Pea] = Number(element.totalTr);
-          this.TrTotal = this.TrTotal + Number(element.totalTr);
-          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
-        });
-
-        data['dataCLSD'].forEach(element => {
-          CLSDObj[element.Pea] = Number(element.totalTr);
-          this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
-        });
-
-        if (this.option == '1' || this.option == '6' || this.option == '3') {
-          data['dataVoltage'].forEach(element => {
-            VoltObj[element.Pea] = Number(element.totalTr);
-          });
-        }
-        data['dataP'].forEach(element => {
-          Pea.push(this.peaname["B" + element.Pea]);
-          if (this.option != '6' && this.option != '3') {
-            kvaPln.push(element.totalTr);
+        // data['data'].forEach(element => {
+        //   kvaObj[element.Pea] = Number(element.totalTr);
+        //   this.TrTotal = this.TrTotal + Number(element.totalTr);
+        // });
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        kvaByPeaObj['wbs'] = [];
+        for (var i = 0; i < data['data'].length; i++) {
+          if (kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]]) {
+            kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]].push([data['data'][i].kva, Number(data['data'][i].totalTr)]);
           } else {
-            kvaPln.push(element.totalTr - VoltObj[element.Pea]);
+            kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]] = [];
+            kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]].push([data['data'][i].kva, Number(data['data'][i].totalTr)]);
+          }
+          // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+          if (data['data'][i].Pea != lastPea && !firstLoop) {
+            kvaObj[data['data'][i - 1].Pea] = total;
+            total = Number(data['data'][i].totalTr);
+          } else {
+            total = total + Number(data['data'][i].totalTr);
+          }
+          if (i == data['data'].length - 1) {
+            kvaObj[data['data'][i].Pea] = total;
+          }
+          lastPea = data['data'][i].Pea;
+          firstLoop = false;
+          this.TrTotal = this.TrTotal + Number(data['data'][i].totalTr);
+          // this.TrTotalClsd = this.TrTotalClsd + Number(data['data'][i].totalTr);
+        }
+
+        // console.log(kvaByPeaObj);
+        // data['dataGIS'].forEach(element => {
+        //   GISObj[element.Pea] = Number(element.totalTr);
+        //   this.TrTotal = this.TrTotal + Number(element.totalTr);
+        //   this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
+        // });
+
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        kvaByPeaObj['gis'] = [];
+        for (var i = 0; i < data['dataGIS'].length; i++) {
+          if (kvaByPeaObj['gis'][this.peaname["B" + data['dataGIS'][i].Pea]]) {
+            kvaByPeaObj['gis'][this.peaname["B" + data['dataGIS'][i].Pea]].push([data['dataGIS'][i].kva, Number(data['dataGIS'][i].totalTr)]);
+          } else {
+            kvaByPeaObj['gis'][this.peaname["B" + data['dataGIS'][i].Pea]] = [];
+            kvaByPeaObj['gis'][this.peaname["B" + data['dataGIS'][i].Pea]].push([data['dataGIS'][i].kva, Number(data['dataGIS'][i].totalTr)]);
           }
 
-          this.TrPlnTal = this.TrPlnTal + Number(element.totalTr);
+          // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+          if (data['dataGIS'][i].Pea != lastPea && !firstLoop) {
+            GISObj[data['dataGIS'][i - 1].Pea] = total;
+            total = Number(data['dataGIS'][i].totalTr);
+          } else {
+            total = total + Number(data['dataGIS'][i].totalTr);
+          }
+          if (i == data['dataGIS'].length - 1) {
+            GISObj[data['dataGIS'][i].Pea] = total;
+          }
+          lastPea = data['dataGIS'][i].Pea;
+          firstLoop = false;
+          this.TrTotal = this.TrTotal + Number(data['dataGIS'][i].totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(data['dataGIS'][i].totalTr);
+        }
+        // data['dataNo'].forEach(element => {
+        //   NoObj[element.Pea] = Number(element.totalTr);
+        //   this.TrTotal = this.TrTotal + Number(element.totalTr);
+        //   this.TrTotalClsd = this.TrTotalClsd + Number(element.totalTr);
+        // });
+
+
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        kvaByPeaObj['no'] = [];
+        for (var i = 0; i < data['dataNo'].length; i++) {
+          if (kvaByPeaObj['no'][this.peaname["B" + data['dataNo'][i].Pea]]) {
+            kvaByPeaObj['no'][this.peaname["B" + data['dataNo'][i].Pea]].push([data['dataNo'][i].kva, Number(data['dataNo'][i].totalTr)]);
+          } else {
+            kvaByPeaObj['no'][this.peaname["B" + data['dataNo'][i].Pea]] = [];
+            kvaByPeaObj['no'][this.peaname["B" + data['dataNo'][i].Pea]].push([data['dataNo'][i].kva, Number(data['dataNo'][i].totalTr)]);
+          }
+
+          // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+          if (data['dataNo'][i].Pea != lastPea && !firstLoop) {
+            NoObj[data['dataNo'][i - 1].Pea] = total;
+            total = Number(data['dataNo'][i].totalTr);
+          } else {
+            total = total + Number(data['dataNo'][i].totalTr);
+          }
+          if (i == data['dataNo'].length - 1) {
+            NoObj[data['dataNo'][i].Pea] = total;
+          }
+          lastPea = data['dataNo'][i].Pea;
+          firstLoop = false;
+          this.TrTotal = this.TrTotal + Number(data['dataNo'][i].totalTr);
+          this.TrTotalClsd = this.TrTotalClsd + Number(data['dataNo'][i].totalTr);
+        }
+
+
+
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        kvaByPeaObj['clsd'] = [];
+        for (var i = 0; i < data['dataCLSD'].length; i++) {
+          if (kvaByPeaObj['clsd'][this.peaname["B" + data['dataCLSD'][i].Pea]]) {
+            kvaByPeaObj['clsd'][this.peaname["B" + data['dataCLSD'][i].Pea]].push([data['dataCLSD'][i].kva, Number(data['dataCLSD'][i].totalTr)]);
+          } else {
+            kvaByPeaObj['clsd'][this.peaname["B" + data['dataCLSD'][i].Pea]] = [];
+            kvaByPeaObj['clsd'][this.peaname["B" + data['dataCLSD'][i].Pea]].push([data['dataCLSD'][i].kva, Number(data['dataCLSD'][i].totalTr)]);
+          }
+
+          // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+          if (data['dataCLSD'][i].Pea != lastPea && !firstLoop) {
+            CLSDObj[data['dataCLSD'][i - 1].Pea] = total;
+            total = Number(data['dataCLSD'][i].totalTr);
+          } else {
+            total = total + Number(data['dataCLSD'][i].totalTr);
+          }
+          if (i == data['dataCLSD'].length - 1) {
+            CLSDObj[data['dataCLSD'][i].Pea] = total;
+          }
+          lastPea = data['dataCLSD'][i].Pea;
+          firstLoop = false;
+          this.TrTotalClsd = this.TrTotalClsd + Number(data['dataCLSD'][i].totalTr);
+        }
+
+
+
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        if (this.option == '1' || this.option == '6' || this.option == '3') {
+          kvaByPeaObj['volt'] = [];
+          for (var i = 0; i < data['dataVoltage'].length; i++) {
+            if (kvaByPeaObj['volt'][this.peaname["B" + data['dataVoltage'][i].Pea]]) {
+              kvaByPeaObj['volt'][this.peaname["B" + data['dataVoltage'][i].Pea]].push([data['dataVoltage'][i].kva, Number(data['dataVoltage'][i].totalTr)]);
+            } else {
+              kvaByPeaObj['volt'][this.peaname["B" + data['dataVoltage'][i].Pea]] = [];
+              kvaByPeaObj['volt'][this.peaname["B" + data['dataVoltage'][i].Pea]].push([data['dataVoltage'][i].kva, Number(data['dataVoltage'][i].totalTr)]);
+            }
+
+            // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+            if (data['dataVoltage'][i].Pea != lastPea && !firstLoop) {
+              VoltObj[data['dataVoltage'][i - 1].Pea] = total;
+              total = Number(data['dataVoltage'][i].totalTr);
+            } else {
+              total = total + Number(data['dataVoltage'][i].totalTr);
+            }
+            if (i == data['dataVoltage'].length - 1) {
+              VoltObj[data['dataVoltage'][i].Pea] = total;
+            }
+            lastPea = data['dataVoltage'][i].Pea;
+            firstLoop = false;
+          }
+        }
+
+
+        firstLoop = true;
+        lastPea = '';
+        total = 0;
+        var peaInd = [];
+
+        // var kvaPln=[];
+        kvaByPeaObj['plan'] = [];
+        for (var i = 0; i < data['dataP'].length; i++) {
+          if (kvaByPeaObj['plan'][this.peaname["B" + data['dataP'][i].Pea]]) {
+            kvaByPeaObj['plan'][this.peaname["B" + data['dataP'][i].Pea]].push([data['dataP'][i].kva, Number(data['dataP'][i].totalTr)]);
+          } else {
+            kvaByPeaObj['plan'][this.peaname["B" + data['dataP'][i].Pea]] = [];
+            kvaByPeaObj['plan'][this.peaname["B" + data['dataP'][i].Pea]].push([data['dataP'][i].kva, Number(data['dataP'][i].totalTr)]);
+          }
+
+          // console.log(data['dataP'][i],data['dataP'][i].Pea!=lastPea && !firstLoop);
+          if (data['dataP'][i].Pea != lastPea && !firstLoop) {
+            Pea.push(this.peaname["B" + data['dataP'][i - 1].Pea]);
+            peaInd.push(data['dataP'][i - 1].Pea);
+            kvaPln.push(total);
+            total = Number(data['dataP'][i].totalTr);
+          } else {
+            total = total + Number(data['dataP'][i].totalTr);
+          }
+          if (i == data['dataP'].length - 1) {
+            Pea.push(this.peaname["B" + data['dataP'][i].Pea]);
+            kvaPln.push(total);
+            peaInd.push(data['dataP'][i].Pea);
+          }
+          this.TrPlnTal = this.TrPlnTal + Number(data['dataP'][i].totalTr);
+          lastPea = data['dataP'][i].Pea;
+          firstLoop = false;
+        }
+
+        // console.log(kvaByPeaObj);
+        for (var i = 0; i < peaInd.length; i++) {
+          // data['dataP'].forEach(element => {
+          // Pea.push(this.peaname["B" + element.Pea]);
+
+
+          // this.TrPlnTal = this.TrPlnTal + Number(element.totalTr);
           //this.TrTotal = this.TrTotal + element.totalTr; 
           //------------new------
           // newKva=Math.floor(element.totalTr*0.7)+Math.floor(element.totalTr*0.2*Math.random());
@@ -509,33 +679,33 @@ export class LVProComponent implements OnInit {
           // this.TrTotal = this.TrTotal + newKva;   
           // kvaPercent.push(newKva/element.totalTr*100)
           //--------------------------
-          if (kvaObj[element.Pea]) {
-            kva.push(kvaObj[element.Pea]);
-            kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          if (kvaObj[peaInd[i]]) {
+            kva.push(kvaObj[peaInd[i]]);
+            // kvaPercent.push(kvaObj[peaInd[i]] / element.totalTr * 100)
           } else {
             kva.push(0);
-            kvaPercent.push(0);
+            // kvaPercent.push(0);
           }
 
-          if (GISObj[element.Pea]) {
-            GIS.push(GISObj[element.Pea]);
-            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          if (GISObj[peaInd[i]]) {
+            GIS.push(GISObj[peaInd[i]]);
+            // kvaPercent.push(kvaObj[peaInd[i]] / element.totalTr * 100)
           } else {
             GIS.push(0);
             // kvaPercent.push(0);
           }
 
-          if (NoObj[element.Pea]) {
-            No.push(NoObj[element.Pea]);
-            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          if (NoObj[peaInd[i]]) {
+            No.push(NoObj[peaInd[i]]);
+            // kvaPercent.push(kvaObj[peaInd[i]] / element.totalTr * 100)
           } else {
             No.push(0);
             // kvaPercent.push(0);
           }
 
-          if (CLSDObj[element.Pea]) {
-            CLSD.push(CLSDObj[element.Pea]);
-            // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+          if (CLSDObj[peaInd[i]]) {
+            CLSD.push(CLSDObj[peaInd[i]]);
+            // kvaPercent.push(kvaObj[peaInd[i]] / element.totalTr * 100)
           } else {
             CLSD.push(0);
             // kvaPercent.push(0);
@@ -543,17 +713,18 @@ export class LVProComponent implements OnInit {
 
 
           if (this.option == '1' || this.option == '3' || this.option == '6') {
-            if (VoltObj[element.Pea]) {
-              Volt.push(VoltObj[element.Pea]);
-              // kvaPercent.push(kvaObj[element.Pea] / element.totalTr * 100)
+            if (VoltObj[peaInd[i]]) {
+              Volt.push(VoltObj[peaInd[i]]);
+              // kvaPercent.push(kvaObj[peaInd[i]] / element.totalTr * 100)
+              kvaPln[i] = kvaPln[i] - Volt[i];
             } else {
               Volt.push(0);
               // kvaPercent.push(0);
             }
           }
-
-        });
-
+        }
+        // });
+        // console.log(Pea,Volt);
         //this.kvaTotal=505;
         //APEX CHART
 
@@ -787,20 +958,21 @@ export class LVProComponent implements OnInit {
                   backgroundColor: '#ffd166',
                 },
                 {
-                  label: '%UB 25-50%',
-                  stack: 'Stack 3',
-                  data: Volt,
-                  backgroundColor: '#06d6a0',
-                },
-                {
                   label: '%UB >50%',
                   stack: 'Stack 3',
                   data: kvaPln,
                   backgroundColor: '#ef476f',
                 },
+
+                {
+                  label: '%UB 25-50%',
+                  stack: 'Stack 3',
+                  data: Volt,
+                  backgroundColor: '#06d6a0',
+                },
               ]
-            }  
-          }else if (this.option == '1') {
+            }
+          } else if (this.option == '1') {
             chartData = {
               labels: Pea,
               datasets: [
@@ -841,24 +1013,25 @@ export class LVProComponent implements OnInit {
                   backgroundColor: '#ffd166',
                 },
                 {
-                  label: 'โหลด 80-90%',
-                  stack: 'Stack 3',
-                  data: Volt,
-                  backgroundColor: '#06d6a0',
-                },
-                {
                   label: 'โหลด 90-100%',
                   stack: 'Stack 3',
                   data: kvaPln,
                   backgroundColor: '#ef476f',
                 },
+                {
+                  label: 'โหลด 80-90%',
+                  stack: 'Stack 3',
+                  data: Volt,
+                  backgroundColor: '#06d6a0',
+                },
+
               ]
-            }  
+            }
           }
-          
+
 
         }
-    
+
         if (this.chartResult) this.chartResult.destroy();
         this.chartResult = new Chart('chartResult', {
           type: 'horizontalBar',
@@ -879,21 +1052,76 @@ export class LVProComponent implements OnInit {
               position: 'nearest',
               mode: 'single',
               callbacks: {
-                label: function (tooltipItem, data,myData=kvaByPeaObj) {
+                label: function (tooltipItem, data, myData = kvaByPeaObj) {
                   // console.log(myData[tooltipItem.label],tooltipItem);
-                  var ind = tooltipItem.datasetIndex;
-                  var arryLabel=[];
 
-                  
+                  var ind = tooltipItem.datasetIndex;
+                  var arryLabel = [];
+                  var kvaObj = [];
+                  var voltObj = [];
+                  var gisObj = [];
+                  var noObj = [];
+                  if (data.datasets[tooltipItem.datasetIndex].label.includes('ทั้งหมด')) {
+                    kvaObj = myData["plan"][tooltipItem.label];
+                  } else if (data.datasets[tooltipItem.datasetIndex].label.includes('มี WBS')) {
+                    kvaObj = myData["wbs"][tooltipItem.label];
+                  } else if (data.datasets[tooltipItem.datasetIndex].label.includes('ปิด WBS')) {
+                    kvaObj = myData["clsd"][tooltipItem.label];
+                  } else if (data.datasets[tooltipItem.datasetIndex].label.includes('แรงดัน 205-210') ||
+                    data.datasets[tooltipItem.datasetIndex].label.includes('โหลด 90-100') ||
+                    data.datasets[tooltipItem.datasetIndex].label.includes('%UB >50')) {
+                    var plnObj = myData["plan"][tooltipItem.label];
+                    voltObj = myData["volt"][tooltipItem.label];
+                    for (var i = 0; i < plnObj.length; i++) {
+                      kvaObj.push([plnObj[i][0], plnObj[i][1]]);
+                      for (var j = 0; j < voltObj.length; j++) {
+                        if (kvaObj[i][0] == voltObj[j][0]) {
+                          kvaObj[i][1] = plnObj[i][1] - voltObj[j][1];
+                          break
+                        }
+                      }
+                    }
+                  } else if (data.datasets[tooltipItem.datasetIndex].label.includes('แรงดัน 200-204') ||
+                    data.datasets[tooltipItem.datasetIndex].label.includes('โหลด 80-90') ||
+                    data.datasets[tooltipItem.datasetIndex].label.includes('%UB 25')) {
+                    kvaObj = myData["volt"][tooltipItem.label];
+                  } else if (data.datasets[tooltipItem.datasetIndex].label.includes('ไม่พบ') ||
+                    data.datasets[tooltipItem.datasetIndex].label.includes('GIS')) {
+                    noObj = myData["no"][tooltipItem.label] ? myData["no"][tooltipItem.label] : [];
+                    gisObj = myData["gis"][tooltipItem.label] ? myData["gis"][tooltipItem.label] : [];
+                    var kvalist = [];
+                    for (var i = 0; i < gisObj.length; i++) {
+                      kvaObj.push([gisObj[i][0], gisObj[i][1], 0]);
+                      kvalist.push(gisObj[i][0]);
+                    }
+                    for (var j = 0; j < noObj.length; j++) {
+                      if (kvalist.indexOf(noObj[j][0]) >= 0) {
+                        kvaObj[kvalist.indexOf(noObj[j][0])][2] = noObj[j][1];
+                      } else {
+                        kvaObj.push([noObj[j][0], 0, noObj[j][1]]);
+                      }
+                      kvaObj = kvaObj.sort(function (a, b) {
+                        if (Number(a[0]) < Number(b[0])) return -1;
+                        if (Number(a[0]) > Number(b[0])) return 1;
+                        return 0;
+                      });
+                    }
+                  }
                   if (ind == 1 || ind == 2 || ind == 4 || ind == 5) {
-                    return [data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง"]
+                    arryLabel.push(data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง");
+                    kvaObj.forEach(element => {
+                      arryLabel.push(element[0] + ' kVA ' + element[1] + "," + element[2] + ' เครื่อง')
+                    });
+
+
+                    return arryLabel;
                   } else {
                     arryLabel.push(data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง");
-                    myData[tooltipItem.label].forEach(element => {
-                      arryLabel.push(element[0]+' kVA ' +element[1]+' เครื่อง')
+                    kvaObj.forEach(element => {
+                      arryLabel.push(element[0] + ' kVA ' + element[1] + ' เครื่อง')
                     });
-                    console.log(arryLabel);
-                    return arryLabel 
+                    // console.log(arryLabel);
+                    return arryLabel
                   }
                 }
               },
@@ -938,6 +1166,7 @@ export class LVProComponent implements OnInit {
             },
             animation: {
               onComplete: function () {
+                this.options.animation.onComplete = null;
                 var ctx = this.chart.ctx;
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
                 ctx.fillStyle = "white";
@@ -993,7 +1222,7 @@ export class LVProComponent implements OnInit {
                     for (var i = 0; i < dataset.data.length; i++) {
                       for (var key in dataset._meta) {
                         var model = dataset._meta[key].data[i]._model;
-                        if (model.datasetLabel.includes("แรงดัน 205-210") || model.datasetLabel.includes("%UB >50") || model.datasetLabel.includes("โหลด 90-100")) {
+                        if (model.datasetLabel.includes("แรงดัน 205-210") || model.datasetLabel.includes("%UB 25") || model.datasetLabel.includes("โหลด 80-90")) {
                           ctx.fillText(total[i] + " เครื่อง", model.x + 10, model.y);
                         } else if (model.datasetLabel.includes("ไม่พบปัญหา") && dataset.stack.includes("Stack 1")) {
                           ctx.fillText(sumClsd[i] + " เครื่อง , " + pclsd[i] + "%", model.x + 10, model.y);
@@ -1066,28 +1295,70 @@ export class LVProComponent implements OnInit {
   }
   getMat(choice) {
     this.choice = choice;
-    this.configService.postdata2('ldcad/rdMat.php', {}).subscribe((data => {
+    this.configService.postdata2('ldcad/rdMatSAP.php', {}).subscribe((data => {
       if (data['status'] == 1) {
         // console.log(data);
         var label = ["30 kVA", "50 kVA", "100  kVA", "160  kVA"];
-        var TRStock = [data["nStock"]["30"], data["nStock"]["50"], data["nStock"]["100"], data["nStock"]["160"]];
-        var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"]-76, data["nTR"]["15"]["100"]-27, data["nTR"]["15"]["160"]-18];
-        var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
-        var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
-        data['req'].forEach(element => {
-          if (element.nDay == "15" && choice == "1") {
-            label.push(element.matNameShort);
-            TR15.push(Number(element.nMat));
-            TRStock.push(Number(element.stock));
-
+        var trSize = ["30", "50", "100", "160"];
+        var TR15 = [0, 0, 0, 0];
+        var TR45 = [0, 0, 0, 0];
+        var TRStock = [0, 0, 0, 0];
+        var TRStock2 = [0, 0, 0, 0];
+        var TR45match = [0, 0, 0, 0];
+        data['matSAP15'].forEach(element => {
+          if (trSize.indexOf(element.kva) > -1) {
+            TR15[trSize.indexOf(element.kva)] = Number(element.nMat);
           }
-          if (element.nDay == "45" && choice != "1") {
-            label.push(element.matNameShort);
-            TR45.push(Number(element.nMat));
-            TRStock2.push(Number(element.stock));
-          }
-
         });
+        data['matSAP45'].forEach(element => {
+          if (trSize.indexOf(element.kva) > -1) {
+            TR45[trSize.indexOf(element.kva)] = Number(element.nMat);
+          }
+        });
+
+        TR45match[0] = TR45[0];
+        TR45match[1] = TR45[1];
+
+        data['matSAP45match'].forEach(element => {
+          if (trSize.indexOf(element.kva) > -1) {
+            TR45match[trSize.indexOf(element.kva)] = Number(element.nMat);
+          }
+        });
+        console.log("TR45match", TR45match);
+
+
+
+
+
+
+        data['stock'].forEach(element => {
+          if (trSize.indexOf(element.kva) > -1) {
+            TRStock[trSize.indexOf(element.kva)] = Number(element.nMat);
+          }
+        });
+        for (var i = 0; i < TRStock.length; i++) {
+          TRStock2[i] = (TRStock[i] - TR15[i]) >= 0 ? (TRStock[i] - TR15[i]) : 0;
+        }
+
+
+        // var TRStock = [data["nStock"]["30"], data["nStock"]["50"], data["nStock"]["100"], data["nStock"]["160"]];
+        // var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"] - 76, data["nTR"]["15"]["100"] - 27, data["nTR"]["15"]["160"] - 18];
+        // var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
+        // var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
+        // data['req'].forEach(element => {
+        //   if (element.nDay == "15" && choice == "1") {
+        //     label.push(element.matNameShort);
+        //     TR15.push(Number(element.nMat));
+        //     TRStock.push(Number(element.stock));
+
+        //   }
+        //   if (element.nDay == "45" && choice != "1") {
+        //     label.push(element.matNameShort);
+        //     TR45.push(Number(element.nMat));
+        //     TRStock2.push(Number(element.stock));
+        //   }
+
+        // });
         if (choice == "1") {
           this.nDate = "15";
           var chartData = {
@@ -1203,6 +1474,102 @@ export class LVProComponent implements OnInit {
 
         });
         this.getMatReq();
+        if (choice != "1") {
+          var chartData = {
+            labels: label,
+            datasets: [
+              {
+                label: 'พัสดุที่ต้องการใช้งาน',
+                data: TR45,
+                backgroundColor: '#F0BC46',
+              },
+              {
+                label: 'พัสดุคงคลัง',
+                data: TRStock2,
+                backgroundColor: '#F08646',
+              }
+            ]
+          };
+          if (this.chartTR) this.chartTR.destroy();
+          this.chartTR = new Chart('chartTR', {
+            type: 'horizontalBar',
+            data: chartData,
+            options: {
+              indexAxis: 'y',
+              // Elements options apply to all of the options unless overridden in a dataset
+              // In this case, we are setting the border of each horizontal bar to be 2px wide
+              elements: {
+                bar: {
+                  borderWidth: 2,
+                }
+              },
+              responsive: true,
+              maintainAspectRatio: false,
+              legend: {
+                position: 'bottom',
+                display: true,
+                defaultFontSize: 30,
+                labels: {
+                  display: true,
+                  defaultFontSize: 30,
+                  fontColor: 'white'
+                }
+              },
+              scales: {
+                xAxes: [{
+                  ticks: {
+                    fontSize: 14,
+                    fontColor: "white",
+                  }
+                }],
+                yAxes: [{
+                  ticks: {
+                    fontSize: 14,
+                    fontColor: "white",
+                  }
+                }]
+              },
+              animation: {
+                onComplete: function () {
+                  var ctx = this.chart.ctx;
+                  ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                  ctx.fillStyle = "white";
+                  ctx.textAlign = 'left';
+                  ctx.textBaseline = 'center';
+                  // console.log(this.data.datasets[1].data[0])
+                  var mat = [];
+                  this.data.datasets.forEach(function (dataset,) {
+
+                    for (var i = 0; i < dataset.data.length; i++) {
+                      for (var key in dataset._meta) {
+                        var model = dataset._meta[key].data[i]._model;
+
+                        if (dataset.label.includes("พัสดุที่ต้องการใช้งาน")) {
+                          mat.push(dataset.data[i]);
+                          ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                          // console.log(mat)
+                        } else {
+                          if (dataset.data[i] - mat[i] > 0) {
+                            ctx.fillText(dataset.data[i], model.x + 10, model.y);
+                          } else {
+                            ctx.fillText(dataset.data[i] + " ,ขาด " + (mat[i] - dataset.data[i]), model.x + 10, model.y);
+                          }
+                        }
+
+
+                      }
+
+                    }
+                  });
+
+                }
+              }
+            }
+
+          });
+        }else{
+          this.getLoad100();
+        }
 
       } else {
         alert(data['data']);
@@ -1318,10 +1685,8 @@ export class LVProComponent implements OnInit {
       } else {
         alert(data['data']);
       }
-
     }));
   }
-
 
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource1.data, 'TRdata');
@@ -1332,6 +1697,7 @@ export class LVProComponent implements OnInit {
   exportAsXLSX2(): void {
     this.configService.exportAsExcelFile(this.dataSource2.data, 'MatchTR');
   }
+
   // exportAsXLSX2(): void {
   //   this.configService.exportAsExcelFile(this.dataSource1.data, 'MeterData');
   // }
