@@ -50,7 +50,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'upload', component: UploadComponent },
   { path: 'jobapprove', component: JobapproveComponent,canActivate:[AuthGuard] },
-  { path: 'ldcad', component: LVProComponent,canActivate:[AuthGuard]  },
+  { path: 'ldcad', component: LVProComponent,canActivate:[AuthGuard]},
   { path: 'psim', component: PsimdashboardComponent,canActivate:[AuthGuard] },
   { path: 'phasecheck', component: PhasechkComponent,canActivate:[AuthGuard] },
   { path: 'roic', component: RoicComponent,canActivate:[AuthGuard] },

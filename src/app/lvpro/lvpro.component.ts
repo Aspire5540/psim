@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { FileuploadService } from '../config/fileupload.service';
 import { Chart } from 'chart.js';
 import { MatSort } from '@angular/material/sort';
+import {DomSanitizer} from '@angular/platform-browser';
 import {
   ApexNonAxisChartSeries,
   ApexAxisChartSeries,
@@ -78,6 +79,8 @@ export class LVProComponent implements OnInit {
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions>;
 
+  name = 'Kissht';
+  KisshtHtml;
   // myBarClsd: Chart;
   // BarMat: Chart;
   testArry = { '100': 20 };
@@ -88,9 +91,11 @@ export class LVProComponent implements OnInit {
   displayedColumns2 = ['PEA_TR',
     'PEANAME',
     'kva',
+    'LOCATION',
     'newTR',
     'newPEANAME',
     'newkva',
+    'location2',
     'distance',
     'map'];
 
@@ -187,7 +192,7 @@ export class LVProComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
+  constructor(private sanitizer:DomSanitizer,private router: Router, private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
     this.getpeaList();
     this.getpeaList2();
 
@@ -197,12 +202,12 @@ export class LVProComponent implements OnInit {
     //this.peaCode = localStorage.getItem('peaCode');
     // this.getTrData();
     // this.getStatus();
-    this.getMat("1");
+    // this.getMat("1");
     this.getTRmatch();
     this.getJobProgressPea();
     // console.log("url:", this.router.url);
     // console.log(window.location);
-    this.getMatReq();
+    // this.getMatReq();
     //this.getMeterData();
 
     // this.dataSource.paginator = this.paginator;
@@ -216,10 +221,41 @@ export class LVProComponent implements OnInit {
     // this.dataSource.paginator = this.paginator1;
     // this.dataSource.sort = this.sort1;
     this.peaCode = localStorage.getItem('peaCode');
+    // this.peaCode = 'B00000';
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
+  setTime(time){
+    // console.log("date",new Date(time))
+    return new Date(time);
+  }
+  onDateChange(trdata,event){
+    var day=''+event.value.getDate();
+    var month=''+event.value.getMonth()+1;
+    var year=event.value.getFullYear();
+    // console.log(month,day);
+    if(month.length<2){
+      month='0'+month;
+    }
+    if(day.length<2){
+      day='0'+day;
+    }
+    this.writeDate(trdata,[year,month,day].join('-'));
+    // console.log([year,month,day].join('-'));
+  }
+  writeDate(trdata,date) {
+    this.configService.postdata2('ldcad/wriDate.php', { TRNumber: trdata,rundate: date}).subscribe((data => {
+      if (data['status'] == 1) {
+        this.getTrData();
+        //  this.getStatus();
+        // this.getJobProgressPea();
+        //console.log(this.peaname);
+      } else {
+        alert(data['data']);
+      }
 
+    }))
+  }
   onOther(value, trdata) {
     this.configService.postdata2('ldcad/wriNote.php', { TRNumber: trdata, note: value }).subscribe((data => {
       if (data['status'] == 1) {
@@ -232,7 +268,6 @@ export class LVProComponent implements OnInit {
       }
 
     }))
-    console.log(value);
   }
   checkSelect(selected) {
 
@@ -1293,6 +1328,16 @@ export class LVProComponent implements OnInit {
 
 
   }
+  onTabClick(event){
+    if(event.index==1){
+      this.getMat("1");
+      this.getMatReq();
+    }else if(event.index==2){
+      // this.http.get('http://n2-psim.pea.co.th/psdoc/',{responseType:'text'}).subscribe(res=>{
+      //   this.KisshtHtml = this.sanitizer.bypassSecurityTrustHtml(res);
+      // })
+    }
+  }
   getMat(choice) {
     this.choice = choice;
     this.configService.postdata2('ldcad/rdMatSAP.php', {}).subscribe((data => {
@@ -1324,13 +1369,6 @@ export class LVProComponent implements OnInit {
             TR45match[trSize.indexOf(element.kva)] = Number(element.nMat);
           }
         });
-        console.log("TR45match", TR45match);
-
-
-
-
-
-
         data['stock'].forEach(element => {
           if (trSize.indexOf(element.kva) > -1) {
             TRStock[trSize.indexOf(element.kva)] = Number(element.nMat);
@@ -1339,26 +1377,24 @@ export class LVProComponent implements OnInit {
         for (var i = 0; i < TRStock.length; i++) {
           TRStock2[i] = (TRStock[i] - TR15[i]) >= 0 ? (TRStock[i] - TR15[i]) : 0;
         }
-
-
         // var TRStock = [data["nStock"]["30"], data["nStock"]["50"], data["nStock"]["100"], data["nStock"]["160"]];
         // var TR15 = [data["nTR"]["15"]["30"], data["nTR"]["15"]["50"] - 76, data["nTR"]["15"]["100"] - 27, data["nTR"]["15"]["160"] - 18];
         // var TR45 = [data["nTR"]["45"]["30"], data["nTR"]["45"]["50"], data["nTR"]["45"]["100"], data["nTR"]["45"]["160"]];
         // var TRStock2 = [TRStock[0] - TR15[0], TRStock[1] - TR15[1], TRStock[2] - TR15[2], TRStock[3] - TR15[3]];
-        // data['req'].forEach(element => {
-        //   if (element.nDay == "15" && choice == "1") {
-        //     label.push(element.matNameShort);
-        //     TR15.push(Number(element.nMat));
-        //     TRStock.push(Number(element.stock));
+        data['req'].forEach(element => {
+          if (element.nDay == "15" && choice == "1") {
+            label.push(element.matNameShort);
+            TR15.push(Number(element.nMat));
+            TRStock.push(Number(element.stock));
 
-        //   }
-        //   if (element.nDay == "45" && choice != "1") {
-        //     label.push(element.matNameShort);
-        //     TR45.push(Number(element.nMat));
-        //     TRStock2.push(Number(element.stock));
-        //   }
+          }
+          if (element.nDay == "45" && choice != "1") {
+            label.push(element.matNameShort);
+            TR45.push(Number(element.nMat));
+            TRStock2.push(Number(element.stock));
+          }
 
-        // });
+        });
         if (choice == "1") {
           this.nDate = "15";
           var chartData = {
@@ -1480,7 +1516,7 @@ export class LVProComponent implements OnInit {
             datasets: [
               {
                 label: 'พัสดุที่ต้องการใช้งาน',
-                data: TR45,
+                data: TR45match,
                 backgroundColor: '#F0BC46',
               },
               {

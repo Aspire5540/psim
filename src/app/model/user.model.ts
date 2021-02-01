@@ -161,9 +161,11 @@ peaName:string;
 export interface trmatch{
   PEA_TR:string;
   kva:string;
+  LOCATION:string;
   PEANAME:string;
   newTR:string;
   newkva:number;
+  locatoin2:string;
   newAoj:string;
   newPEANAME:string;
   distance:number;

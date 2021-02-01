@@ -1,546 +1,621 @@
 <app-loader></app-loader>
 
 
+<mat-tab-group [backgroundColor]="'primary'" [color]="'warn'" (selectedTabChange)="onTabClick($event)">
+  <mat-tab label="Dashboard">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title style="color:white;">Dashboard การปรับปรุงหม้อแปลงและระบบจำหน่ายแรงต่ำ จาก LDCad
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
 
-<mat-card>
-  <mat-card-header>
-    <mat-card-title style="color:white;">การปรับปรุงหม้อแปลงไฟฟ้าและระบบจำหน่ายแรงต่ำ จาก LDCad
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="row">
-      <mat-tab-group>
-        <mat-tab label="First"> Content 1 </mat-tab>
-        <mat-tab label="Second"> Content 2 </mat-tab>
-        <mat-tab label="Third"> Content 3 </mat-tab>
-      </mat-tab-group>
-    </div>
-    <div class="row">
+        <div class="row">
 
-      <div class="col-md-12">
-        <mat-form-field>
-          <mat-label style="color:white;">กฟฟ. </mat-label>
-          <mat-select (selectionChange)="selectPea($event)">
-            <mat-option class="not-empty-select" *ngFor="let pea of peaname2"
-              [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
-              {{pea.peaCode +" "+pea.peaName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="col-md-12">
+            <mat-form-field>
+              <mat-label style="color:white;">กฟฟ. </mat-label>
+              <mat-select (selectionChange)="selectPea($event)">
+                <mat-option class="not-empty-select" *ngFor="let pea of peaname2"
+                  [value]="[pea.peaEng,pea.peaCode,pea.peaName]">
+                  {{pea.peaCode +" "+pea.peaName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-      </div>
-    </div>
-    <div class="col-md-12 d-flex justify-content-center" style="color: white;">
-      <mat-button-toggle-group style="border-radius: 20px;height: 80%;color: rgb(70, 124, 172);" value="2">
-        <mat-button-toggle (change)="onValChange($event.value)" value="2">แรงดันต่ำกว่า 200 V</mat-button-toggle>
-        <mat-button-toggle (change)="onValChange($event.value)" value="6">แรงดัน 200-210 V</mat-button-toggle>
-        <mat-button-toggle (change)="onValChange($event.value)" value="1">โหลด 80-100%</mat-button-toggle>
-        <!-- <mat-button-toggle (change)="onValChange($event.value)" value="7">โหลด 80-90%</mat-button-toggle> -->
-        <mat-button-toggle (change)="onValChange($event.value)" value="5">โหลดเกิน 100%</mat-button-toggle>
-        <mat-button-toggle (change)="onValChange($event.value)" value="4">โหลดต่ำกว่า 30%</mat-button-toggle>
-        <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 25%</mat-button-toggle>
-        <!-- <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 50%</mat-button-toggle> -->
-      </mat-button-toggle-group>
+          </div>
+        </div>
+        <div class="col-md-12 d-flex justify-content-center" style="color: white;">
+          <mat-button-toggle-group style="border-radius: 20px;height: 80%;color: rgb(70, 124, 172);" value="2">
+            <mat-button-toggle (change)="onValChange($event.value)" value="2">แรงดันต่ำกว่า 200 V</mat-button-toggle>
+            <mat-button-toggle (change)="onValChange($event.value)" value="6">แรงดัน 200-210 V</mat-button-toggle>
+            <mat-button-toggle (change)="onValChange($event.value)" value="1">โหลด 80-100%</mat-button-toggle>
+            <!-- <mat-button-toggle (change)="onValChange($event.value)" value="7">โหลด 80-90%</mat-button-toggle> -->
+            <mat-button-toggle (change)="onValChange($event.value)" value="5">โหลดเกิน 100%</mat-button-toggle>
+            <mat-button-toggle (change)="onValChange($event.value)" value="4">โหลดต่ำกว่า 30%</mat-button-toggle>
+            <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 25%</mat-button-toggle>
+            <!-- <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 50%</mat-button-toggle> -->
+          </mat-button-toggle-group>
 
-    </div>
+        </div>
 
-    <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="color: white;">
-        <apx-chart style="color: white;" [series]="chartOptions1.series" [chart]="chartOptions1.chart"
-          [plotOptions]="chartOptions1.plotOptions" [labels]="chartOptions1.labels" [stroke]="chartOptions1.stroke"
-          [fill]="chartOptions1.fill" style="color: white;"></apx-chart>
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12" style="color: white;">
+            <apx-chart style="color: white;" [series]="chartOptions1.series" [chart]="chartOptions1.chart"
+              [plotOptions]="chartOptions1.plotOptions" [labels]="chartOptions1.labels" [stroke]="chartOptions1.stroke"
+              [fill]="chartOptions1.fill" style="color: white;"></apx-chart>
 
-        <div class="card card-statistics mt-5">
-          <div class="card-body bg-success">
-            <div class="clearfix">
-              <div class="float-left">
-                <i class="mdi  mdi-chart-line text-white icon-lg"></i>
-              </div>
-              <div class="float-right">
-                <p class="font-weight-medium text-right mb-0 wrfont" style="font-size:x-large;">หม้อแปลงทั้งหมด
-                  {{TrPlnTal | number}} เครื่อง</p>
-                <div class="fluid-container">
-                  <h3 class="font-weight-medium text-right mb-0 wrfont">ตรวจสอบแล้ว {{TrTotal | number}} เครื่อง <BR>
-                    ปิดงานแล้ว {{TrTotalClsd}} เครื่อง </h3>
+            <div class="card card-statistics mt-5">
+              <div class="card-body bg-success">
+                <div class="clearfix">
+                  <div class="float-left">
+                    <i class="mdi  mdi-chart-line text-white icon-lg"></i>
+                  </div>
+                  <div class="float-right">
+                    <p class="font-weight-medium text-right mb-0 wrfont" style="font-size:x-large;">หม้อแปลงทั้งหมด
+                      {{TrPlnTal | number}} เครื่อง</p>
+                    <div class="fluid-container">
+                      <h3 class="font-weight-medium text-right mb-0 wrfont">ตรวจสอบแล้ว {{TrTotal | number}} เครื่อง
+                        <BR>
+                        ปิดงานแล้ว {{TrTotalClsd}} เครื่อง
+                      </h3>
+                    </div>
+                  </div>
                 </div>
+
               </div>
             </div>
+          </div>
+          <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12" style="height: 50pc;">
+
+            <canvas id='chartResult'></canvas>
 
           </div>
+
         </div>
-      </div>
-      <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12" style="height: 50pc;">
-
-        <canvas id='chartResult'></canvas>
-
-      </div>
-
-    </div>
-  </mat-card-content>
-</mat-card>
-<!-----------------------------------หม้อแปลงคงคลัง matching------------------------------------------------>
-<div class="mt-3">
-  <mat-card class="example-card">
-    <mat-card-content>
-      <h4 style="color: white;">ความต้องการพัสดุ กฟน.2</h4>
-      <div class="row mt-1">
-        <div class="col-md-12">
-          <div class="col-md-12 d-flex justify-content-center">
-            <mat-button-toggle-group style="border-radius: 20px;height: 80%;" value="1">
-              <mat-button-toggle (change)="getMat($event.value)" value="1">15 วัน</mat-button-toggle>
-              <mat-button-toggle (change)="getMat($event.value)" value="2">45 วัน</mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 col-sm-6 mt-3" style="height: 20pc;">
-              <div *ngIf="nDate==15">
-                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน</mat-label>
-              </div>
-              <div *ngIf="nDate!=15">
-                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน ก่อน Matching </mat-label>
-              </div>
-              <canvas id='chartMat'></canvas>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="Material">
+    <!-----------------------------------หม้อแปลงคงคลัง matching------------------------------------------------>
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title style="color:white;">ความต้องการพัสดุ กฟน.2
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- <h4 style="color: white;">ความต้องการพัสดุ กฟน.2</h4> -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-12 d-flex justify-content-center">
+              <mat-button-toggle-group style="border-radius: 20px;height: 80%;" value="1">
+                <mat-button-toggle (change)="getMat($event.value)" value="1">15 วัน</mat-button-toggle>
+                <mat-button-toggle (change)="getMat($event.value)" value="2">45 วัน</mat-button-toggle>
+              </mat-button-toggle-group>
             </div>
-            <div class="col-md-6 col-sm-6 mt-3 float-right" style="height: 20pc;">
-              <div *ngIf="nDate==15">
-                <mat-label style="color: white;">จำนวนหม้อแปลงที่มีโหลดเกิน 100%</mat-label>
-              </div>
-              <div *ngIf="nDate!=15">
-                <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน หลัง Matching</mat-label>
-              </div>
-              <canvas id='chartTR'></canvas>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-md-6 mt-5">
-          <mat-label style="color: white;">โปรดระบุความต้องการพัสดุ</mat-label>
-          <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
             <div class="row">
-              <div class="col-md-2">
-                <div class="form-group row">
-                  <label class="col-sm-12 col-form-label  input-lg" style="color: white;">รหัสพัสดุ</label>
-                  <div class="col-sm-12">
-                    <input type="text" class="form-control" name="matCode" ngModel required>
+              <div class="col-md-6 col-sm-6 mt-3" style="height: 30pc;">
+                <div *ngIf="'nDate'==15">
+                  <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน</mat-label>
+                </div>
+                <div *ngIf="'nDate'!=15">
+                  <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน ก่อน Matching
+                  </mat-label>
+                </div>
+                <canvas id='chartMat'></canvas>
+              </div>
+              <div class="col-md-6 col-sm-6 mt-3 float-right">
+                <div class="row">
+                  <div *ngIf="nDate==15">
+                    <mat-label style="color: white;">จำนวนหม้อแปลงที่มีโหลดเกิน 100%</mat-label>
+                  </div>
+                  <div *ngIf="nDate!=15">
+                    <mat-label style="color: white;">จำนวนหม้อแปลงที่ต้องใช้ภายใน {{nDate}} วัน หลัง Matching
+                    </mat-label>
+                  </div>
+
+                  <div class="col-md-12 col-sm-12"  style="height: 30pc;">
+                    <canvas id='chartTR'></canvas>
                   </div>
                 </div>
+                <div class="row mt-5">
+                  <mat-label style="color: white;">โปรดระบุความต้องการพัสดุ</mat-label>
+                  <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="form-group row">
+                          <label class="col-sm-12 col-form-label  input-lg" style="color: white;">รหัสพัสดุ</label>
+                          <div class="col-sm-12">
+                            <input type="text" class="form-control" name="matCode" ngModel required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-5">
+                        <div class="form-group row">
+                          <label class="col-sm-12 col-form-label  input-lg" style="color: white;">ชื่อพัสดุ</label>
+                          <div class="col-sm-12">
+                            <input type="text" class="form-control" name="matName" ngModel required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-2">
+                        <div class="form-group row">
+                          <label class="col-sm-12 col-form-label  input-lg" style="color: white;">จำนวน</label>
+                          <div class="col-sm-12">
+                            <input type="text" class="form-control" name="nMat" ngModel required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2"
+                          style="font-size: 18px; margin-top: 29px;color: white; background-color:green;border-color:whitesmoke; ">บันทึก</button>
+                      </div>
+                      <div class="col-md-1" style="margin-top: 29px; ">
+                        <button (click)="exportAsXLSX3()"><i class="fa fa-file-excel-o"
+                            style="font-size:30px;color:green;"></i></button>
+                      </div>
+
+                    </div>
+
+                    <div class="table-responsive" style="background-color:royalblue">
+                      <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort
+                        #sort3="matSort" [dataSource]="dataSource3">
+                        <ng-container matColumnDef="matCode">
+                          <th class="table-lg" mat-header-cell *matHeaderCellDef
+                            style="color: black;background-color:lightgray;"> รหัสพัสดุ </th>
+                          <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">
+                            {{matreq.matCode}}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="matName">
+                          <th class="table-lg" mat-header-cell *matHeaderCellDef
+                            style="color: black;background-color:lightgray;"> ชื่อพัสดุ </th>
+                          <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">
+                            {{matreq.matName}}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="nMat">
+                          <th class="table-lg" mat-header-cell *matHeaderCellDef
+                            style="color: black;background-color:lightgray;">จำนวน </th>
+                          <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.nMat}}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="peaName">
+                          <th class="table-lg" mat-header-cell *matHeaderCellDef
+                            style="color: black;background-color:lightgray;">กฟฟ </th>
+                          <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">
+                            {{matreq.peaName}}
+                          </td>
+                        </ng-container>
+                        <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns3" style="color: white;">
+                        </tr>
+                        <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+                      </table>
+                      <mat-paginator #paginator3 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
+                      </mat-paginator>
+                    </div>
+
+
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-md-6 mt-5">
+            <mat-label style="color: white;">โปรดระบุความต้องการพัสดุ</mat-label>
+            <form class="form-sample" #f="ngForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-group row">
+                    <label class="col-sm-12 col-form-label  input-lg" style="color: white;">รหัสพัสดุ</label>
+                    <div class="col-sm-12">
+                      <input type="text" class="form-control" name="matCode" ngModel required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-5">
+                  <div class="form-group row">
+                    <label class="col-sm-12 col-form-label  input-lg" style="color: white;">ชื่อพัสดุ</label>
+                    <div class="col-sm-12">
+                      <input type="text" class="form-control" name="matName" ngModel required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <div class="form-group row">
+                    <label class="col-sm-12 col-form-label  input-lg" style="color: white;">จำนวน</label>
+                    <div class="col-sm-12">
+                      <input type="text" class="form-control" name="nMat" ngModel required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2"
+                    style="font-size: 18px; margin-top: 29px;color: white; background-color:green;border-color:whitesmoke; ">บันทึก</button>
+                </div>
+                <div class="col-md-1" style="margin-top: 29px; ">
+                  <button (click)="exportAsXLSX3()"><i class="fa fa-file-excel-o"
+                      style="font-size:30px;color:green;"></i></button>
+                </div>
+
               </div>
 
-              <div class="col-md-5">
-                <div class="form-group row">
-                  <label class="col-sm-12 col-form-label  input-lg" style="color: white;">ชื่อพัสดุ</label>
-                  <div class="col-sm-12">
-                    <input type="text" class="form-control" name="matName" ngModel required>
-                  </div>
-                </div>
+              <div class="table-responsive" style="background-color:royalblue">
+                <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort3="matSort"
+                  [dataSource]="dataSource3">
+                  <ng-container matColumnDef="matCode">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef
+                      style="color: black;background-color:lightgray;"> รหัสพัสดุ </th>
+                    <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matCode}}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="matName">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef
+                      style="color: black;background-color:lightgray;"> ชื่อพัสดุ </th>
+                    <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matName}}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nMat">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef
+                      style="color: black;background-color:lightgray;">จำนวน </th>
+                    <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.nMat}}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="peaName">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef
+                      style="color: black;background-color:lightgray;">กฟฟ </th>
+                    <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.peaName}}
+                    </td>
+                  </ng-container>
+                  <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns3" style="color: white;"></tr>
+                  <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+                </table>
+                <mat-paginator #paginator3 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
+                </mat-paginator>
               </div>
 
-              <div class="col-md-2">
-                <div class="form-group row">
-                  <label class="col-sm-12 col-form-label  input-lg" style="color: white;">จำนวน</label>
-                  <div class="col-sm-12">
-                    <input type="text" class="form-control" name="nMat" ngModel required>
-                  </div>
-                </div>
+
+            </form>
+
+          </div> -->
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
+
+  <mat-tab label="Transformer Matching">
+    <!-----------------------------------หม้อแปลงคงคลัง matching------------------------------------------------>
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title style="color:white;">Transformer Matching
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- <h4 style="color: white;">ความต้องการพัสดุ กฟน.2</h4> -->
+        <div class="row">
+          <div class="col-md-12">
+            <mat-label style="color: white;">รายละเอียดหม้อแปลงที่ Matching</mat-label>
+            <div class="row">
+              <div class="col-md-10">
+                <mat-form-field>
+                  <mat-label style="color: white;">ค้นหา</mat-label>
+                  <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput
+                    (keyup)="applyFilter1($event.target.value)">
+                </mat-form-field>
               </div>
-              <div class="col-md-2">
-                <button type="submit" [disabled]="!f.valid" class="btn btn-success mr-2"
-                  style="font-size: 18px; margin-top: 29px;color: white; background-color:green;border-color:whitesmoke; ">บันทึก</button>
-              </div>
-              <div class="col-md-1" style="margin-top: 29px; ">
-                <button (click)="exportAsXLSX3()"><i class="fa fa-file-excel-o"
+              <div class="col-md-1" style="margin-top: 10px;">
+                <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
                     style="font-size:30px;color:green;"></i></button>
               </div>
-
+              <div class="col-md-1">
+                <a target="_blank" href="http://n2-psim.pea.co.th/psisservice/MatchingMap.php/"><i class="mdi mdi-map"
+                    style="font-size:40px;color:white;"></i></a>
+              </div>
             </div>
 
             <div class="table-responsive" style="background-color:royalblue">
-              <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort3="matSort"
-                [dataSource]="dataSource3">
-                <ng-container matColumnDef="matCode">
+              <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort2="matSort"
+                [dataSource]="dataSource2">
+                <ng-container matColumnDef="PEA_TR">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef
-                    style="color: black;background-color:lightgray;"> รหัสพัสดุ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matCode}}</td>
+                    style="color: black;background-color:lightgray;">
+                    PEA หม้อแปลง<BR>โหดลด 80-100% </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.PEA_TR}}
+                  </td>
                 </ng-container>
-                <ng-container matColumnDef="matName">
+                <ng-container matColumnDef="kva">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef
-                    style="color: black;background-color:lightgray;"> ชื่อพัสดุ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;"> {{matreq.matName}}</td>
+                    style="color: black;background-color:lightgray;">
+                    พิกัด<BR> (kvA) </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.kva}}</td>
                 </ng-container>
-                <ng-container matColumnDef="nMat">
+                <ng-container matColumnDef="LOCATION">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef
-                    style="color: black;background-color:lightgray;">จำนวน </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.nMat}}</td>
+                    style="color: black;background-color:lightgray;">
+                    สถานที่ติดตั้ง<BR> (kvA) </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.LOCATION}}</td>
                 </ng-container>
-                <ng-container matColumnDef="peaName">
+                <ng-container matColumnDef="location2">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef
-                    style="color: black;background-color:lightgray;">กฟฟ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let matreq" style="color: black;">{{matreq.peaName}}</td>
+                    style="color: black;background-color:lightgray;">
+                    สถานที่ติดตั้ง<BR> (kvA) </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.location2}}</td>
                 </ng-container>
-                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns3" style="color: white;"></tr>
-                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+                <ng-container matColumnDef="PEANAME">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                    กฟฟ. </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.PEANAME}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="newTR">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                    PEA หม้อแปลง<BR>โหดลด < 30% </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newTR}}</td>
+                </ng-container>
+                <ng-container matColumnDef="newkva">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                    พิกัด<BR>(kvA)</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newkva}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="newPEANAME">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                    กฟฟ. </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newPEANAME}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="distance">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                    ระยะทาง<BR>(km) </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">
+                    {{trmatch.distance/1000 |
+                    number:'1.2-2'}}</td>
+                </ng-container>
+                <ng-container matColumnDef="map">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef
+                    style="color: black;background-color:lightgray;">
+                  </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">
+                    <div class="col-md-1">
+                      <a target="_blank" href="http://n2-psim.pea.co.th/psisservice/MatchingMapTwo.php?peaTr='{{trmatch.PEA_TR}}'"><i
+                          class="mdi mdi-map" style="font-size:40px;color:rgb(223, 129, 7);"></i></a>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns2" style="color: white;"></tr>
+                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
               </table>
-              <mat-paginator #paginator3 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
+              <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
               </mat-paginator>
             </div>
-
-
-          </form>
-
-        </div>
-        <div class="col-md-6 mt-5">
-          <mat-label style="color: white;">รายละเอียดหม้อแปลงที่ Matching</mat-label>
-
-          <div class="row">
-            <div class="col-md-10">
-              <mat-form-field>
-                <mat-label style="color: white;">ค้นหา</mat-label>
-                <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput
-                  (keyup)="applyFilter1($event.target.value)">
-              </mat-form-field>
-            </div>
-            <div class="col-md-1" style="margin-top: 10px;">
-              <button (click)="exportAsXLSX2()"><i class="fa fa-file-excel-o"
-                  style="font-size:30px;color:green;"></i></button>
-            </div>
-            <div class="col-md-1">
-              <a target="_blank" href="http://n2-psim.pea.co.th/psisservice/MatchingMap.php/"><i class="mdi mdi-map"
-                  style="font-size:40px;color:white;"></i></a>
-            </div>
-          </div>
-
-          <div class="table-responsive" style="background-color:royalblue">
-            <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort2="matSort"
-              [dataSource]="dataSource2">
-              <ng-container matColumnDef="PEA_TR">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  PEA หม้อแปลง<BR>โหดลด 80-100% </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.PEA_TR}}</td>
-              </ng-container>
-              <ng-container matColumnDef="kva">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  พิกัด<BR> (kvA) </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;"> {{trmatch.kva}}</td>
-              </ng-container>
-              <ng-container matColumnDef="PEANAME">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  กฟฟ. </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.PEANAME}}</td>
-              </ng-container>
-              <ng-container matColumnDef="newTR">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  PEA หม้อแปลง<BR>โหดลด < 30% </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newTR}}</td>
-              </ng-container>
-              <ng-container matColumnDef="newkva">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  พิกัด<BR>(kvA)</th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newkva}}</td>
-              </ng-container>
-              <ng-container matColumnDef="newPEANAME">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  กฟฟ. </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.newPEANAME}}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="distance">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                  ระยะทาง<BR>(km) </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">{{trmatch.distance/1000 |
-                  number:'1.2-2'}}</td>
-              </ng-container>
-              <ng-container matColumnDef="map">
-                <th class="table-lg" mat-header-cell *matHeaderCellDef style="color: black;background-color:lightgray;">
-                </th>
-                <td class="table-lg" mat-cell *matCellDef="let trmatch" style="color: black;">
-                  <div class="col-md-1">
-                    <a target="_blank" href="http://n2-psim.pea.co.th/psisservice/MatchingMap.php/"><i
-                        class="mdi mdi-map" style="font-size:40px;color:rgb(223, 129, 7);"></i></a>
-                  </div>
-                </td>
-              </ng-container>
-
-              <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns2" style="color: white;"></tr>
-              <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
-            </table>
-            <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons>
-            </mat-paginator>
           </div>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
-<!-----------------------------------Table------------------------------------------------->
-<div class="row mt-3">
+        <!-- <div class="row">
+          <div [innerHtml]="KisshtHtml"></div>
+        </div> -->
+      </mat-card-content>
+    </mat-card>
+  </mat-tab>
 
-  <!-- <div class="row">
-    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-      <div class="card card-statistics">
-        <div class="card bg-info text-white">
-          <p class="ml-1 mb-0 text-center ">แรงดัน<200 และโหลดเกิน 80%</p>
-                <canvas id='myDonut'></canvas>
-                <p class="text-white mt-3 mb-0">
-                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR1 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
-                </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-      <div class="card card-statistics">
-        <div class="card bg-success text-white">
-            <p class="ml-1 mb-0 text-center ">แรงดัน<200 Volt</p>
-              <canvas id='myDonut200'></canvas>
-              <p class="text-white mt-3 mb-0">
-                <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR2 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
-              </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-      <div class="card card-statistics">
-        <div class="card bg-primary text-white">
-            <p class="ml-1 mb-0 text-center ">โหลดเกิน 80%</p>
-              <canvas id='myDonut80' ></canvas>
-              <p class="text-white mt-3 mb-0">
-                <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{PEA_TR3 | number}} เครื่อง จาก {{PEA_TR0 | number}} เครื่อง
-              </p>
-        </div>
-      </div>
-    </div>
-  </div> -->
+  <mat-tab label="ระบุวันเริ่มงานและผลการดำเนินการ">
+    <!-----------------------------------Table------------------------------------------------->
+    <div class="row">
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <mat-card class="card-body">
+            <div class="form-group">
+              <mat-label style="color: white;">รายละเอียดหม้อแปลง</mat-label>
+              <div class="row">
 
-
-  <!-- <div class="row">
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-          <div class="card bg-info text-white">
-            <p class="ml-1 mb-0 text-center ">แรงดัน<200 Volt และโหลดเกิน 80% ที่มี WBS</p>
-                  <canvas id='myDonutWBS4'></canvas>
-                  <p class="text-white mt-3 mb-0">
-                    <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS4 | number}} งาน จาก {{PEA_TR1 | number}} เครื่อง
-                  </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-          <div class="card bg-success text-white">
-              <p class="ml-1 mb-0 text-center ">แรงดัน<200 ที่มี WBS</p>
-                <canvas id='myDonutWBS5'></canvas>
-                <p class="text-white mt-3 mb-0">
-                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS5 | number}} งาน จาก {{PEA_TR2 | number}} เครื่อง
-                </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 grid-margin stretch-card">
-        <div class="card card-statistics">
-          <div class="card bg-primary text-white">
-              <p class="ml-1 mb-0 text-center ">โหลดเกิน 80% ที่มี WBS</p>
-                <canvas id='myDonutWBS6'></canvas>
-                <p class="text-white mt-3 mb-0">
-                  <i class="mdi mdi-alert-octagon ml-1 mr-1" aria-hidden="true"></i> จำนวน {{WBS6 | number}} งาน จาก {{PEA_TR3 | number}} เครื่อง
-                </p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-
-  <div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-      <mat-card class="card-body">
-        <div class="form-group">
-          <mat-label style="color: white;">รายละเอียดหม้อแปลง</mat-label>
-          <div class="row">
-
-            <div class="col-md-3">
-              <!---
+                <div class="col-md-3">
+                  <!---
                 <input type="text" class="form-control border-primary" matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
                   -->
 
-              <mat-form-field>
-                <mat-label style="color: white;">ค้นหา</mat-label>
-                <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput
-                  (keyup)="applyFilter($event.target.value)">
-              </mat-form-field>
-            </div>
+                  <mat-form-field>
+                    <mat-label style="color: white;">ค้นหา</mat-label>
+                    <input style="color: white;" matInput placeholder="ระบุหมายเลขหม้อแปลง" matInput
+                      (keyup)="applyFilter($event.target.value)">
+                  </mat-form-field>
+                </div>
 
-            <div class="col-md-3">
-              <mat-form-field appearance="legacy">
-                <mat-label style="color: white;">ระบุเงื่อนไข</mat-label>
-                <mat-select (selectionChange)="selectCondition($event)">
-                  <mat-option class="not-empty-select" *ngFor="let Condition of Conditions" [value]="[Condition.value]">
-                    {{Condition.viewvalue}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <!--
+                <div class="col-md-3">
+                  <mat-form-field appearance="legacy">
+                    <mat-label style="color: white;">ระบุเงื่อนไข</mat-label>
+                    <mat-select (selectionChange)="selectCondition($event)">
+                      <mat-option class="not-empty-select" *ngFor="let Condition of Conditions"
+                        [value]="[Condition.value]">
+                        {{Condition.viewvalue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <!--
               <div class="col-md-3">
                     <a target="_blank" href="http://127.0.0.1/psisservice/wpdf/wpdf.php?filter1={{selBudjet[0]}}&filter2={{selBudjet[1]}}"><button class="btn btn-success mr-2">พิมพ์ใบสรุปงบ</button></a>  
               </div>
               -->
 
-            <div class="col-md-3">
-              <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
-                  style="font-size:20px;color:green"></i></button>
-            </div>
-
-          </div>
-
-          <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
-            <ng-container matColumnDef="aoj">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> AOJ </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.aoj}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="PEA_TR">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PEA_TR}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="kva">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> พิกัด มป. </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.kva}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="Location">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้ง</th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.Location}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="PLoadTOT">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % Load </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PLoadTOT | number:'1.2-2'}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="minV">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงดันที่ปลายสาย </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.minV | number:'1.2-2'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Ub">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> %UB </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
-            </ng-container>
-
-
-            <ng-container matColumnDef="wbs">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">
-                <div *ngIf="checkAoj(trdata.aoj)">
-                  <mat-form-field>
-                    <input value={{trdata.wbs}} name="wbs" matInput placeholder="ใส่หมายเลข WBS/ใบสั่ง"
-                      (change)="applyWBS([$event.target.value,trdata])">
-                  </mat-form-field>
-                </div>
-                <div *ngIf="!checkAoj(trdata.aoj)">
-                  <mat-label>{{trdata.wbs}}</mat-label>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="jobStatus">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="RLoad">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>โหลดที่วัดได้จริง</th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">
-                <div *ngIf="checkAoj(trdata.aoj)">
-                  <mat-form-field style="width:80px !important">
-                    <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="%โหลดที่วัดได้"
-                      (change)="applyRLoad([$event.target.value,trdata])">
-                  </mat-form-field>
-                </div>
-                <div *ngIf="!checkAoj(trdata.aoj)">
-                  <mat-label>{{trdata.RLoad}}</mat-label>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="RVoltage">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดันที่วัดได้จริง</th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">
-                <div *ngIf="checkAoj(trdata.aoj)">
-                  <mat-form-field style="width:80px !important">
-                    <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="แรงดันต่ำสุด"
-                      (change)="applyRVoltage([$event.target.value,trdata])">
-                  </mat-form-field>
-                </div>
-                <div *ngIf="!checkAoj(trdata.aoj)">
-                  <mat-label>{{trdata.RVoltage}}</mat-label>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Status">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">
-                <div *ngIf="checkAoj(trdata.aoj)">
-                  <mat-form-field>
-                    <mat-label>{{trdata.Status}}</mat-label>
-                    <mat-select [(value)]="selected" (selectionChange)="selectStatus($event)">
-                      <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
-                        {{Status.value}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div *ngIf="!checkAoj(trdata.aoj)">
-
-                  <mat-label>{{trdata.Status}}</mat-label>
-
-                </div>
-                <div class="row col-md-12" *ngIf="checkSelect(trdata.Status)==0">
-                  <mat-form-field>
-                    <input value={{trdata.note}} name="RVoltage" matInput
-                      (change)="onOther($event.target.value,trdata.PEA_TR)">
-                  </mat-form-field>
+                <div class="col-md-3">
+                  <button (click)="exportAsXLSX()"><i class="fa fa-file-excel-o"
+                      style="font-size:20px;color:green"></i></button>
                 </div>
 
-              </td>
+              </div>
 
-            </ng-container>
+              <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
+                <ng-container matColumnDef="aoj">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> AOJ </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.aoj}}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="rundate">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มต้น </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.rundate | date: 'dd/MM'}} </td>
-            </ng-container>
+                <ng-container matColumnDef="PEA_TR">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PEA_TR}}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="expDate">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มสิ้นสุด </th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM'}} </td>
-            </ng-container>
+                <ng-container matColumnDef="kva">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> พิกัด มป. </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.kva}}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="workstatus">
-              <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
-              <td class="table-lg" mat-cell *matCellDef="let trdata">
-                <div *ngIf="checkwbs(trdata.wbs,trdata.Status)==1"><label class="badge badge-danger"
-                    style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
-              </td>
-            </ng-container>
-            <!-- <ng-container matColumnDef="PEA_Meter">
+                <ng-container matColumnDef="Location">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้ง</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.Location}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="PLoadTOT">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % Load </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PLoadTOT | number:'1.2-2'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="minV">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงดันที่ปลายสาย </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.minV | number:'1.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Ub">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> %UB </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="wbs">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <div *ngIf="checkAoj(trdata.aoj)">
+                      <mat-form-field>
+                        <input value={{trdata.wbs}} name="wbs" matInput placeholder="ใส่หมายเลข WBS/ใบสั่ง"
+                          (change)="applyWBS([$event.target.value,trdata])">
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="!checkAoj(trdata.aoj)">
+                      <mat-label>{{trdata.wbs}}</mat-label>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="jobStatus">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="RLoad">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>โหลดที่วัดได้จริง</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <div *ngIf="checkAoj(trdata.aoj)">
+                      <mat-form-field style="width:80px !important">
+                        <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="%โหลดที่วัดได้"
+                          (change)="applyRLoad([$event.target.value,trdata])">
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="!checkAoj(trdata.aoj)">
+                      <mat-label>{{trdata.RLoad}}</mat-label>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="RVoltage">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดันที่วัดได้จริง</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <div *ngIf="checkAoj(trdata.aoj)">
+                      <mat-form-field style="width:80px !important">
+                        <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="แรงดันต่ำสุด"
+                          (change)="applyRVoltage([$event.target.value,trdata])">
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="!checkAoj(trdata.aoj)">
+                      <mat-label>{{trdata.RVoltage}}</mat-label>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Status">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <div *ngIf="checkAoj(trdata.aoj)">
+                      <mat-form-field>
+                        <mat-label>{{trdata.Status}}</mat-label>
+                        <mat-select [(value)]="selected" (selectionChange)="selectStatus($event)">
+                          <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
+                            {{Status.value}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="!checkAoj(trdata.aoj)">
+
+                      <mat-label>{{trdata.Status}}</mat-label>
+
+                    </div>
+                    <div class="row col-md-12" *ngIf="checkSelect(trdata.Status)==0">
+                      <mat-form-field>
+                        <input value={{trdata.note}} name="RVoltage" matInput
+                          (change)="onOther($event.target.value,trdata.PEA_TR)">
+                      </mat-form-field>
+                    </div>
+
+                  </td>
+
+                </ng-container>
+
+                <ng-container matColumnDef="rundate">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มต้น </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <mat-form-field appearance="fill" style="width: 120px;height: 10px;">
+                      <!-- <mat-label>Custom calendar header</mat-label> -->
+                      <input matInput [matDatepicker]="picker" [value]="setTime(trdata.rundate)"
+                        (dateChange)="onDateChange(trdata.PEA_TR,$event)">
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker [calendarHeaderComponent]="exampleHeader"></mat-datepicker>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expDate">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มสิ้นสุด </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="workstatus">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata">
+                    <div *ngIf="checkwbs(trdata.wbs,trdata.Status)==1"><label class="badge badge-danger"
+                        style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
+                  </td>
+                </ng-container>
+                <!-- <ng-container matColumnDef="PEA_Meter">
               <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
               <td class="table-lg" mat-cell *matCellDef="let trdata"> <div class="text-success"><button type="button" class="btn btn-danger btn-fw btn-sm" (click)="getMtData(trdata.PEA_TR)">แสดงมิเตอร์</button></div></td>
               </ng-container> -->
 
-            <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
-            <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
 
-          </table>
-          <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
-          </mat-paginator>
+              </table>
+              <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+              </mat-paginator>
+            </div>
+          </mat-card>
         </div>
-      </mat-card>
-    </div>
-  </div>
+      </div>
 
-</div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
 <!-- 
 <div class="row">
   <div class="col-lg-12 grid-margin stretch-card">
