@@ -587,16 +587,22 @@
 
                 <ng-container matColumnDef="expDate">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มสิ้นสุด </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM'}} </td>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM/yyyy'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="workstatus">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
                   <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkwbs(trdata.wbs,trdata.Status)==1"><label class="badge badge-danger"
+                    <div *ngIf="checkwbs(trdata.wbs,trdata.Status)"><label class="badge badge-danger"
                         style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
+                      <div *ngIf="!checkwbs(trdata.wbs,trdata.Status)"> 
+                        <div *ngIf="checkexpdate(trdata.expDate)"><label class="badge badge-danger"
+                          style="font-size: small;">เกินเวลาที่กำหนด</label> </div></div>
+                        
                   </td>
+                  
                 </ng-container>
+
                 <!-- <ng-container matColumnDef="PEA_Meter">
               <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
               <td class="table-lg" mat-cell *matCellDef="let trdata"> <div class="text-success"><button type="button" class="btn btn-danger btn-fw btn-sm" (click)="getMtData(trdata.PEA_TR)">แสดงมิเตอร์</button></div></td>
