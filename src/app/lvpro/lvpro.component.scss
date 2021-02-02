@@ -73,6 +73,21 @@ color: rgb(255, 255, 255);
   background-color:snow;
 }
 
+::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  color:rgb(255, 255, 255);
+  font-size: medium;
+  background-color: #30366C;
+  }
+  
+  ::ng-deep .mat-tab-list .mat-tab-labels {
+  color:rgb(255, 255, 255);
+  background-color:#4e5595;
+  }
+  
+
+
+/* Styles for the ink bar */
+
   
   
    

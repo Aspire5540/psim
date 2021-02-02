@@ -26,8 +26,7 @@ import {
   ApexFill,
 
 } from "ng-apexcharts";
-import { DotDotDashUnderline } from 'docx';
-// import { SummaryResolver } from '@angular/compiler';
+
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -228,6 +227,13 @@ export class LVProComponent implements OnInit {
   setTime(time){
     // console.log("date",new Date(time))
     return new Date(time);
+  }
+  dayCheck(){
+    if(this.nDate=='15'){
+      return true;
+    }else{
+      return false;
+    }
   }
   onDateChange(trdata,event){
     var day=''+event.value.getDate();
@@ -1145,7 +1151,9 @@ export class LVProComponent implements OnInit {
                   if (ind == 1 || ind == 2 || ind == 4 || ind == 5) {
                     arryLabel.push(data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง");
                     kvaObj.forEach(element => {
+                      if(element[1]>0 || element[2]>0){
                       arryLabel.push(element[0] + ' kVA ' + element[1] + "," + element[2] + ' เครื่อง')
+                    }
                     });
 
 
@@ -1153,7 +1161,9 @@ export class LVProComponent implements OnInit {
                   } else {
                     arryLabel.push(data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง");
                     kvaObj.forEach(element => {
+                      if(element[1]>0){
                       arryLabel.push(element[0] + ' kVA ' + element[1] + ' เครื่อง')
+                      }
                     });
                     // console.log(arryLabel);
                     return arryLabel
