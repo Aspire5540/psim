@@ -288,20 +288,32 @@ export class LVProComponent implements OnInit {
     if (Status != null) {
       //console.log(Status, Status.includes("แก้ไขข้อมูล GIS แล้ว"));
       if (Status.includes("แก้ไขข้อมูล GIS แล้ว")) {
-        return 0;
+        return false;
       } else if (Status.includes("ไม่พบปัญหา")) {
-        return 0;
+        return false;
       }
     }
     if (wbs == null) {
-      return 1;
+      return true;
     } else if (wbs.length == 0) {
-      return 1;
+      return true;
     } else {
-      return 0;
+      return false;
     }
 
   }
+  checkexpdate(expDate) {
+    var todayDate = new Date() ;
+    var exDate = new Date(expDate);
+    if (exDate.getTime()<=todayDate.getTime()) {
+
+        return true;
+      }
+    else{
+      return false;
+    }
+  }
+  
 
   checkAoj(Aoj) {
 
