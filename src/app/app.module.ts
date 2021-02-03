@@ -93,7 +93,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptorService } from './config/loader-interceptor.service';
 import {LoaderserviceService} from './config/loaderservice.service';
 import { EzxComponent } from './ezx/ezx.component';
-import { ConfirmdlgComponent } from './confirmdlg/confirmdlg.component'
+import { ConfirmdlgComponent } from './confirmdlg/confirmdlg.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -188,7 +190,8 @@ import { ConfirmdlgComponent } from './confirmdlg/confirmdlg.component'
     AuthGuard,
     FileuploadService,
     LoaderserviceService,
-    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true }],
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

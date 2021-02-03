@@ -26,7 +26,8 @@ import {
   ApexFill,
 
 } from "ng-apexcharts";
-
+import {DateAdapter, MAT_DATE_FORMATS} from '@angular/material/core';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../format-datepicker';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -70,7 +71,11 @@ export type ChartOptions3 = {
 @Component({
   selector: 'app-lvpro',
   templateUrl: './lvpro.component.html',
-  styleUrls: ['./lvpro.component.scss']
+  styleUrls: ['./lvpro.component.scss'],
+  providers: [
+    {provide: DateAdapter, useClass: AppDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS}
+  ]
 })
 export class LVProComponent implements OnInit {
   public pClsChart: Partial<ChartOptions2>;
@@ -155,6 +160,7 @@ export class LVProComponent implements OnInit {
   selBudjet = ['', ''];
   selPea = '';
   selPeaName = 'กฟน.2';
+  selMatchPeaName = 'กฟน.2';
   selPeapeaCode = 'B00000';
   selPeapeaCode2 = 'B000';
   currentMatherPea = "";
@@ -225,7 +231,7 @@ export class LVProComponent implements OnInit {
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
   setTime(time){
-    // console.log("date",new Date(time))
+    console.log("date",new Date(time))
     return new Date(time);
   }
   dayCheck(){
@@ -481,6 +487,14 @@ export class LVProComponent implements OnInit {
     this.selPeapeaCode = event.value[1];
     this.currentMatherPea = this.peaname[this.selPeapeaCode];
     this.getJobProgressPea();
+    //this.getJobClsdPea();
+
+
+  }
+  selectMatchPea(event) {
+
+    this.selMatchPeaName = event.value[2];
+    this.getTRmatch();
     //this.getJobClsdPea();
 
 
@@ -1327,7 +1341,7 @@ export class LVProComponent implements OnInit {
 
   }
   getTRmatch() {
-    this.configService.getTrMatch('ldcad/rdMatchTR.php')
+    this.configService.getTrMatch('ldcad/rdMatchTR.php?peaName2='+this.selMatchPeaName)
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
         this.dataSource2.data = res as trmatch[];
