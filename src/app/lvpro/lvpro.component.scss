@@ -1,5 +1,6 @@
 table {
   width: 100%;
+  text-align: center;
 }
 .mat-select-content{
   width:2000px;
@@ -71,6 +72,7 @@ color: rgb(255, 255, 255);
   font-size: 14px;
   color: black;
   background-color:snow;
+  text-align: center;
 }
 
 ::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {

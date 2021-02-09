@@ -5,7 +5,7 @@
   <mat-tab label="Dashboard">
     <mat-card>
       <mat-card-header>
-        <mat-card-title style="color:white;">Dashboard การปรับปรุงหม้อแปลงและระบบจำหน่ายแรงต่ำ จาก LDCad  สถานะวันที่
+        <mat-card-title style="color:white;">Dashboard การปรับปรุงหม้อแปลงและระบบจำหน่ายแรงต่ำ จาก LDCad สถานะวันที่
           {{updateDate}}
         </mat-card-title>
       </mat-card-header>
@@ -331,12 +331,13 @@
                     style="font-size:30px;color:green;"></i></button>
               </div>
               <div class="col-md-1">
-                <a target="_blank" href='http://n2-psim.pea.co.th/psisservice/MatchingMap.php?PEAName2="{{selMatchPeaName}}"'><i class="mdi mdi-map"
-                    style="font-size:40px;color:white;"></i></a>
+                <a target="_blank"
+                  href='http://n2-psim.pea.co.th/psisservice/MatchingMap.php?PEAName2="{{selMatchPeaName}}"'><i
+                    class="mdi mdi-map" style="font-size:40px;color:white;"></i></a>
               </div>
             </div>
 
-            <div class="table-responsive" style="background-color:royalblue">
+            
               <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort2="matSort"
                 [dataSource]="dataSource2">
                 <ng-container matColumnDef="PEA_TR">
@@ -419,7 +420,7 @@
               </table>
               <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
               </mat-paginator>
-            </div>
+            
           </div>
         </div>
         <!-- <div class="row">
@@ -474,171 +475,150 @@
                 </div>
 
               </div>
+                <table class="mat-elevation-z8" style="background-color:royalblue" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
+                  <ng-container matColumnDef="aoj">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> AOJ </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.aoj}}</td>
+                  </ng-container>
 
-              <table class="mat-elevation-z8" mat-table matSort #sort1="matSort" [dataSource]="dataSource1">
-                <ng-container matColumnDef="aoj">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> AOJ </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.aoj}}</td>
-                </ng-container>
+                  <ng-container matColumnDef="PEA_TR">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PEA_TR}}</td>
+                  </ng-container>
 
-                <ng-container matColumnDef="PEA_TR">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> PEA No. </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PEA_TR}}</td>
-                </ng-container>
+                  <ng-container matColumnDef="kva">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> พิกัด มป. </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.kva}}</td>
+                  </ng-container>
 
-                <ng-container matColumnDef="kva">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> พิกัด มป. </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.kva}}</td>
-                </ng-container>
+                  <ng-container matColumnDef="Location">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef>สถานที่ติดตั้ง</th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.Location}} </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="Location">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>สถานที่ติดตั้ง</th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.Location}} </td>
-                </ng-container>
+                  <ng-container matColumnDef="PLoadTOT">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % Load </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PLoadTOT | number:'1.2-2'}}</td>
+                  </ng-container>
 
-                <ng-container matColumnDef="PLoadTOT">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> % Load </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">{{trdata.PLoadTOT | number:'1.2-2'}}</td>
-                </ng-container>
+                  <ng-container matColumnDef="minV">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงดัน<BR>ปลายสาย </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.minV | number:'1.2-2'}} </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="minV">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> แรงดันที่ปลายสาย </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.minV | number:'1.2-2'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="Ub">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> %UB </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
-                </ng-container>
+                  <ng-container matColumnDef="Ub">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> %UB </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.Ub | number:'1.2-2'}} </td>
+                  </ng-container>
 
 
-                <ng-container matColumnDef="wbs">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkAoj(trdata.aoj)">
-                      <mat-form-field>
-                        <input value={{trdata.wbs}} name="wbs" matInput placeholder="ใส่หมายเลข WBS/ใบสั่ง"
-                          (change)="applyWBS([$event.target.value,trdata])">
-                      </mat-form-field>
-                    </div>
-                    <div *ngIf="!checkAoj(trdata.aoj)">
-                      <mat-label>{{trdata.wbs}}</mat-label>
-                    </div>
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="wbs">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเลข WBS/ใบสั่ง</th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">
+                      <div *ngIf="checkAoj(trdata.aoj)">
+                        <mat-form-field>
+                          <input value={{trdata.wbs}} name="wbs" matInput placeholder="ใส่หมายเลข WBS/ใบสั่ง"
+                            (change)="applyWBS([$event.target.value,trdata])">
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="!checkAoj(trdata.aoj)">
+                        <mat-label>{{trdata.wbs}}</mat-label>
+                      </div>
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="jobStatus">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
-                </ng-container>
+                  <ng-container matColumnDef="jobStatus">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> สถานะงาน </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
+                  </ng-container>
 
-                <!-- <ng-container matColumnDef="RLoad">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>โหลดที่วัดได้จริง</th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkAoj(trdata.aoj)">
-                      <mat-form-field style="width:80px !important">
-                        <input value={{trdata.RLoad}} name="RLoad" matInput placeholder="%โหลดที่วัดได้"
-                          (change)="applyRLoad([$event.target.value,trdata])">
-                      </mat-form-field>
-                    </div>
-                    <div *ngIf="!checkAoj(trdata.aoj)">
-                      <mat-label>{{trdata.RLoad}}</mat-label>
-                    </div>
-                  </td>
-                </ng-container>
+                 
+                  <ng-container matColumnDef="loadResult">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>
+                      %โหลด,แรงดัน,%UB<BR>ที่วัดได้ </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.RLoad==0?'-':trdata.RLoad}} ,
+                      {{trdata.RVoltage==0?'-':trdata.RVoltage}} ,{{trdata.realUb==0?'-':trdata.realUb}}</td>
+                  </ng-container>
 
-                <ng-container matColumnDef="RVoltage">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>แรงดันที่วัดได้จริง</th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkAoj(trdata.aoj)">
-                      <mat-form-field style="width:80px !important">
-                        <input value={{trdata.RVoltage}} name="RVoltage" matInput placeholder="แรงดันต่ำสุด"
-                          (change)="applyRVoltage([$event.target.value,trdata])">
-                      </mat-form-field>
-                    </div>
-                    <div *ngIf="!checkAoj(trdata.aoj)">
-                      <mat-label>{{trdata.RVoltage}}</mat-label>
-                    </div>
-                  </td>
-                </ng-container> -->
+                  <ng-container matColumnDef="loadMea">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> ผลวัดโหลด </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> <button mat-raised-button
+                        (click)="openDialog(trdata)" class="btn btn-success">TR</button> </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="loadMea">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> <button mat-raised-button (click)="openDialog(trdata)">ผลการวัดโหลด</button> </td>
-                </ng-container>
+                  <ng-container matColumnDef="Status">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">
+                      <div *ngIf="checkAoj(trdata.aoj)">
+                        <mat-form-field>
+                          <mat-label>{{trdata.Status}}</mat-label>
+                          <mat-select [(value)]="selected" (selectionChange)="selectStatus($event)">
+                            <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
+                              {{Status.value}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="!checkAoj(trdata.aoj)">
 
-                <ng-container matColumnDef="Status">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>หมายเหตุ</th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkAoj(trdata.aoj)">
-                      <mat-form-field>
                         <mat-label>{{trdata.Status}}</mat-label>
-                        <mat-select [(value)]="selected" (selectionChange)="selectStatus($event)">
-                          <mat-option *ngFor="let Status of Statuss" [value]="[Status.value,trdata]">
-                            {{Status.value}}
-                          </mat-option>
-                        </mat-select>
+
+                      </div>
+                      <div class="row col-md-12" *ngIf="checkSelect(trdata.Status)==0">
+                        <mat-form-field>
+                          <input value={{trdata.note}} name="RVoltage" matInput
+                            (change)="onOther($event.target.value,trdata.PEA_TR)">
+                        </mat-form-field>
+                      </div>
+
+                    </td>
+
+                  </ng-container>
+
+                  <ng-container matColumnDef="rundate">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มต้น </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">
+                      <mat-form-field appearance="fill" style="width: 140px;height: 10px;">
+                        <!-- <mat-label>Custom calendar header</mat-label> -->
+                        <input matInput [matDatepicker]="picker" [value]="setTime(trdata.rundate)"
+                          (dateChange)="onDateChange(trdata.PEA_TR,$event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker [calendarHeaderComponent]="exampleHeader"></mat-datepicker>
                       </mat-form-field>
-                    </div>
-                    <div *ngIf="!checkAoj(trdata.aoj)">
+                    </td>
+                  </ng-container>
 
-                      <mat-label>{{trdata.Status}}</mat-label>
+                  <ng-container matColumnDef="expDate">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันสิ้นสุด </th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM/yyyy'}}
+                    </td>
+                  </ng-container>
 
-                    </div>
-                    <div class="row col-md-12" *ngIf="checkSelect(trdata.Status)==0">
-                      <mat-form-field>
-                        <input value={{trdata.note}} name="RVoltage" matInput
-                          (change)="onOther($event.target.value,trdata.PEA_TR)">
-                      </mat-form-field>
-                    </div>
+                  <ng-container matColumnDef="workstatus">
+                    <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                    <td class="table-lg" mat-cell *matCellDef="let trdata">
+                      <div *ngIf="checkwbs(trdata.wbs,trdata.Status)"><label class="badge badge-danger"
+                          style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
+                      <div *ngIf="!checkwbs(trdata.wbs,trdata.Status)">
+                        <div *ngIf="checkexpdate(trdata)"><label class="badge badge-danger"
+                            style="font-size: small;">เกินเวลาที่กำหนด</label> </div>
+                      </div>
 
-                  </td>
+                    </td>
 
-                </ng-container>
+                  </ng-container>
 
-                <ng-container matColumnDef="rundate">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันเริ่มต้น </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <mat-form-field appearance="fill" style="width: 140px;height: 10px;">
-                      <!-- <mat-label>Custom calendar header</mat-label> -->
-                      <input matInput [matDatepicker]="picker" [value]="setTime(trdata.rundate)"
-                        (dateChange)="onDateChange(trdata.PEA_TR,$event)">
-                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker [calendarHeaderComponent]="exampleHeader"></mat-datepicker>
-                    </mat-form-field>
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="expDate">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> วันสิ้นสุด </th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.expDate | date: 'dd/MM/yyyy'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="workstatus">
-                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header></th>
-                  <td class="table-lg" mat-cell *matCellDef="let trdata">
-                    <div *ngIf="checkwbs(trdata.wbs,trdata.Status)"><label class="badge badge-danger"
-                        style="font-size: small;">ยังไม่ได้ดำเนินการ</label> </div>
-                    <div *ngIf="!checkwbs(trdata.wbs,trdata.Status)">
-                      <div *ngIf="checkexpdate(trdata.expDate)"><label class="badge badge-danger"
-                          style="font-size: small;">เกินเวลาที่กำหนด</label> </div>
-                    </div>
-
-                  </td>
-
-                </ng-container>
-
-                <!-- <ng-container matColumnDef="PEA_Meter">
+                  <!-- <ng-container matColumnDef="PEA_Meter">
               <th class="table-lg" mat-header-cell *matHeaderCellDef> </th>
               <td class="table-lg" mat-cell *matCellDef="let trdata"> <div class="text-success"><button type="button" class="btn btn-danger btn-fw btn-sm" (click)="getMtData(trdata.PEA_TR)">แสดงมิเตอร์</button></div></td>
               </ng-container> -->
 
-                <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
-                <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                  <tr class="table-lg" mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                  <tr class="table-lg" mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
 
-              </table>
-              <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
-              </mat-paginator>
+                </table>
+                <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons>
+                </mat-paginator>
             </div>
           </mat-card>
         </div>

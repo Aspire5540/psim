@@ -91,7 +91,7 @@ export class LVProComponent implements OnInit {
   testArry = { '100': 20 };
 
   option = "2";
-  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'loadMea', 'rundate', 'expDate', 'workstatus'];
+  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'loadResult','loadMea', 'rundate', 'expDate', 'workstatus'];
 
   displayedColumns2 = ['PEA_TR',
     'PEANAME',
@@ -347,9 +347,29 @@ export class LVProComponent implements OnInit {
     }
 
   }
-  checkexpdate(expDate) {
+  checkexpdate(trdata) {
     var todayDate = new Date();
-    var exDate = new Date(expDate);
+    var exDate = new Date(trdata.expDate);
+    if (trdata.jobStatus != null && trdata.jobStatus.length > 1) {
+      if (trdata.jobStatus.slice(trdata.jobStatus.length - 2)[0] == 'D' || trdata.jobStatus.slice(trdata.jobStatus.length - 2)[0] == 'F') {
+        return false;
+      } else if (trdata.wbs[0] !== '4' && (trdata.jobStatus.includes('CLSD') || trdata.jobStatus.includes('TECO'))) {
+        return false;
+      }
+    }
+    
+    if (trdata.Status != null) {
+      if (trdata.Status.includes('แก้ไขข้อมูล GIS แล้ว') || trdata.Status.includes('ไม่พบปัญหา')) {
+        if (trdata.wbs != null) {
+          if (trdata.wbs[0] != '2' && trdata.wbs[0] !== 'P' && trdata.wbs[0] !== 'I' && trdata.wbs[0] !== 'C') {
+            return false;
+          } 
+        }else{
+          return false;
+        }
+
+      }
+    }
     if (exDate.getTime() <= todayDate.getTime()) {
 
       return true;
