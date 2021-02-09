@@ -5,7 +5,8 @@
   <mat-tab label="Dashboard">
     <mat-card>
       <mat-card-header>
-        <mat-card-title style="color:white;">Dashboard การปรับปรุงหม้อแปลงและระบบจำหน่ายแรงต่ำ จาก LDCad
+        <mat-card-title style="color:white;">Dashboard การปรับปรุงหม้อแปลงและระบบจำหน่ายแรงต่ำ จาก LDCad  สถานะวันที่
+          {{updateDate}}
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -330,7 +331,7 @@
                     style="font-size:30px;color:green;"></i></button>
               </div>
               <div class="col-md-1">
-                <a target="_blank" href="http://n2-psim.pea.co.th/psisservice/MatchingMap.php?peaName2={{'selMatchPeaName'}}/"><i class="mdi mdi-map"
+                <a target="_blank" href='http://n2-psim.pea.co.th/psisservice/MatchingMap.php?PEAName2="{{selMatchPeaName}}"'><i class="mdi mdi-map"
                     style="font-size:40px;color:white;"></i></a>
               </div>
             </div>
@@ -531,7 +532,7 @@
                   <td class="table-lg" mat-cell *matCellDef="let trdata"> {{trdata.jobStatus}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="RLoad">
+                <!-- <ng-container matColumnDef="RLoad">
                   <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header>โหลดที่วัดได้จริง</th>
                   <td class="table-lg" mat-cell *matCellDef="let trdata">
                     <div *ngIf="checkAoj(trdata.aoj)">
@@ -559,6 +560,11 @@
                       <mat-label>{{trdata.RVoltage}}</mat-label>
                     </div>
                   </td>
+                </ng-container> -->
+
+                <ng-container matColumnDef="loadMea">
+                  <th class="table-lg" mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+                  <td class="table-lg" mat-cell *matCellDef="let trdata"> <button mat-raised-button (click)="openDialog(trdata)">ผลการวัดโหลด</button> </td>
                 </ng-container>
 
                 <ng-container matColumnDef="Status">

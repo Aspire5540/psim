@@ -1,0 +1,39 @@
+<mat-dialog-content>
+    <h1 mat-dialog-title>PEA หม้อแปลง {{data.trdata.PEA_TR}}</h1>
+    <mat-form-field>
+        <mat-label>TAP หม้อแปลง</mat-label>
+        <input matInput [(ngModel)]="trtab">
+      </mat-form-field>
+    <mat-form-field>
+      <mat-label>แรงดันต้นทาง</mat-label>
+      <input matInput [(ngModel)]="vin">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>แรงดันปลายสาย</mat-label>
+      <input matInput [(ngModel)]="RVoltage">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>%โหลดหม้อแปลง</mat-label>
+      <input matInput [(ngModel)]="RLoad">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>%๊UB</mat-label>
+      <input matInput [(ngModel)]="realUb">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>กรแสเฟส A</mat-label>
+      <input matInput [(ngModel)]="realIa">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>กรแสเฟส B</mat-label>
+      <input matInput [(ngModel)]="realIb">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>กรแสเฟส C</mat-label>
+      <input matInput [(ngModel)]="realIc">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">ยืนยัน</button>
+    <button mat-raised-button mat-dialog-close tabindex="-1">ยกเลิก</button>
+  </mat-dialog-actions>

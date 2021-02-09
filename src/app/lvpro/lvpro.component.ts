@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfigService } from '../config/config.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { FileuploadService } from '../config/fileupload.service';
 import { Chart } from 'chart.js';
 import { MatSort } from '@angular/material/sort';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import {
   ApexNonAxisChartSeries,
   ApexAxisChartSeries,
@@ -26,8 +26,11 @@ import {
   ApexFill,
 
 } from "ng-apexcharts";
-import {DateAdapter, MAT_DATE_FORMATS} from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../format-datepicker';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -73,8 +76,8 @@ export type ChartOptions3 = {
   templateUrl: './lvpro.component.html',
   styleUrls: ['./lvpro.component.scss'],
   providers: [
-    {provide: DateAdapter, useClass: AppDateAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS}
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
   ]
 })
 export class LVProComponent implements OnInit {
@@ -83,14 +86,12 @@ export class LVProComponent implements OnInit {
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions>;
 
-  name = 'Kissht';
-  KisshtHtml;
   // myBarClsd: Chart;
   // BarMat: Chart;
   testArry = { '100': 20 };
 
   option = "2";
-  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'RLoad', 'RVoltage', 'rundate', 'expDate', 'workstatus'];
+  displayedColumns1 = ['aoj', 'PEA_TR', 'kva', 'Location', 'PLoadTOT', 'minV', 'Ub', 'wbs', 'jobStatus', 'Status', 'loadMea', 'rundate', 'expDate', 'workstatus'];
 
   displayedColumns2 = ['PEA_TR',
     'PEANAME',
@@ -140,6 +141,7 @@ export class LVProComponent implements OnInit {
   chartResult: Chart;
   chartMat: Chart;
   chartTR: Chart;
+  updateDate: string;
   // PEA_TR0: number;
   // PEA_TR1: number;
   // PEA_TR2: number;
@@ -197,7 +199,7 @@ export class LVProComponent implements OnInit {
 
 
 
-  constructor(private sanitizer:DomSanitizer,private router: Router, private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
+  constructor(public dialog: MatDialog, private sanitizer: DomSanitizer, private router: Router, private configService: ConfigService, public authService: AuthService, private http: HttpClient, private uploadService: FileuploadService) {
     this.getpeaList();
     this.getpeaList2();
 
@@ -208,6 +210,7 @@ export class LVProComponent implements OnInit {
     // this.getTrData();
     // this.getStatus();
     // this.getMat("1");
+    this.getinfo();
     this.getTRmatch();
     this.getJobProgressPea();
     // console.log("url:", this.router.url);
@@ -226,37 +229,67 @@ export class LVProComponent implements OnInit {
     // this.dataSource.paginator = this.paginator1;
     // this.dataSource.sort = this.sort1;
     this.peaCode = localStorage.getItem('peaCode');
-    // this.peaCode = 'B00000';
+    // this.peaCode = 'B0110101';
     //this.peaNum = this.peaCode.substr(1, 5);
     this.selPeapeaCode = this.peaCode.substr(0, 4);
   }
-  setTime(time){
-    console.log("date",new Date(time))
+  openDialog(trdata): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: '300px',
+      data: { trdata }
+    });
+
+    dialogRef.afterClosed().subscribe(wbsdata => {
+      // console.log('The dialog was closed');
+      console.log(wbsdata);
+      if (wbsdata) {
+        if (this.checkAoj(wbsdata.aoj)) {
+          this.reTr(wbsdata);
+        } else {
+          alert("ไม่มีสิทธิ์แก้ไขข้อมูล");
+        }
+      }
+    });
+  }
+  setTime(time) {
     return new Date(time);
   }
-  dayCheck(){
-    if(this.nDate=='15'){
+  dayCheck() {
+    if (this.nDate == '15') {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
-  onDateChange(trdata,event){
-    var day=''+event.value.getDate();
-    var month=''+event.value.getMonth()+1;
-    var year=event.value.getFullYear();
+  getinfo() {
+    this.configService.postdata2('roic/rdInfo.php', { data: 'roicdate' }).subscribe((data => {
+      if (data['status'] == 1) {
+        this.updateDate = data['data'][0].info;
+        //--------------------------------
+        //this.roicdate="31 พ.ค. 2563";
+      } else {
+        alert(data['data']);
+      }
+
+    }));
+
+  }
+  onDateChange(trdata, event) {
+    var day = '' + event.value.getDate();
+    var month = '' + event.value.getMonth() + 1;
+    var year = event.value.getFullYear();
     // console.log(month,day);
-    if(month.length<2){
-      month='0'+month;
+    if (month.length < 2) {
+      month = '0' + month;
     }
-    if(day.length<2){
-      day='0'+day;
+    if (day.length < 2) {
+      day = '0' + day;
     }
-    this.writeDate(trdata,[year,month,day].join('-'));
+    this.writeDate(trdata, [year, month, day].join('-'));
     // console.log([year,month,day].join('-'));
   }
-  writeDate(trdata,date) {
-    this.configService.postdata2('ldcad/wriDate.php', { TRNumber: trdata,rundate: date}).subscribe((data => {
+  writeDate(trdata, date) {
+    this.configService.postdata2('ldcad/wriDate.php', { TRNumber: trdata, rundate: date }).subscribe((data => {
       if (data['status'] == 1) {
         this.getTrData();
         //  this.getStatus();
@@ -315,17 +348,17 @@ export class LVProComponent implements OnInit {
 
   }
   checkexpdate(expDate) {
-    var todayDate = new Date() ;
+    var todayDate = new Date();
     var exDate = new Date(expDate);
-    if (exDate.getTime()<=todayDate.getTime()) {
+    if (exDate.getTime() <= todayDate.getTime()) {
 
-        return true;
-      }
-    else{
+      return true;
+    }
+    else {
       return false;
     }
   }
-  
+
 
   checkAoj(Aoj) {
 
@@ -1177,9 +1210,9 @@ export class LVProComponent implements OnInit {
                   if (ind == 1 || ind == 2 || ind == 4 || ind == 5) {
                     arryLabel.push(data.datasets[1].label + " : " + data.datasets[1].data[tooltipItem.index] + " เครื่อง , " + data.datasets[2].label + " : " + data.datasets[2].data[tooltipItem.index] + "เครื่อง");
                     kvaObj.forEach(element => {
-                      if(element[1]>0 || element[2]>0){
-                      arryLabel.push(element[0] + ' kVA ' + element[1] + "," + element[2] + ' เครื่อง')
-                    }
+                      if (element[1] > 0 || element[2] > 0) {
+                        arryLabel.push(element[0] + ' kVA ' + element[1] + "," + element[2] + ' เครื่อง')
+                      }
                     });
 
 
@@ -1187,8 +1220,8 @@ export class LVProComponent implements OnInit {
                   } else {
                     arryLabel.push(data.datasets[tooltipItem.datasetIndex].label + " : " + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " เครื่อง");
                     kvaObj.forEach(element => {
-                      if(element[1]>0){
-                      arryLabel.push(element[0] + ' kVA ' + element[1] + ' เครื่อง')
+                      if (element[1] > 0) {
+                        arryLabel.push(element[0] + ' kVA ' + element[1] + ' เครื่อง')
                       }
                     });
                     // console.log(arryLabel);
@@ -1341,7 +1374,7 @@ export class LVProComponent implements OnInit {
 
   }
   getTRmatch() {
-    this.configService.getTrMatch('ldcad/rdMatchTR.php?peaName2='+this.selMatchPeaName)
+    this.configService.getTrMatch('ldcad/rdMatchTR.php?peaName2=' + this.selMatchPeaName)
       //this.configService.getTr('TR.php?condition='+this.condition+'&peaCode0='+'B00000')
       .subscribe(res => {
         this.dataSource2.data = res as trmatch[];
@@ -1364,11 +1397,11 @@ export class LVProComponent implements OnInit {
 
 
   }
-  onTabClick(event){
-    if(event.index==1){
+  onTabClick(event) {
+    if (event.index == 1) {
       this.getMat("1");
       this.getMatReq();
-    }else if(event.index==2){
+    } else if (event.index == 2) {
       // this.http.get('http://n2-psim.pea.co.th/psdoc/',{responseType:'text'}).subscribe(res=>{
       //   this.KisshtHtml = this.sanitizer.bypassSecurityTrustHtml(res);
       // })
@@ -1639,7 +1672,7 @@ export class LVProComponent implements OnInit {
             }
 
           });
-        }else{
+        } else {
           this.getLoad100();
         }
 
@@ -1759,6 +1792,20 @@ export class LVProComponent implements OnInit {
       }
     }));
   }
+  reTr(wbsdata) {
+    console.log(wbsdata);
+    //console.log(wbsdata.wbs);
+    this.configService.postdata2('ldcad/reTR.php', wbsdata).subscribe((data => {
+      if (data['status'] == 1) {
+        // this.getData();
+        this.getTrData();
+        alert("แก้ไขข้อมูลแล้วเสร็จ");
+      } else {
+        alert(data['data']);
+      }
+
+    }))
+  }
 
   exportAsXLSX(): void {
     this.configService.exportAsExcelFile(this.dataSource1.data, 'TRdata');
@@ -1790,4 +1837,53 @@ export class LVProComponent implements OnInit {
 */
 }
 
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+})
+export class DialogOverviewExampleDialog {
+  RVoltage: number;
+  RLoad: number;
+  trtab: string;
+  vin: number;
+  realIa: number;
+  realIb: number;
+  realIc: number;
+  realUb: number;
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    if (data) {
+      console.log(data);
+      this.RVoltage = data.trdata.RVoltage;
+      this.RLoad = data.trdata.RLoad;
+      this.trtab = data.trdata.trtab;
+      this.realIa = data.trdata.realIa;
+      this.realIb = data.trdata.realIb;
+      this.realIc = data.trdata.realIc;
+      this.realUb = data.trdata.realUb;
+      this.vin = data.trdata.vin;
+    }
 
+
+  }
+
+
+  onConfirmClick(): void {
+    var wbs = {};
+
+    // this.wbs["newVin"]=this.newVin;
+    wbs["PEA_TR"] = this.data.trdata.PEA_TR;
+    wbs["aoj"] = this.data.trdata.aoj;
+    wbs["RVoltage"] = this.RVoltage;
+    wbs["RLoad"] = this.RLoad;
+    wbs["trtab"] = this.trtab;
+    wbs["realIa"] = this.realIa;
+    wbs["realIb"] = this.realIb;
+    wbs["realIc"] = this.realIc;
+    wbs["realUb"] = this.realUb;
+    wbs["vin"] = this.vin;
+    this.dialogRef.close(wbs);
+  }
+
+}
