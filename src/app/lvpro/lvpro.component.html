@@ -28,13 +28,15 @@
         </div>
         <div class="col-md-12 d-flex justify-content-center" style="color: white;">
           <mat-button-toggle-group style="border-radius: 20px;height: 80%;color: rgb(70, 124, 172);" value="2">
+            <mat-button-toggle (change)="onValChange($event.value)" value="8" style="width: 300px;">แรงดันต่ำกว่า 200 V หรือ โหลดเกิน 100% </mat-button-toggle>
             <mat-button-toggle (change)="onValChange($event.value)" value="2">แรงดันต่ำกว่า 200 V</mat-button-toggle>
             <mat-button-toggle (change)="onValChange($event.value)" value="6">แรงดัน 200-210 V</mat-button-toggle>
             <mat-button-toggle (change)="onValChange($event.value)" value="1">โหลด 80-100%</mat-button-toggle>
             <!-- <mat-button-toggle (change)="onValChange($event.value)" value="7">โหลด 80-90%</mat-button-toggle> -->
             <mat-button-toggle (change)="onValChange($event.value)" value="5">โหลดเกิน 100%</mat-button-toggle>
             <mat-button-toggle (change)="onValChange($event.value)" value="4">โหลดต่ำกว่า 30%</mat-button-toggle>
-            <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 25%</mat-button-toggle>
+            <!-- <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 25%</mat-button-toggle> -->
+            <mat-button-toggle (change)="onValChange($event.value)" value="9">%UB เกิน 50%</mat-button-toggle>
             <!-- <mat-button-toggle (change)="onValChange($event.value)" value="3">%UB เกิน 50%</mat-button-toggle> -->
           </mat-button-toggle-group>
 

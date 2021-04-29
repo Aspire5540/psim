@@ -183,6 +183,7 @@ export class LVProComponent implements OnInit {
 
   Conditions = [
     //{value: 0,viewvalue: 'หม้อแปลงทั้งหมด'},
+    { value: 13, viewvalue: 'แรงดัน<200 Volt หรือ โหลด>100%' },
     { value: 2, viewvalue: 'แรงดัน<200 Volt' },
     { value: 7, viewvalue: 'แรงดัน 200-210 Volt' },
     { value: 1, viewvalue: 'โหลด>100%' },
@@ -190,7 +191,7 @@ export class LVProComponent implements OnInit {
     { value: 8, viewvalue: 'โหลด 80-90%' },
     { value: 4, viewvalue: 'โหลด<30%' },
     { value: 11, viewvalue: '%UB>50%' },
-    { value: 10, viewvalue: '%UB 25-50%' },
+    // { value: 10, viewvalue: '%UB 25-50%' },
     // { value: 12, viewvalue: 'ทุกปัญหา' },
     { value: 6, viewvalue: 'ทั้งหมด' },
 
@@ -497,6 +498,7 @@ export class LVProComponent implements OnInit {
                 ticks: {
                   fontSize: 14,
                   fontColor: "white",
+                  max: 450,              
                 }
               }],
               yAxes: [{
@@ -598,6 +600,7 @@ export class LVProComponent implements OnInit {
         lastPea = '';
         total = 0;
         kvaByPeaObj['wbs'] = [];
+        console.log(data['data']);
         for (var i = 0; i < data['data'].length; i++) {
           if (kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]]) {
             kvaByPeaObj['wbs'][this.peaname["B" + data['data'][i].Pea]].push([data['data'][i].kva, Number(data['data'][i].totalTr)]);
