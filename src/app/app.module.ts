@@ -94,6 +94,7 @@ import { LoaderInterceptorService } from './config/loader-interceptor.service';
 import {LoaderserviceService} from './config/loaderservice.service';
 import { EzxComponent } from './ezx/ezx.component';
 import { ConfirmdlgComponent } from './confirmdlg/confirmdlg.component';
+import { RedirectComponent } from './redirect/redirect.component';
 
 
 @NgModule({
@@ -131,6 +132,7 @@ import { ConfirmdlgComponent } from './confirmdlg/confirmdlg.component';
     EzxComponent,
     ConfirmdlgComponent,
     DialogOverviewExampleDialog,
+    RedirectComponent,
     
   ],
   imports: [

@@ -26,10 +26,11 @@ import {LVProComponent} from'./lvpro/lvpro.component';
 import {PsimdashboardComponent} from './psimdashboard/psimdashboard.component';
 import {PhasechkComponent} from './phasechk/phasechk.component';
 import {RoicComponent} from './roic/roic.component';
-import {EzxComponent} from './ezx/ezx.component'
+import {EzxComponent} from './ezx/ezx.component';
+import {RedirectComponent} from './redirect/redirect.component';
 //,canActivate:[AuthGuard]
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/redict', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard]},
   { path: 'forms', component: FormsComponent },
   { path: 'buttons', component: ButtonsComponent },
@@ -55,6 +56,7 @@ const routes: Routes = [
   { path: 'phasecheck', component: PhasechkComponent,canActivate:[AuthGuard] },
   { path: 'roic', component: RoicComponent,canActivate:[AuthGuard] },
   { path: 'ezx', component: EzxComponent,canActivate:[AuthGuard] },
+  { path: 'redict', component: RedirectComponent },
   
 ];
 

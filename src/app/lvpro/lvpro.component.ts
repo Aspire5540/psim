@@ -177,6 +177,7 @@ export class LVProComponent implements OnInit {
     // { value: 'อยู่ระหว่างแก้ไขข้อมูล GIS' },
     { value: 'แก้ไขข้อมูล GIS แล้ว' },
     { value: 'ไม่พบปัญหา' },
+    { value: 'แก้ไขปัญหาแล้ว' },
     { value: 'อื่นๆ โปรดระบุ' },
   ];
 
@@ -557,7 +558,7 @@ export class LVProComponent implements OnInit {
   getJobProgressPea() {
     //จำนวนงานคงค้าง %เบิกจ่าย
     //this.getRoicP();
-    this.configService.postdata2('ldcad/rdLoad.php', { peaCode: this.selPeapeaCode, option: this.option }).subscribe((data => {
+    this.configService.postdata2('ldcad/rdLoad2.php', { peaCode: this.selPeapeaCode, option: this.option }).subscribe((data => {
       if (data['status'] == 1) {
 
         var Pea = [];
